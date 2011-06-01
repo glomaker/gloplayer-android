@@ -11,7 +11,7 @@ package net.dndigital.glo.components
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public interface ITextArea extends IText, IComponent
+	public interface ITextArea extends IGloComponent
 	{
 		/**
 		 * 

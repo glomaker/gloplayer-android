@@ -1,7 +1,7 @@
 package net.dndigital.glo.components
 {
 
-	public interface IPlaceholder extends IComponent
+	public interface IPlaceholder extends IGloComponent
 	{
 	}
 }
