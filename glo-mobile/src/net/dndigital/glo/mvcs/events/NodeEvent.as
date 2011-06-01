@@ -13,7 +13,7 @@ package net.dndigital.glo.mvcs.events
 		
 		public function NodeEvent(type:String, index:int = -1, slide:Node = null)
 		{
-			super(type,false,false);
+			super(type, false, false);
 
 			_index = index;
 			_slide = slide;
@@ -33,6 +33,7 @@ package net.dndigital.glo.mvcs.events
 		 * @private
 		 */
 		protected var _slide:Node;
+		
 		
 		public function get slide():Node
 		{

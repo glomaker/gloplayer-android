@@ -1,8 +1,20 @@
 package net.dndigital.glo.mvcs.commands
 {
+	import net.dndigital.glo.mvcs.events.ApplicationEvent;
+	
 	import org.robotlegs.mvcs.Command;
 	
-	public class StartPlayer extends Command
+	/**
+	 * Starts a Player on <code>Application</code>.
+	 * 
+	 * @author David "nirth" Sergey.
+	 * @author DN Digital Ltd.
+	 *
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 2.5
+	 * @productversion Flex 4.5
+	 */	public class StartPlayer extends Command
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -17,6 +29,19 @@ package net.dndigital.glo.mvcs.commands
 		
 		//--------------------------------------------------------------------------
 		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+		
+		[Inject]
+		/**
+		 * @private
+		 * An instance of <code>ApplicationEvent</code>
+		 */
+		public var event:ApplicationEvent;
+		
+		//--------------------------------------------------------------------------
+		//
 		//  Overridden API
 		//
 		//--------------------------------------------------------------------------
@@ -26,7 +51,7 @@ package net.dndigital.glo.mvcs.commands
 		 */
 		override public function execute():void
 		{
-			log("execute()");
+			event.application.showPlayer();
 		}
 	}
 }

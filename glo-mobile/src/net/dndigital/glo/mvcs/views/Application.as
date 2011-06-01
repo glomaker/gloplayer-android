@@ -2,6 +2,17 @@ package net.dndigital.glo.mvcs.views
 {
 	import flash.display.Sprite;
 	
+	/**
+	 * Main and First view of GloMaker Player Application. All views and popups are hosted in <code>Application</code>.
+	 * 
+	 * @author David "nirth" Sergey.
+	 * @author DN Digital Ltd.
+	 *
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 2.5
+	 * @productversion Flex 4.5
+	 */
 	public class Application extends Sprite
 	{
 		/**
@@ -10,18 +21,15 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected const player:GloPlayer = new GloPlayer;
 		
+		/**
+		 * Activates <code>GloPlayer</code> as it's current view.
+		 *  
+		 * @return 	Active instance of <code>GloPlayer</code>
+		 */
 		public function showPlayer():GloPlayer
 		{
 			if(player.stage == null )
 				addChild(player);
-			
-			return player;
-		}
-		
-		public function hidePlayer():GloPlayer
-		{
-			if(player.stage != null)
-				removeChild(player);
 			
 			return player;
 		}

@@ -3,6 +3,8 @@ package net.dndigital.glo.mvcs
 	import flash.display.DisplayObjectContainer;
 	
 	import net.dndigital.glo.mvcs.commands.Bootstrap;
+	import net.dndigital.glo.mvcs.commands.StartPlayer;
+	import net.dndigital.glo.mvcs.events.ApplicationEvent;
 	import net.dndigital.glo.mvcs.views.Application;
 	import net.dndigital.glo.mvcs.views.ApplicationMediator;
 	import net.dndigital.glo.mvcs.views.Controls;
@@ -25,7 +27,6 @@ package net.dndigital.glo.mvcs
 		 * @private
 		 */
 		protected static var log:Function = eu.kiichigo.utils.log(GloContext);
-		
 		
 		public function GloContext(contextView:DisplayObjectContainer = null, autoStartup:Boolean = true)
 		{

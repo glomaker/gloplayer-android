@@ -7,8 +7,10 @@ package net.dndigital.glo.mvcs.views
 		public function GloPlayer()
 		{
 			super();
+			
+			graphics.beginFill(0xFF6600);
+			graphics.drawRect(0, 0, 50, 50);
+			graphics.endFill();
 		}
-		
-		
 	}
 }
