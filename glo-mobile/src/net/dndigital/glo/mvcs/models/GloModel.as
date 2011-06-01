@@ -34,11 +34,6 @@ package net.dndigital.glo.mvcs.models
 		}
 		
 		/**
-		 * @private
-		 */
-		private var _slides:Vector.<Node>;
-		
-		/**
 		 * Indicates collection of nodes that belonged to current <code>GloModel.project</code>.
 		 * 
 		 * @see		net.dndigital.glo.mvcs.models.vo.Node
@@ -49,6 +44,11 @@ package net.dndigital.glo.mvcs.models
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get nodes():Vector.<Node> { return _project || _project.nodes; }
+		public function get nodes():Vector.<Node>
+		{
+			if(_project != null)
+				return _project.nodes;
+			return null;
+		}
 	}
 }
