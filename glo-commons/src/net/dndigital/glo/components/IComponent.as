@@ -4,6 +4,9 @@ package net.dndigital.glo.components
 	import flash.events.IEventDispatcher;
 	
 	/**
+	 * Represents basic visual Component instances. Instances of Component classes can be added to <code>IContainer</code>.
+	 * 
+	 * @see		net.dndigital.glo.components.IContainer
 	 * 
 	 * @author David "nirth" Sergey.
 	 * @author DN Digital Ltd.

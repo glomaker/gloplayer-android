@@ -2,6 +2,15 @@ package net.dndigital.glo.components
 {
 	import flash.display.Sprite;
 	
+	/**
+	 * Represents basic visual Component instances. Instances of Component classes can be added to <code>IContainer</code>.
+	 * 
+	 * @see		net.dndigital.glo.components.IContainer
+	 * @see		net.dndigital.glo.components.IComponent
+	 * 
+	 * @author David "nirth" Sergey
+	 * 
+	 */
 	public class Component extends Sprite
 	{
 		//--------------------------------------------------------------------------
