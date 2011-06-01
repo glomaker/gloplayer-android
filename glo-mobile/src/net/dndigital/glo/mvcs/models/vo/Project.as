@@ -109,6 +109,32 @@ package net.dndigital.glo.mvcs.models.vo
 		}
 		
 		
+		/**
+		 * @private
+		 */
+		private var _slides:Vector.<Node>;
+		
+		/**
+		 * slides.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get slides():Vector.<Node> { return _slides; }
+		/**
+		 * @private
+		 */
+		public function set slides(value:Vector.<Node>):void
+		{
+			if ( _slides == value )
+				return;
+			_slides = value;
+		}
+		
+		
+		
 		
 	}
 }

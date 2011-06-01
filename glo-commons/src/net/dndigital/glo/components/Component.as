@@ -8,8 +8,13 @@ package net.dndigital.glo.components
 	 * @see		net.dndigital.glo.components.IContainer
 	 * @see		net.dndigital.glo.components.IComponent
 	 * 
-	 * @author David "nirth" Sergey
-	 * 
+	 * @author David "nirth" Sergey.
+	 * @author DN Digital Ltd.
+	 *
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 2.5
+	 * @productversion Flex 4.5
 	 */
 	public class Component extends Sprite
 	{
@@ -24,7 +29,7 @@ package net.dndigital.glo.components
 		 */
 		protected var _width:Number;
 		/**
-		 * @inheritDoc
+		 * @copy	flash.display.DisplayObject#width
 		 */
 		override public function get width():Number
 		{

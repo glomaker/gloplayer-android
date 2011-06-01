@@ -1,6 +1,6 @@
 package net.dndigital.glo.mvcs.models.vo
 {
-	public class Slide
+	public class Node
 	{
 		/**
 		 * @private

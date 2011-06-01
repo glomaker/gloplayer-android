@@ -2,16 +2,16 @@ package net.dndigital.glo.mvcs.events
 {
 	import flash.events.Event;
 	
-	import net.dndigital.glo.mvcs.models.vo.Slide;
+	import net.dndigital.glo.mvcs.models.vo.Node;
 
-	public class SlideEvent extends Event
+	public class NodeEvent extends Event
 	{
 		public static const NEXT:String = "next";
 		public static const PREVIOUS:String = "previous";
 		public static const SELECT:String = "select";
 
 		
-		public function SlideEvent(type:String, index:int = -1, slide:Slide = null)
+		public function NodeEvent(type:String, index:int = -1, slide:Node = null)
 		{
 			super(type,false,false);
 
@@ -32,9 +32,9 @@ package net.dndigital.glo.mvcs.events
 		/**
 		 * @private
 		 */
-		protected var _slide:Slide;
+		protected var _slide:Node;
 		
-		public function get slide():Slide
+		public function get slide():Node
 		{
 			return _slide;
 		}
@@ -44,7 +44,7 @@ package net.dndigital.glo.mvcs.events
 		 */
 		public override function clone():Event
 		{
-			return new SlideEvent(type, _index, _slide);
+			return new NodeEvent(type, _index, _slide);
 		}
 
 		/**
