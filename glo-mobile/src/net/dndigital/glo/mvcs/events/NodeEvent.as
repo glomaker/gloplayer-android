@@ -52,7 +52,7 @@ package net.dndigital.glo.mvcs.events
 		 */
 		public override function toString():String
 		{
-			return formatToString("SlideEvent", "index", "slide");
+			return formatToString("NodeEvent", "index", "slide");
 		}
 	}
 }

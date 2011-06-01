@@ -44,6 +44,6 @@ package net.dndigital.glo.mvcs.models
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get slides():Vector.<Node { return _project || _project.; }
+		public function get nodes():Vector.<Node> { return _project || _project.nodes; }
 	}
 }

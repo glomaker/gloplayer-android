@@ -112,7 +112,7 @@ package net.dndigital.glo.mvcs.models.vo
 		/**
 		 * @private
 		 */
-		private var _slides:Vector.<Node>;
+		private var _nodes:Vector.<Node>;
 		
 		/**
 		 * slides.
@@ -122,15 +122,15 @@ package net.dndigital.glo.mvcs.models.vo
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get slides():Vector.<Node> { return _slides; }
+		public function get nodes():Vector.<Node> { return _nodes; }
 		/**
 		 * @private
 		 */
-		public function set slides(value:Vector.<Node>):void
+		public function set nodes(value:Vector.<Node>):void
 		{
-			if ( _slides == value )
+			if ( _nodes == value )
 				return;
-			_slides = value;
+			_nodes = value;
 		}
 		
 		
