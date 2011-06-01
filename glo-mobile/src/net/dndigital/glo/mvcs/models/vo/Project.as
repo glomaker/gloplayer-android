@@ -1,5 +1,18 @@
 package net.dndigital.glo.mvcs.models.vo
 {
+	/**
+	 * ValueObject. Represents data about Glo Project.
+	 * 
+	 * @see		net.dndigital.glo.mvcs.models.vo.Node
+	 * 
+	 * @author David "nirth" Sergey.
+	 * @author DN Digital Ltd.
+	 *
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 2.5
+	 * @productversion Flex 4.5
+	 */
 	public class Project
 	{
 		//=================================
@@ -14,7 +27,7 @@ package net.dndigital.glo.mvcs.models.vo
 		private var _width:uint;
 		
 		/**
-		 * width.
+		 * Glo Project's width.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -39,7 +52,7 @@ package net.dndigital.glo.mvcs.models.vo
 		private var _height:uint;
 		
 		/**
-		 * height.
+		 * Glo Project's height.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -90,7 +103,7 @@ package net.dndigital.glo.mvcs.models.vo
 		private var _pattern:String;
 		
 		/**
-		 * pattern.
+		 * Indicates Glo Project's pattern.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -115,7 +128,7 @@ package net.dndigital.glo.mvcs.models.vo
 		private var _nodes:Vector.<Node>;
 		
 		/**
-		 * slides.
+		 * Collection of nodes that belong to current Glo Project
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -132,9 +145,5 @@ package net.dndigital.glo.mvcs.models.vo
 				return;
 			_nodes = value;
 		}
-		
-		
-		
-		
 	}
 }

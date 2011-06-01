@@ -14,6 +14,8 @@ package net.dndigital.glo.mvcs.models
 		
 		/**
 		 * Currently loaded and parsed Project.
+		 * 
+		 * @see		net.dndigital.glo.mvcs.models.vo.Project
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -37,7 +39,10 @@ package net.dndigital.glo.mvcs.models
 		private var _slides:Vector.<Node>;
 		
 		/**
-		 * slides.
+		 * Indicates collection of nodes that belonged to current <code>GloModel.project</code>.
+		 * 
+		 * @see		net.dndigital.glo.mvcs.models.vo.Node
+		 * @see		net.dndigital.glo.mvcs.models.vo.Project
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
