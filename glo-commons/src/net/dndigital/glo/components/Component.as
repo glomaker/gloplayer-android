@@ -54,5 +54,11 @@ package net.dndigital.glo.components
 			_height = value;
 			resized();
 		}
+		
+		protected function resized():void
+		{
+			
+		}
 	}
 }
+
