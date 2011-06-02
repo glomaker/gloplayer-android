@@ -8,6 +8,7 @@ package net.dndigital.glo.mvcs.services
 	
 	import mx.core.IProgrammaticSkin;
 	
+	import net.dndigital.glo.GloError;
 	import net.dndigital.glo.mvcs.models.vo.Project;
 	import net.dndigital.glo.mvcs.utils.validateGlo;
 	
@@ -144,8 +145,19 @@ package net.dndigital.glo.mvcs.services
 				
 			var xml:XML = XML(stream.readUTFBytes(stream.bytesAvailable));
 			
-			log("valid={0}", validateGlo(xml));
-			log("fileSelected() xml={0}", xml);
+			if(!validateGlo(xml))
+				throw GloError.INVALID_GLO_FILE;
+			
+			parse(xml);
+		}
+		
+		/**
+		 * @private
+		 * Parses an XML file.
+		 */
+		protected function parse(xml:XML):void
+		{
+			// FIXME: implement method
 		}
 	}
 }
