@@ -2,11 +2,14 @@ package net.dndigital.glo.mvcs.services
 {
 	import flash.events.Event;
 	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
 	import flash.net.FileFilter;
 	
 	import mx.core.IProgrammaticSkin;
 	
 	import net.dndigital.glo.mvcs.models.vo.Project;
+	import net.dndigital.glo.mvcs.utils.validateGlo;
 	
 	import org.robotlegs.mvcs.Actor;
 	
@@ -113,6 +116,7 @@ package net.dndigital.glo.mvcs.services
 		public function select():IProjectService
 		{
 			var file:File = new File;
+				file.nativePath = File.applicationDirectory.nativePath + "/assets";
 				file.addEventListener(Event.SELECT, fileSelected);
 				file.browse([GLO_FILE_FILTER]);
 				
@@ -133,20 +137,15 @@ package net.dndigital.glo.mvcs.services
 		{
 			var file:File = event.target as File;
 				file.removeEventListener(Event.SELECT, fileSelected);
-				file.addEventListener(Event.COMPLETE, fileLoaded);
-				file.load();
-				log("fileSelected()");
-		}
-		
-		/**
-		 * @private
-		 * Handles file loading.
-		 */
-		protected function fileLoaded(event:Event):void
-		{
-			log("fileLoaded() file={0} data={1}", file, file.data);
-			var file:File = event.target as File;
-				//file.removeEventListener(Event.COMPLETE, fileLoaded);
+			
+			var stream:FileStream = new FileStream();
+				stream.open(file, FileMode.READ);
+				stream.position = 0;
+				
+			var xml:XML = XML(stream.readUTFBytes(stream.bytesAvailable));
+			
+			log("valid={0}", validateGlo(xml));
+			log("fileSelected() xml={0}", xml);
 		}
 	}
 }
