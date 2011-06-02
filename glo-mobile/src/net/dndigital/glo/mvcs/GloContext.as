@@ -3,7 +3,11 @@ package net.dndigital.glo.mvcs
 	import flash.display.DisplayObjectContainer;
 	
 	import net.dndigital.glo.mvcs.commands.Bootstrap;
+	import net.dndigital.glo.mvcs.commands.SelectProject;
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
+	import net.dndigital.glo.mvcs.events.GloMenuEvent;
+	import net.dndigital.glo.mvcs.services.IProjectService;
+	import net.dndigital.glo.mvcs.services.ProjectService;
 	import net.dndigital.glo.mvcs.views.*;
 	
 	import org.robotlegs.base.ContextEvent;
@@ -31,12 +35,16 @@ package net.dndigital.glo.mvcs
 		{
 			// Controllers and Commands
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, Bootstrap, ContextEvent, true);
+			commandMap.mapEvent(GloMenuEvent.SELECT_FILE, SelectProject, GloMenuEvent);
 			
 			// Views and Mediators
 			mediatorMap.mapView(GloApplication, GloApplicationMediator);
 			mediatorMap.mapView(GloPlayer, GloPlayerMediator);
 			mediatorMap.mapView(Controls, ControlsMediator);
 			mediatorMap.mapView(GloMenu, GloMenuMediator);
+			
+			// Services
+			injector.mapSingletonOf(IProjectService, ProjectService);
 			
 			super.startup();
 		}

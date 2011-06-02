@@ -80,6 +80,19 @@ package net.dndigital.glo.mvcs.views
 			dispatchEvent(new ApplicationEvent(ApplicationEvent.INITIALIZED));
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function resized(width:Number, height:Number):void
+		{
+			super.resized(width, height);
+			
+			if(current) {
+				current.width = width;
+				current.height = height;
+			}
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Private Methods

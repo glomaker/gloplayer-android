@@ -44,5 +44,19 @@ package net.dndigital.glo.mvcs.services
 		 * @productversion Flex 4.5
 		 */
 		function get project():Project;
+		
+		
+		/**
+		 * Initiates File Selection.
+		 * 
+		 * @see		flash.filesystem.File
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function select():IProjectService;
+		
 	}
 }

@@ -65,6 +65,24 @@ package net.dndigital.core
 		
 		//--------------------------------------------------------------------------
 		//
+		//  IComponent Properties
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @copy	net.dndigital.core.IComponent#owner
+		 * 
+		 * @see		net.dndigital.core.IContainer
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get owner():IContainer { return parent as IContainer; }
+		
+		//--------------------------------------------------------------------------
+		//
 		//  IComponent Methods
 		//
 		//--------------------------------------------------------------------------
@@ -267,6 +285,6 @@ package net.dndigital.core
 		/**
 		 * Override this method to create and add children to the display list.
 		 */
-		protected function createChildren():void {log("createChildren()");}
+		protected function createChildren():void {}
 	}
 }

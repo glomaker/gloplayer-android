@@ -19,6 +19,74 @@ package net.dndigital.core
 	public interface IComponent extends IEventDispatcher, IBitmapDrawable
 	{
 		/**
+		 * Indicates position along horizontal axis.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function get x():Number;
+		/**
+		 * @private
+		 */
+		function set x(value:Number):void;
+		
+		/**
+		 * Indicates position along vertical axis.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function get y():Number;
+		/**
+		 * @private
+		 */
+		function set y(value:Number):void;
+		
+		/**
+		 * Indicates width of an <code>IComponent</code>.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function get width():Number;
+		/**
+		 * @private
+		 */
+		function set width(value:Number):void;
+		
+		/**
+		 * Indicates height of an <code>IComponent</code>.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function get height():Number;
+		/**
+		 * @private
+		 */
+		function set height(value:Number):void;
+		
+		/**
+		 * Reference to an instance of <code>IContainer</code> that's owns current <code>IComponent</code>.
+		 * 
+		 * @see		net.dndigital.core.IContainer
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function get owner():IContainer;
+		
+		/**
 		 * Override this method to process any initialization that should be done prior to components first rendering.
 		 * 
 		 * @langversion 3.0

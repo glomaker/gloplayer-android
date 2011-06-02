@@ -23,6 +23,18 @@ package net.dndigital.core
 	{
 		//--------------------------------------------------------------------------
 		//
+		//  Log
+		//
+		//--------------------------------------------------------------------------
+		import eu.kiichigo.utils.log;
+		/**
+		 * @private
+		 */
+		protected static var log:Function = eu.kiichigo.utils.log(Application);
+		
+		
+		//--------------------------------------------------------------------------
+		//
 		//  Constructor
 		//
 		//--------------------------------------------------------------------------
@@ -47,7 +59,7 @@ package net.dndigital.core
 		 * @private
 		 */
 		protected function added(event:Event):void
-		{
+		{	
 			removeEventListener(Event.ADDED_TO_STAGE, added);
 			addEventListener(Event.REMOVED_FROM_STAGE, removed);
 			
@@ -59,6 +71,8 @@ package net.dndigital.core
 		 */
 		protected function removed(event:Event):void
 		{
+			log("removed()");
+			
 			addEventListener(Event.ADDED_TO_STAGE, added);
 			removeEventListener(Event.REMOVED_FROM_STAGE, removed);
 		}

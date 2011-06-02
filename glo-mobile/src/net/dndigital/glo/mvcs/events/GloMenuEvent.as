@@ -5,14 +5,29 @@ package net.dndigital.glo.mvcs.events
 
 	public class GloMenuEvent extends Event
 	{
-		public static const SELECT:String = "select";
+		//--------------------------------------------------------------------------
+		//
+		//  Cached Events
+		//
+		//--------------------------------------------------------------------------
+		
+		public static const SELECT_FILE_EVENT:GloMenuEvent = new GloMenuEvent(GloMenuEvent.SELECT_FILE);
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Event Types Constants
+		//
+		//--------------------------------------------------------------------------
+		
+		public static const SELECT_FILE:String = "selectFile";
 
-		public function GloMenuEvent(type:String, file:File)
+		public function GloMenuEvent(type:String, file:File = null)
 		{
 			super(type);
 
 			_file = file;
 		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties

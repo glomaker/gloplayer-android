@@ -138,20 +138,24 @@ package net.dndigital.core
 			// Quit if component already added.
 			if(_children.indexOf(component) != -1)
 				return null;
-			log("add({0})", component);
+			
 			if(index == -1)
 				$addChild(component as DisplayObject);
 			else
 				$addChildAt(component as DisplayObject, index);
 
+			// Update vector
 			if(_children.fixed)
 				_children.fixed = false;
 			_children.push(component);
 			_children.fixed = true;
 			
-			// Invalidate
-			invalidateChildren();
+			// Initialize component.
+			component.initialize();
 			
+			// Invalidate children
+			invalidateChildren();
+
 			return component;
 		}
 		
@@ -188,6 +192,7 @@ package net.dndigital.core
 				_children.fixed = true;
 			}
 			
+			// Invalidate children
 			invalidateChildren();
 			
 			return result;
@@ -295,7 +300,6 @@ package net.dndigital.core
 			
 			// After component are measured invalidate a display immediately.
 			invalidateDisplay();
-			validateDisplay();
 		}
 		
 		
