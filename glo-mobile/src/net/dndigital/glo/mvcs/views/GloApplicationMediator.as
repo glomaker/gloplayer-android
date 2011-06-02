@@ -4,7 +4,7 @@ package net.dndigital.glo.mvcs.views
 	
 	import org.robotlegs.mvcs.Mediator;
 	
-	public class ApplicationMediator extends Mediator
+	public class GloApplicationMediator extends Mediator
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -15,7 +15,7 @@ package net.dndigital.glo.mvcs.views
 		/**
 		 * @private
 		 */
-		protected static var log:Function = eu.kiichigo.utils.log(ApplicationMediator);
+		protected static var log:Function = eu.kiichigo.utils.log(GloApplicationMediator);
 		
 		//--------------------------------------------------------------------------
 		//
@@ -27,7 +27,7 @@ package net.dndigital.glo.mvcs.views
 		/**
 		 * @private
 		 */
-		public var view:Application;
+		public var view:GloApplication;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -46,9 +46,11 @@ package net.dndigital.glo.mvcs.views
 		 */
 		override public function onRegister():void
 		{
-			log("onRegister() view={0}", view);
+			//log("onRegister() view={0}", view);
 			
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.START_PLAYER, showPlayer);
+			
+			eventMap.mapListener(view, ApplicationEvent.INITIALIZED, initialized);
 		}
 		
 		/**
@@ -57,8 +59,17 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected function showPlayer(event:ApplicationEvent):void
 		{
-			log("startPlayer() event={0}", event);
+			//log("startPlayer() event={0}", event);
 			view.showPlayer();
+		}
+		
+		/**
+		 * @private
+		 * Dispatched when Application is Initialized
+		 */
+		protected function initialized(event:ApplicationEvent):void
+		{
+			view.showMenu();
 		}
 	}
 }

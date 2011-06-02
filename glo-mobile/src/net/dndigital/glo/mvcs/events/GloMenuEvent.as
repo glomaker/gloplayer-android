@@ -1,31 +1,34 @@
 package net.dndigital.glo.mvcs.events
 {
 	import flash.events.Event;
-	
-	import net.dndigital.glo.mvcs.views.GloApplication;
-	import net.dndigital.glo.mvcs.views.GloApplicationMediator;
+	import flash.filesystem.File;
 
-	public class ApplicationEvent extends Event
+	public class GloMenuEvent extends Event
 	{
-		// Cached pre-allocated events.
-		public static const START_PLAYER_EVENT:ApplicationEvent = new ApplicationEvent(START_PLAYER);
-		
-		// Event constants, per ActionScript Event Model best practices
-		public static const START_PLAYER:String = "startPlayer";
-		
-		public static const INITIALIZED:String = "initialized";
+		public static const SELECT:String = "select";
 
-		public function ApplicationEvent(type:String)
+		public function GloMenuEvent(type:String, file:File)
 		{
 			super(type);
-			
+
+			_file = file;
 		}
-		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
 		//
 		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected var _file:File;
+		/**
+		 * File selected via <code>GloMenu</code>.
+		 * 
+		 * @see		net.dndigital.glo.mvcs.view.GloMenu
+		 */
+		public function get file():File { return _file }
 		
 		//--------------------------------------------------------------------------
 		//
@@ -38,7 +41,7 @@ package net.dndigital.glo.mvcs.events
 		 */
 		public override function clone():Event
 		{
-			return new ApplicationEvent(type);
+			return new GloMenuEvent(type,file);
 		}
 		
 		/**
@@ -46,7 +49,7 @@ package net.dndigital.glo.mvcs.events
 		 */
 		public override function toString():String
 		{
-			return formatToString("ApplicationEvent");
+			return formatToString("GloMenuEvent","file");
 		}
 	}
 }

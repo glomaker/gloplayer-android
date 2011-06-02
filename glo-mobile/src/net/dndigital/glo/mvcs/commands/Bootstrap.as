@@ -3,7 +3,7 @@ package net.dndigital.glo.mvcs.commands
 	import eu.kiichigo.utils.log;
 	
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
-	import net.dndigital.glo.mvcs.views.Application;
+	import net.dndigital.glo.mvcs.views.GloApplication;
 	import net.dndigital.glo.mvcs.views.GloPlayer;
 	
 	import org.robotlegs.mvcs.Command;
@@ -43,9 +43,7 @@ package net.dndigital.glo.mvcs.commands
 		 */
 		override public function execute():void
 		{
-			contextView.addChild(new Application);
-
-			dispatch(ApplicationEvent.START_PLAYER_EVENT);
+			contextView.addChild(new GloApplication);
 		}
 	}
 }
