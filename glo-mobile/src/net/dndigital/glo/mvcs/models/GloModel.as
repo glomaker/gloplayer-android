@@ -1,7 +1,7 @@
 package net.dndigital.glo.mvcs.models
 {
 	import net.dndigital.glo.mvcs.models.vo.Project;
-	import net.dndigital.glo.mvcs.models.vo.Node;
+	import net.dndigital.glo.mvcs.models.vo.Page;
 	
 	import org.robotlegs.mvcs.Actor;
 
@@ -44,10 +44,10 @@ package net.dndigital.glo.mvcs.models
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get nodes():Vector.<Node>
+		public function get pages():Vector.<Page>
 		{
 			if(_project != null)
-				return _project.nodes;
+				return _project.pages;
 			return null;
 		}
 	}

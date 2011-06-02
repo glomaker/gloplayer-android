@@ -18,5 +18,38 @@ package net.dndigital.glo.components
 	 */
 	public interface IComponent extends IEventDispatcher, IBitmapDrawable
 	{
+		/**
+		 * Override this method to process any initialization that should be done prior to components first rendering.
+		 */
+		function initialize():void;
+		
+		/**
+		 * Method passed in <code>fun</code> argument will be invoked with <code>args</code> as arguments next time <code>IComponent</code> redraws.
+		 *  
+		 * @param fun	<code>Function</code> closure to be invoked.
+		 * @param args	<code>Function</code> closure's arguments.
+		 * 
+		 */
+		function delay(fun:Function, args:Array):void;
+		
+		/**
+		 * Invalidates display. Any logic in <code>IComponent.displayUpdated</code> will be processed next time component redraws.
+		 */
+		function invalidateDisplay():void;
+		
+		/**
+		 * Invalidates data. Any logic in <code>IComponent.dataUpdated</code> will be processed next time component redraws.
+		 */
+		function invalidateData():void;
+		
+		/**
+		 * Method invoked automatically next time component redraws if <code>IComponent.invalidateDisplay</code> was called. This method should not be called by programmer.
+		 */
+		function displayUpdated():void;
+		
+		/**
+		 * Method invoked automatically next time component redraws if <code>IComponent.invalidateData</code> was called. This method should not be called by programmer.
+		 */
+		function dataUpdated():void;
 	}
 }

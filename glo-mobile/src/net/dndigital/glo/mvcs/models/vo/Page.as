@@ -13,7 +13,7 @@ package net.dndigital.glo.mvcs.models.vo
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public class Node
+	public class Page
 	{
 		/**
 		 * @private

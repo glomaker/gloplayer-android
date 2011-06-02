@@ -15,11 +15,11 @@ package net.dndigital.glo.mvcs.models.vo
 	 */
 	public class Project
 	{
-		//=================================
+		//--------------------------------------------------------------------------
 		//
-		// Properties
+		//  Properties
 		//
-		//=================================
+		//--------------------------------------------------------------------------
 		
 		/**
 		 * @private
@@ -125,7 +125,7 @@ package net.dndigital.glo.mvcs.models.vo
 		/**
 		 * @private
 		 */
-		private var _nodes:Vector.<Node>;
+		private var _pages:Vector.<Page>;
 		
 		/**
 		 * Collection of nodes that belong to current Glo Project
@@ -135,15 +135,15 @@ package net.dndigital.glo.mvcs.models.vo
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get nodes():Vector.<Node> { return _nodes; }
+		public function get pages():Vector.<Page> { return _pages; }
 		/**
 		 * @private
 		 */
-		public function set nodes(value:Vector.<Node>):void
+		public function set pages(value:Vector.<Page>):void
 		{
-			if ( _nodes == value )
+			if ( _pages == value )
 				return;
-			_nodes = value;
+			_pages = value;
 		}
 	}
 }
