@@ -132,9 +132,21 @@ package net.dndigital.glo.mvcs.services
 		protected function fileSelected(event:Event):void
 		{
 			var file:File = event.target as File;
-			//	file.
-			
-		//	log("fileSelected() file={0}", file.data);
+				file.removeEventListener(Event.SELECT, fileSelected);
+				file.addEventListener(Event.COMPLETE, fileLoaded);
+				file.load();
+				log("fileSelected()");
+		}
+		
+		/**
+		 * @private
+		 * Handles file loading.
+		 */
+		protected function fileLoaded(event:Event):void
+		{
+			log("fileLoaded() file={0} data={1}", file, file.data);
+			var file:File = event.target as File;
+				//file.removeEventListener(Event.COMPLETE, fileLoaded);
 		}
 	}
 }
