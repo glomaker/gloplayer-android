@@ -49,6 +49,7 @@ package net.dndigital.core
 		 *
 		 * @param	component	<code>IComponent</code>, an instance of <code>IComponent</code> to be added to display list.
 		 * @param	properties	<code>Object</code> or <code>Dictionary</code>, properties to be applied to newly added instance of <code>IComponent</code>.
+		 * @param	index		<code>IComponent</code> index (depth) inside of an insance of <code>IContainer</code>.
 		 * 
 		 * @return				Newly added instance of <code>IComponent</code>.
 		 * 
@@ -59,7 +60,7 @@ package net.dndigital.core
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		function add( component:IComponent, properties:Object = null ):IComponent;
+		function add(component:IComponent, properties:Object = null, index:int = -1):IComponent;
 		
 		
 		/**
@@ -76,6 +77,16 @@ package net.dndigital.core
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		function remove( component:Object ):IComponent;
+		function remove(component:Object):IComponent;
+		
+		/**
+		 * Invalidates children. Any logic in <code>IContainer.measured</code> will be processed next time component redraws.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function invalidateChildren():void;
 	}
 }

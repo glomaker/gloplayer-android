@@ -1,5 +1,6 @@
 package net.dndigital.core
 {
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
@@ -17,7 +18,7 @@ package net.dndigital.core
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public class Component extends Sprite
+	public class Component extends Sprite implements IComponent
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -30,21 +31,6 @@ package net.dndigital.core
 		 */
 		protected static var log:Function = eu.kiichigo.utils.log(Component);
 		
-		//--------------------------------------------------------------------------
-		//
-		//  Constructor
-		//
-		//--------------------------------------------------------------------------
-		
-		/**
-		 * 
-		 */
-		public function Component()
-		{
-			super();
-			
-			addEventListener(Event.ADDED_TO_STAGE, added);
-		}
 		//--------------------------------------------------------------------------
 		//
 		//  Protected Fields
@@ -79,7 +65,7 @@ package net.dndigital.core
 		
 		//--------------------------------------------------------------------------
 		//
-		//  IComponent
+		//  IComponent Methods
 		//
 		//--------------------------------------------------------------------------
 		
@@ -88,6 +74,8 @@ package net.dndigital.core
 		 */
 		public function initialize():void
 		{
+			createChildren();
+			invalidate();
 		}
 		
 		/**
@@ -95,7 +83,10 @@ package net.dndigital.core
 		 */
 		public function delay(fun:Function, args:Array = null):void
 		{
+			// Storing funciton with arguments.
 			delayed.push(new Fun(fun, args));
+			
+			// Add handlers for next frame.
 			if(root) {
 				if(!delayInProgress) {
 					root.addEventListener(Event.RENDER, invokeDelayed);
@@ -103,6 +94,7 @@ package net.dndigital.core
 					delayInProgress = true;
 				}
 				
+				// Force the stage to update.
 				if(root.stage)
 					root.stage.invalidate();
 			}
@@ -133,24 +125,29 @@ package net.dndigital.core
 		}
 		
 		/**
-		 * Method called when components is resized via width or height property or custom progammer defined way. This method shouldn't be called manually, use invalidateDisplay to schedule instead.
-		 * 
-		 * @param	width	New components width.
-		 * @param	height	New components height.
+		 * @copy		net.dndigital.glo.components.IComponent#validate
 		 */
-		protected function resized(width:Number, height:Number):void
+		public function validate():void
 		{
-			log("resized({0}, {1})", width, height);
+			// Set to invalidate.
+			invalidate();
+			
+			// And immediately validate
+			validateData();
+			validateDisplay();
 		}
 		
 		/**
-		 * Method called when components properties updated. This method shouldn't be called manually, use invalidateData to schedule instead.
+		 * @copy		net.dndigital.glo.components.IComponent#invalidate
 		 */
-		public function commited():void
+		public function invalidate():void
 		{
+			// Set to invalidate.
+			invalidateData();
+			invalidateDisplay();
 		}
-		
-		
+
+				
 		//--------------------------------------------------------------------------
 		//
 		//  Overridden API
@@ -214,7 +211,7 @@ package net.dndigital.core
 		 */
 		protected function validateDisplay():void
 		{
-			resizing = true;
+			resizing = false;
 			resized(_width, _height);
 			
 		}
@@ -225,9 +222,22 @@ package net.dndigital.core
 		 */
 		protected function validateData():void
 		{
-			commiting = true;
+			commiting = false;
 			commited();
 		}
+		
+		/**
+		 * Method called when components is resized via width or height property or custom progammer defined way. Override this method to extend or change functionality.  This method shouldn't be called manually, use invalidateDisplay to schedule instead.
+		 * 
+		 * @param	width	New components width.
+		 * @param	height	New components height.
+		 */
+		protected function resized(width:Number, height:Number):void {}
+		
+		/**
+		 * Method called when components properties updated. Override this method to extend or change functionality.  This method shouldn't be called manually, use invalidateData to schedule instead.
+		 */
+		public function commited():void {}
 		
 		/**
 		 * @private
@@ -244,7 +254,7 @@ package net.dndigital.core
 			while(delayed.length)
 				invoke(delayed.pop());
 		}
-		
+	
 		/**
 		 * @private
 		 * Invokes Fun.
@@ -255,15 +265,8 @@ package net.dndigital.core
 		}
 		
 		/**
-		 * @private
-		 * Dispatched when component is added to stage.
+		 * Override this method to create and add children to the display list.
 		 */
-		protected function added(event:Event):void
-		{
-			invalidateData();
-			invalidateDisplay();
-			initialize();
-		}
+		protected function createChildren():void {log("createChildren()");}
 	}
 }
-
