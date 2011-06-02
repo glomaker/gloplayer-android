@@ -5,7 +5,7 @@ package
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	
-	import net.dndigital.glo.components.Component;
+	import net.dndigital.core.Component;
 	import net.dndigital.glo.mvcs.GloContext;
 	
 	import org.robotlegs.mvcs.Context;

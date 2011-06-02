@@ -1,4 +1,4 @@
-package net.dndigital.glo.components
+package net.dndigital.core
 {
 	/**
 	 * Represents instances of Containers. Containers used to hold multiple instances of <code>IComponents</code> and <code>IContainers</code> and align them properly.

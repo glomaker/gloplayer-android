@@ -1,4 +1,4 @@
-package net.dndigital.glo.components
+package net.dndigital.core
 {
 	import flash.display.IBitmapDrawable;
 	import flash.events.IEventDispatcher;

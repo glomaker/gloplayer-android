@@ -1,5 +1,7 @@
 package net.dndigital.glo.components
 {
+	import net.dndigital.core.IComponent;
+
 	/**
 	 * Marker interface, used to differentiate Components present in Glo project from other application controls..
 	 * 
