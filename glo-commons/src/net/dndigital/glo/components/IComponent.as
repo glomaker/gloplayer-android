@@ -41,15 +41,5 @@ package net.dndigital.glo.components
 		 * Invalidates data. Any logic in <code>IComponent.dataUpdated</code> will be processed next time component redraws.
 		 */
 		function invalidateData():void;
-		
-		/**
-		 * Method invoked automatically next time component redraws if <code>IComponent.invalidateDisplay</code> was called. This method should not be called by programmer.
-		 */
-		function displayUpdated():void;
-		
-		/**
-		 * Method invoked automatically next time component redraws if <code>IComponent.invalidateData</code> was called. This method should not be called by programmer.
-		 */
-		function dataUpdated():void;
 	}
 }

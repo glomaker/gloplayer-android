@@ -55,13 +55,13 @@ package net.dndigital.glo.components
 		 * @private
 		 * Flag determines whether display is being invalidated;
 		 */
-		protected var idisplay:Boolean = false;
+		protected var resizing:Boolean = false;
 		
 		/**
 		 * @private
 		 * Flag determines whether data is being invalidated;
 		 */
-		protected var idata:Boolean = false;
+		protected var commiting:Boolean = false;
 		
 		
 		/**
@@ -113,11 +113,11 @@ package net.dndigital.glo.components
 		 */
 		public function invalidateDisplay():void
 		{
-			if(idisplay)
+			if(resizing)
 				return;
 			
 			delay(validateDisplay);
-			idisplay = true;
+			resizing = true;
 		}
 		
 		/**
@@ -125,25 +125,28 @@ package net.dndigital.glo.components
 		 */
 		public function invalidateData():void
 		{
-			if(idata)
+			if(commiting)
 				return;
 			
 			delay(validateData);
-			idata = true;
+			commiting = true;
 		}
 		
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#displayUpdated
+		 * Method called when components is resized via width or height property or custom progammer defined way. This method shouldn't be called manually, use invalidateDisplay to schedule instead.
+		 * 
+		 * @param	width	New components width.
+		 * @param	height	New components height.
 		 */
-		public function displayUpdated(width:Number, height:Number):void
+		protected function resized(width:Number, height:Number):void
 		{
-			log("displayUpdated({0}, {1})", width, height);
+			log("resized({0}, {1})", width, height);
 		}
 		
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#dataUpdated
+		 * Method called when components properties updated. This method shouldn't be called manually, use invalidateData to schedule instead.
 		 */
-		public function dataUpdated():void
+		public function commited():void
 		{
 		}
 		
@@ -211,8 +214,8 @@ package net.dndigital.glo.components
 		 */
 		protected function validateDisplay():void
 		{
-			idisplay = true;
-			displayUpdated(_width, _height);
+			resizing = true;
+			resized(_width, _height);
 			
 		}
 		
@@ -222,8 +225,8 @@ package net.dndigital.glo.components
 		 */
 		protected function validateData():void
 		{
-			idata = true;
-			dataUpdated();
+			commiting = true;
+			commited();
 		}
 		
 		/**
