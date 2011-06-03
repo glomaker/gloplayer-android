@@ -1,5 +1,7 @@
 package net.dndigital.glo.components
 {
+	import net.dndigital.core.IUIComponent;
+
 	public final class VideoPlayer extends Placeholder
 	{
 		//--------------------------------------------------------------------------
@@ -11,11 +13,11 @@ package net.dndigital.glo.components
 		/**
 		 * @inheritDoc
 		 */
-		override public function initialize():void
+		override public function initialize():IUIComponent
 		{
-			super.initialize();
-			
 			color = 0x0000FF;
+			
+			return super.initialize();
 		}
 	}
 }

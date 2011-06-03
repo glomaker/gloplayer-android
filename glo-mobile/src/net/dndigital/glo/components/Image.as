@@ -1,5 +1,7 @@
 package net.dndigital.glo.components
 {
+	import net.dndigital.core.IUIComponent;
+
 	public final class Image extends Placeholder
 	{
 		//--------------------------------------------------------------------------
@@ -11,11 +13,11 @@ package net.dndigital.glo.components
 		/**
 		 * @inheritDoc
 		 */
-		override public function initialize():void
-		{
-			super.initialize();
-			
+		override public function initialize():IUIComponent
+		{	
 			color = 0x00FF00;
+			
+			return super.initialize();
 		}
 	}
 }

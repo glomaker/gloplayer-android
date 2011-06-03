@@ -25,9 +25,12 @@
         <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Enter text&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
         <borderStyle>true</borderStyle>
       </component>
-      <component id="textarea" x="131" y="161" width="564" height="360">
-        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Enter text&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
-        <borderStyle>true</borderStyle>
+      <component id="imageloader" x="43" y="160" width="80" height="79">
+        <source isPath="true">"FilePathProperty::NoUrlSet"</source>
+        <maintainRatio>false</maintainRatio>
+      </component>
+      <component id="videoplayer" x="29" y="262" width="103" height="67">
+        <source isPath="true">"FilePathProperty::NoUrlSet"</source>
       </component>
     </page>
     <page>
@@ -158,5 +161,5 @@
       </component>
     </page>
   </nodes>
-  <filehash>326c7712db0ddf3e2dd773b33e08056b</filehash>
+  <filehash>505417384bc1f9ba860b27928bfa5b4f</filehash>
 </glo>

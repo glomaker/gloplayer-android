@@ -8,7 +8,9 @@ package net.dndigital.glo.mvcs.views
 	
 	import net.dndigital.core.IUIComponent;
 	import net.dndigital.core.UIComponent;
+	import net.dndigital.glo.components.Image;
 	import net.dndigital.glo.components.TextArea;
+	import net.dndigital.glo.components.VideoPlayer;
 	import net.dndigital.glo.mvcs.models.vo.Component;
 	import net.dndigital.glo.mvcs.models.vo.Page;
 	import net.dndigital.glo.mvcs.models.vo.Project;
@@ -226,7 +228,12 @@ package net.dndigital.glo.mvcs.views
 					case "textarea":
 						sprite.addChild(component(new TextArea, page.components[i]));
 						break;
-						
+					case "imageloader":
+						sprite.addChild(component(new Image, page.components[i]));
+						break;
+					case "videoplayer":
+						sprite.addChild(component(new VideoPlayer, page.components[i]));
+						break;
 					default:
 						break;
 				}
