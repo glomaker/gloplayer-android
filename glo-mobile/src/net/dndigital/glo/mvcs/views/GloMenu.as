@@ -2,7 +2,7 @@ package net.dndigital.glo.mvcs.views
 {
 	import flash.events.MouseEvent;
 	
-	import net.dndigital.core.Component;
+	import net.dndigital.core.UIComponent;
 	import net.dndigital.core.Container;
 	import net.dndigital.glo.mvcs.events.GloMenuEvent;
 	import net.dndigital.glo.test.StartButton;

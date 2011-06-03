@@ -1,8 +1,8 @@
 package net.dndigital.glo.test
 {
-	import net.dndigital.core.Component;
+	import net.dndigital.core.UIComponent;
 	
-	public final class StartButton extends Component
+	public final class StartButton extends UIComponent
 	{
 		//--------------------------------------------------------------------------
 		//

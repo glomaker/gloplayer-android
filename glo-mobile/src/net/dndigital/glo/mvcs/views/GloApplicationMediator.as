@@ -52,6 +52,8 @@ package net.dndigital.glo.mvcs.views
 			//log("onRegister() view={0}", view);
 			
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, showPlayer);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_MENU, showMenu);
+			
 			eventMap.mapListener(view, ApplicationEvent.INITIALIZED, showMenu);
 			
 			view.stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, orientationChange);

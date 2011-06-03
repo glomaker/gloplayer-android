@@ -20,7 +20,7 @@ package net.dndigital.core
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public class Component extends Sprite implements IComponent
+	public class UIComponent extends Sprite implements IUIComponent
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -31,7 +31,7 @@ package net.dndigital.core
 		/**
 		 * @private
 		 */
-		protected static var log:Function = eu.kiichigo.utils.log(Component);
+		protected static var log:Function = eu.kiichigo.utils.log(UIComponent);
 		
 		//--------------------------------------------------------------------------
 		//
@@ -98,15 +98,20 @@ package net.dndigital.core
 		/**
 		 * @copy		net.dndigital.glo.components.IComponent#initialize
 		 */
-		public function initialize():void
+		public function initialize():IUIComponent
 		{
 			if(initialized)
-				return;
+				return this;
 			
 			createChildren();
 			invalidate();
 			
 			initialized = true;
+			
+			if(!(parent is IContainer) && !(this is Application))
+				addEventListener(Event.ADDED_TO_STAGE, addedToStage);
+			
+			return this;
 		}
 		
 		/**
@@ -299,5 +304,18 @@ package net.dndigital.core
 		 * Override this method to create and add children to the display list.
 		 */
 		protected function createChildren():void {}
+		
+		/**
+		 * @private
+		 * Handles added to stage. This handler should be invoked only if parent is not IContainer.
+		 */
+		protected function addedToStage(event:Event):void
+		{
+			removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
+			if(owner== null && !(this is Application)) {
+				log("{0} is invalidating", this);
+				validate();
+			}
+		}
 	}
 }

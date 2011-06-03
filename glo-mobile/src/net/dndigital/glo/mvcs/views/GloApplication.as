@@ -3,7 +3,7 @@ package net.dndigital.glo.mvcs.views
 	import flash.display.Sprite;
 	
 	import net.dndigital.core.Application;
-	import net.dndigital.core.IComponent;
+	import net.dndigital.core.IUIComponent;
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
 	
 	/**
@@ -73,11 +73,13 @@ package net.dndigital.glo.mvcs.views
 		/**
 		 * @inheritDoc
 		 */
-		override public function initialize():void
+		override public function initialize():IUIComponent
 		{
 			super.initialize();
 			
 			dispatchEvent(new ApplicationEvent(ApplicationEvent.INITIALIZED));
+			
+			return this;
 		}
 		
 		/**
@@ -113,7 +115,7 @@ package net.dndigital.glo.mvcs.views
 			if(current != null)
 				remove(current);
 			// add new view, and update current reference.
-			current = add(view as IComponent) as IGloView;
+			current = add(view as IUIComponent) as IGloView;
 			
 			return current;
 		}

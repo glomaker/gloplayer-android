@@ -11,8 +11,8 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	import net.dndigital.core.Component;
-	import net.dndigital.core.IComponent;
+	import net.dndigital.core.UIComponent;
+	import net.dndigital.core.IUIComponent;
 	import net.dndigital.glo.mvcs.GloContext;
 	import net.dndigital.glo.test.StartButton;
 	

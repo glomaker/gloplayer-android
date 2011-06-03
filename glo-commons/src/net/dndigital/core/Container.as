@@ -19,7 +19,7 @@ package net.dndigital.core
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public class Container extends Component implements IContainer
+	public class Container extends UIComponent implements IContainer
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -35,7 +35,7 @@ package net.dndigital.core
 		
 		//--------------------------------------------------------------------------
 		//
-		//  IContainer Properties
+		//  Fields
 		//
 		//--------------------------------------------------------------------------
 		
@@ -81,7 +81,7 @@ package net.dndigital.core
 		/**
 		 * @private
 		 */
-		protected const _children:Vector.<IComponent> = new Vector.<IComponent>;
+		protected const _children:Vector.<IUIComponent> = new Vector.<IUIComponent>;
 		/**
 		 * @copy 	net.dndigital.core.IContainer#children
 		 * 
@@ -93,7 +93,7 @@ package net.dndigital.core
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get children():Vector.<IComponent> 
+		public function get children():Vector.<IUIComponent> 
 		{
 			return _children;
 		}
@@ -133,7 +133,7 @@ package net.dndigital.core
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function add(component:IComponent, properties:Object = null, index:int = -1):IComponent
+		public function add(component:IUIComponent, properties:Object = null, index:int = -1):IUIComponent
 		{
 			// Quit if component already added.
 			if(_children.indexOf(component) != -1)
@@ -169,18 +169,18 @@ package net.dndigital.core
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function remove(component:Object):IComponent
+		public function remove(component:Object):IUIComponent
 		{
 			// Quit if component is not present.
 			if(_children.indexOf(component) < 0)
 				return null;
 			
-			var result:IComponent;
+			var result:IUIComponent;
 			
-			if(component is IComponent)		// if IComponent is provided use removeChild
-				result = $removeChild(component as DisplayObject) as IComponent;
+			if(component is IUIComponent)		// if IComponent is provided use removeChild
+				result = $removeChild(component as DisplayObject) as IUIComponent;
 			else							// otherwise use removeChildAt and assume it's a number.
-				result = $removeChildAt(Number(component)) as IComponent;
+				result = $removeChildAt(Number(component)) as IUIComponent;
 			
 			// Update children vector.
 			var childIndex:int = _children.indexOf(result);
@@ -298,7 +298,6 @@ package net.dndigital.core
 		 * Delegating removeChildAt
 		 */
 		protected function $removeChildAt(index:int):DisplayObject { return super.removeChildAt(index) };
-		
 		
 		/**
 		 * @private

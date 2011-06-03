@@ -16,7 +16,7 @@ package net.dndigital.core
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public interface IComponent extends IEventDispatcher, IBitmapDrawable
+	public interface IUIComponent extends IEventDispatcher, IBitmapDrawable
 	{
 		/**
 		 * Indicates position along horizontal axis.
@@ -94,7 +94,7 @@ package net.dndigital.core
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		function initialize():void;
+		function initialize():IUIComponent;
 		
 		/**
 		 * Method passed in <code>fun</code> argument will be invoked with <code>args</code> as arguments next time <code>IComponent</code> redraws.

@@ -1,6 +1,6 @@
 package net.dndigital.glo.components
 {
-	import net.dndigital.core.IComponent;
+	import net.dndigital.core.IUIComponent;
 
 	/**
 	 * Marker interface, used to differentiate Components present in Glo project from other application controls..
@@ -15,7 +15,7 @@ package net.dndigital.glo.components
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public interface IGloComponent extends IComponent
+	public interface IGloComponent extends IUIComponent
 	{
 		
 	}
