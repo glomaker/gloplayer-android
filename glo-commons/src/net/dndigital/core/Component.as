@@ -3,6 +3,7 @@ package net.dndigital.core
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import net.dndigital.utils.Fun;
 	
 	/**
 	 * Represents basic visual Component instances. Instances of Component classes can be added to <code>IContainer</code>.

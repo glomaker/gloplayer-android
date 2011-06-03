@@ -1,4 +1,4 @@
-package net.dndigital.core
+package net.dndigital.utils
 {
 	/**
 	 * Class used by <code>IComponent.delay</code> to store data about methods or function to be invoked on next display update.
