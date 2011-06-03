@@ -1,5 +1,9 @@
 package net.dndigital.glo.mvcs.views
 {
+	import net.dndigital.glo.mvcs.events.ProjectEvent;
+	import net.dndigital.glo.mvcs.models.vo.Project;
+	import net.dndigital.glo.mvcs.services.IProjectService;
+	
 	import org.robotlegs.core.IMediator;
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -28,7 +32,12 @@ package net.dndigital.glo.mvcs.views
 		 */
 		public var view:GloPlayer;
 		
-		
+		[Inject]
+		/**
+		 * @private
+		 */
+		public var service:IProjectService;
+				
 		//--------------------------------------------------------------------------
 		//
 		//  Overridden API
@@ -40,6 +49,22 @@ package net.dndigital.glo.mvcs.views
 		 */
 		override public function onRegister():void
 		{
-		}	
+			view.project = service.project;
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Private Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 * Applies project to current instance of player.
+		 */
+		protected function applyProject(event:ProjectEvent):void
+		{
+			view.project = event.project
+		}
 	}
 }

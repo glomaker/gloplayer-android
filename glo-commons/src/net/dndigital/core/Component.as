@@ -3,6 +3,7 @@ package net.dndigital.core
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	
 	import net.dndigital.utils.Fun;
 	
 	/**
@@ -64,6 +65,12 @@ package net.dndigital.core
 		 */
 		protected var delayInProgress:Boolean = false;
 		
+		/**
+		 * @private
+		 * Indicates whether an instance of <code>Component</code> was initialized or not.
+		 */
+		protected var initialized:Boolean = false;
+		
 		//--------------------------------------------------------------------------
 		//
 		//  IComponent Properties
@@ -93,8 +100,13 @@ package net.dndigital.core
 		 */
 		public function initialize():void
 		{
+			if(initialized)
+				return;
+			
 			createChildren();
 			invalidate();
+			
+			initialized = true;
 		}
 		
 		/**
@@ -256,7 +268,7 @@ package net.dndigital.core
 		/**
 		 * Method called when components properties updated. Override this method to extend or change functionality.  This method shouldn't be called manually, use invalidateData to schedule instead.
 		 */
-		public function commited():void {}
+		protected function commited():void {}
 		
 		/**
 		 * @private

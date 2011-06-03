@@ -8,10 +8,11 @@ package net.dndigital.glo.mvcs.events
 	public class ApplicationEvent extends Event
 	{
 		// Cached pre-allocated events.
-		public static const START_PLAYER_EVENT:ApplicationEvent = new ApplicationEvent(START_PLAYER);
-		
+		public static const SHOW_PLAYER_EVENT:ApplicationEvent = new ApplicationEvent(SHOW_PLAYER);
+		public static const SHOW_MENU_EVENT:ApplicationEvent = new ApplicationEvent(SHOW_MENU);
 		// Event constants, per ActionScript Event Model best practices
-		public static const START_PLAYER:String = "startPlayer";
+		public static const SHOW_PLAYER:String = "showPlayer";
+		public static const SHOW_MENU:String = "showMenu";
 		
 		public static const INITIALIZED:String = "initialized";
 

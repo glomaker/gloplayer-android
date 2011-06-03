@@ -62,6 +62,22 @@ package net.dndigital.glo.mvcs.services
 		//--------------------------------------------------------------------------
 		
 		/**
+		 * @private
+		 */
+		protected var _project:Project;
+		/**
+		 * @copy	net.dndigital.glo.mvcs.services.IProjectService#project
+		 * 
+		 * @see		net.dndigital.glo.mvcs.models.vo.Project
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get project():Project { return _project; }
+
+		/**
 		 * Initiates File Selection.
 		 * 
 		 * @see		flash.filesystem.File
@@ -114,9 +130,8 @@ package net.dndigital.glo.mvcs.services
 		 */
 		protected function parse(xml:XML):void
 		{
-			eventDispatcher.dispatchEvent(new ProjectEvent(ProjectEvent.PROJECT,
-														   net.dndigital.glo.mvcs.services.parse(xml)));
-			
+			_project = net.dndigital.glo.mvcs.services.parse(xml);
+			eventDispatcher.dispatchEvent(new ProjectEvent(ProjectEvent.PROJECT, _project));
 			System.disposeXML(xml);
 		}
 	}

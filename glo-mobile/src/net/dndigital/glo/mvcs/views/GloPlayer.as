@@ -62,6 +62,7 @@ package net.dndigital.glo.mvcs.views
 			if (_project == value)
 				return;
 			_project = value;
+			invalidateData();
 			log("project({0})", value);
 		}
 		
@@ -70,6 +71,7 @@ package net.dndigital.glo.mvcs.views
 		//  Overridden API
 		//
 		//--------------------------------------------------------------------------
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -81,6 +83,16 @@ package net.dndigital.glo.mvcs.views
 			graphics.beginFill(0xFF6600, 0.5);
 			graphics.drawRect(0, 0, width, height);
 			graphics.endFill();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function commited():void
+		{
+			super.commited();
+			
+			
 		}
 	}
 }

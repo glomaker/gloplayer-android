@@ -1,6 +1,7 @@
 package net.dndigital.glo.mvcs.views
 {
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
+	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -48,10 +49,15 @@ package net.dndigital.glo.mvcs.views
 		{
 			//log("onRegister() view={0}", view);
 			
-			eventMap.mapListener(eventDispatcher, ApplicationEvent.START_PLAYER, showPlayer);
-			
-			eventMap.mapListener(view, ApplicationEvent.INITIALIZED, initialized);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, showPlayer);
+			eventMap.mapListener(view, ApplicationEvent.INITIALIZED, showMenu);
 		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Private Methods
+		//
+		//--------------------------------------------------------------------------
 		
 		/**
 		 * @private
@@ -65,10 +71,11 @@ package net.dndigital.glo.mvcs.views
 		
 		/**
 		 * @private
-		 * Dispatched when Application is Initialized
+		 * Invokes showPlayer on view.
 		 */
-		protected function initialized(event:ApplicationEvent):void
+		protected function showMenu(event:ApplicationEvent):void
 		{
+			//log("startPlayer() event={0}", event);
 			view.showMenu();
 		}
 	}
