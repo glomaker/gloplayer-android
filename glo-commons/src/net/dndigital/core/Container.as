@@ -207,6 +207,17 @@ package net.dndigital.core
 		/**
 		 * @inheritDoc
 		 */
+		override public function invalidateDisplay():void
+		{
+			if (_children && _children.length)
+				for (var i:int = 0; i < _children.length; i ++ )
+					_children[i].invalidateDisplay();
+			
+			super.invalidateDisplay();
+		}
+		/**
+		 * @inheritDoc
+		 */
 		override public function validate():void
 		{
 			super.validate();
@@ -301,7 +312,6 @@ package net.dndigital.core
 			// After component are measured invalidate a display immediately.
 			invalidateDisplay();
 		}
-		
 		
 		/**
 		 * Method called when children added to component and it's resizing. Override this method to extend or change functionality. This method shouldn't be called manually, use invalidateDisplay to schedule instead.

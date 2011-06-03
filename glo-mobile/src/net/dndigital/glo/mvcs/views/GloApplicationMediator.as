@@ -1,5 +1,7 @@
 package net.dndigital.glo.mvcs.views
 {
+	import flash.events.StageOrientationEvent;
+	
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	
@@ -51,6 +53,8 @@ package net.dndigital.glo.mvcs.views
 			
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, showPlayer);
 			eventMap.mapListener(view, ApplicationEvent.INITIALIZED, showMenu);
+			
+			view.stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, orientationChange);
 		}
 		
 		//--------------------------------------------------------------------------
@@ -77,6 +81,17 @@ package net.dndigital.glo.mvcs.views
 		{
 			//log("startPlayer() event={0}", event);
 			view.showMenu();
+		}
+		
+		/**
+		 * @private
+		 * Handles orientation changing.
+		 */
+		protected function orientationChange(event:StageOrientationEvent):void
+		{
+			view.width = contextView.stage.fullScreenWidth;
+			view.height = contextView.stage.fullScreenHeight;
+			log("orientationChange({0})", event);
 		}
 	}
 }

@@ -45,9 +45,10 @@ package net.dndigital.glo.mvcs.commands
 		override public function execute():void
 		{
 			var application:Application = new GloApplication;
-				application.width = contextView.stage.stageWidth;
-				application.height = contextView.stage.stageHeight;
+				application.width = contextView.stage.fullScreenWidth;
+				application.height = contextView.stage.fullScreenHeight;
 				
+			log("height={0},{1},{2}", contextView.stage);
 			contextView.addChild(application);
 		}
 	}

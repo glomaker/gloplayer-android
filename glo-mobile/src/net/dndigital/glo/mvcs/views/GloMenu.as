@@ -45,7 +45,7 @@ package net.dndigital.glo.mvcs.views
 			super.resized(width, height);
 			
 			startButton.x = (width - startButton.width) / 2;
-			startButton.y = (height - startButton.height) / 2;
+			//startButton.y = (height - startButton.height) / 2 + 10;
 		}
 		
 		/**

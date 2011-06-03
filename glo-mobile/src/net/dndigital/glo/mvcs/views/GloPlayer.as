@@ -34,6 +34,22 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected static var log:Function = eu.kiichigo.utils.log(GloPlayer);
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Private Fields
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 * Reference to the project instance that was seccessfuly build.
+		 */
+		protected var builded:Project;
+		
+		/**
+		 * @private
+		 * Collection of Pages Components.
+		 */
 		
 		//--------------------------------------------------------------------------
 		//
@@ -78,11 +94,6 @@ package net.dndigital.glo.mvcs.views
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);
-			
-			graphics.clear();
-			graphics.beginFill(0xFF6600, 0.5);
-			graphics.drawRect(0, 0, width, height);
-			graphics.endFill();
 		}
 		
 		/**
@@ -92,6 +103,21 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.commited();
 			
+			if(project != null && project != builded)
+				build();
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Private Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected function build():void
+		{
 			
 		}
 	}

@@ -10,45 +10,25 @@ package net.dndigital.glo.mvcs.models
 		/**
 		 * @private
 		 */
-		private var _project:Project;
-		
+		protected var _orientation:int;
 		/**
-		 * Currently loaded and parsed Project.
-		 * 
-		 * @see		net.dndigital.glo.mvcs.models.vo.Project
+		 * orientation.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get project():Project { return _project; }
+		public function get orientation():int { return _orientation; }
 		/**
 		 * @private
 		 */
-		public function set project(value:Project):void
+		public function set orientation(value:int):void
 		{
-			if ( _project == value )
+			if (_orientation == value)
 				return;
-			_project = value;
+			_orientation = value;
 		}
 		
-		/**
-		 * Indicates collection of nodes that belonged to current <code>GloModel.project</code>.
-		 * 
-		 * @see		net.dndigital.glo.mvcs.models.vo.Node
-		 * @see		net.dndigital.glo.mvcs.models.vo.Project
-		 *
-		 * @langversion 3.0
-		 * @playerversion Flash 10
-		 * @playerversion AIR 2.5
-		 * @productversion Flex 4.5
-		 */
-		public function get pages():Vector.<Page>
-		{
-			if(_project != null)
-				return _project.pages;
-			return null;
-		}
 	}
 }
