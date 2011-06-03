@@ -4,10 +4,7 @@ package net.dndigital.glo.mvcs.commands
 	
 	public final class ShowView extends Command
 	{
-		[Inject]
-		/**
-		 * @private
-		 */
+		
 		
 	}
 }

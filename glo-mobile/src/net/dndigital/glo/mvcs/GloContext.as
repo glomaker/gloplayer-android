@@ -4,8 +4,10 @@ package net.dndigital.glo.mvcs
 	
 	import net.dndigital.glo.mvcs.commands.Bootstrap;
 	import net.dndigital.glo.mvcs.commands.SelectProject;
+	import net.dndigital.glo.mvcs.commands.ShowPlayer;
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
 	import net.dndigital.glo.mvcs.events.GloMenuEvent;
+	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.services.IProjectService;
 	import net.dndigital.glo.mvcs.services.ProjectService;
 	import net.dndigital.glo.mvcs.views.*;
@@ -36,6 +38,7 @@ package net.dndigital.glo.mvcs
 			// Controllers and Commands
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, Bootstrap, ContextEvent, true);
 			commandMap.mapEvent(GloMenuEvent.SELECT_FILE, SelectProject, GloMenuEvent);
+			commandMap.mapEvent(ProjectEvent.PROJECT, ShowPlayer, ProjectEvent);
 			
 			// Views and Mediators
 			mediatorMap.mapView(GloApplication, GloApplicationMediator);

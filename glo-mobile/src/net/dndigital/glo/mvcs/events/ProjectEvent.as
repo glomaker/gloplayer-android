@@ -1,39 +1,32 @@
 package net.dndigital.glo.mvcs.events
 {
 	import flash.events.Event;
-	import flash.filesystem.File;
+	
+	import net.dndigital.glo.mvcs.models.vo.Project;
 
-	public class GloMenuEvent extends Event
+	public class ProjectEvent extends Event
 	{
-		//--------------------------------------------------------------------------
-		//
-		//  Cached Events
-		//
-		//--------------------------------------------------------------------------
-		
-		public static const SELECT_FILE_EVENT:GloMenuEvent = new GloMenuEvent(GloMenuEvent.SELECT_FILE);
-		
 		//--------------------------------------------------------------------------
 		//
 		//  Event Types Constants
 		//
 		//--------------------------------------------------------------------------
 		
-		public static const SELECT_FILE:String = "selectFile";
-		
+		public static const PROJECT:String = "project";
+
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
 		//
 		//--------------------------------------------------------------------------
-
-		public function GloMenuEvent(type:String, file:File = null)
+		
+		public function ProjectEvent(type:String, project:Project)
 		{
 			super(type);
 
-			_file = file;
+			_project = project;
 		}
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -43,14 +36,14 @@ package net.dndigital.glo.mvcs.events
 		/**
 		 * @private
 		 */
-		protected var _file:File;
+		protected var _project:Project;
 		/**
-		 * File selected via <code>GloMenu</code>.
+		 * Reference to an instance of <code>Project</code>.
 		 * 
-		 * @see		net.dndigital.glo.mvcs.view.GloMenu
+		 * @see		net.dndigital.glo.mvcs.models.vo.Project
 		 */
-		public function get file():File { return _file }
-		
+		public function get project():Project { return _project }
+
 		//--------------------------------------------------------------------------
 		//
 		//  Overridden API
@@ -62,7 +55,7 @@ package net.dndigital.glo.mvcs.events
 		 */
 		public override function clone():Event
 		{
-			return new GloMenuEvent(type, file);
+			return new ProjectEvent(type, project);
 		}
 		
 		/**
@@ -70,7 +63,7 @@ package net.dndigital.glo.mvcs.events
 		 */
 		public override function toString():String
 		{
-			return formatToString("GloMenuEvent", "file");
+			return formatToString("ProjectEvent", "project");
 		}
 	}
 }

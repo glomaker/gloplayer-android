@@ -2,6 +2,8 @@ package
 {
 	import com.greensock.TweenLite;
 	
+	import eu.kiichigo.utils.*;
+	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -23,7 +25,6 @@ package
 		//  Log
 		//
 		//--------------------------------------------------------------------------
-		import eu.kiichigo.utils.log;
 		/**
 		 * @private
 		 */

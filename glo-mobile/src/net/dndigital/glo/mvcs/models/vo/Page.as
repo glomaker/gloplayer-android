@@ -1,5 +1,7 @@
 package net.dndigital.glo.mvcs.models.vo
 {
+	import eu.kiichigo.utils.formatToString;
+
 	/**
 	 * ValueObject. Represents data about single Node.
 	 * 
@@ -18,27 +20,39 @@ package net.dndigital.glo.mvcs.models.vo
 		/**
 		 * @private
 		 */
-		private var _index:uint;
-		
+		protected var _components:Vector.<Component>;
 		/**
-		 * index.
+		 * Collection of <code>Component</code> instances belonging to this page.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get index():uint { return _index; }
+		public function get components():Vector.<Component> { return _components; }
 		/**
 		 * @private
 		 */
-		public function set index(value:uint):void
+		public function set components(value:Vector.<Component>):void
 		{
-			if (_index == value)
+			if (_components == value)
 				return;
-			_index = value;
+			_components = value;
 		}
-
 		
+		//--------------------------------------------------------------------------
+		//
+		//  toString
+		//
+		//--------------------------------------------------------------------------
+		/**
+		 * Returns a string containing some of instance's properties.
+		 * 
+		 * @return	Class name and some of instance properties and values.
+		 */
+		public function toString():String
+		{
+			return eu.kiichigo.utils.formatToString(this, "components");
+		}
 	}
 }
