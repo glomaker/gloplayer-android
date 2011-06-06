@@ -2,8 +2,8 @@ package net.dndigital.glo.mvcs.views
 {
 	import flash.display.Sprite;
 	
-	import net.dndigital.core.Application;
-	import net.dndigital.core.IUIComponent;
+	import net.dndigital.components.Application;
+	import net.dndigital.components.IUIComponent;
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
 	
 	/**

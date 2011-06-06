@@ -1,6 +1,6 @@
 package net.dndigital.glo.mvcs.views.controls
 {
-	import net.dndigital.core.IUIComponent;
+	import net.dndigital.components.IUIComponent;
 
 	public final class TextArea extends Placeholder
 	{

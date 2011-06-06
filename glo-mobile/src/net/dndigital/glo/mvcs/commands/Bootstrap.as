@@ -2,7 +2,7 @@ package net.dndigital.glo.mvcs.commands
 {
 	import eu.kiichigo.utils.log;
 	
-	import net.dndigital.core.Application;
+	import net.dndigital.components.Application;
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
 	import net.dndigital.glo.mvcs.views.GloApplication;
 	import net.dndigital.glo.mvcs.views.GloPlayer;

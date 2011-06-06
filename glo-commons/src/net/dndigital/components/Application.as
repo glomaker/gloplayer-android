@@ -1,4 +1,4 @@
-package net.dndigital.core
+package net.dndigital.components
 {
 	import flash.events.Event;
 

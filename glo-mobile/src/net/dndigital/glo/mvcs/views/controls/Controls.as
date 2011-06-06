@@ -2,7 +2,7 @@ package net.dndigital.glo.mvcs.views.controls
 {
 	import eu.kiichigo.utils.log;
 	
-	import net.dndigital.core.UIComponent;
+	import net.dndigital.components.UIComponent;
 	
 	public class Controls extends UIComponent
 	{
@@ -56,6 +56,8 @@ package net.dndigital.glo.mvcs.views.controls
 		override protected function createChildren():void
 		{
 			super.createChildren();
+			
+			
 		}
 		
 		/**

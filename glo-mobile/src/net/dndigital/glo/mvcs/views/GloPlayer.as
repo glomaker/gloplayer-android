@@ -6,9 +6,9 @@ package net.dndigital.glo.mvcs.views
 	import flash.display.Sprite;
 	import flash.net.dns.AAAARecord;
 	
-	import net.dndigital.core.Container;
-	import net.dndigital.core.IUIComponent;
-	import net.dndigital.core.UIComponent;
+	import net.dndigital.components.Container;
+	import net.dndigital.components.IUIComponent;
+	import net.dndigital.components.UIComponent;
 	import net.dndigital.glo.mvcs.models.vo.Component;
 	import net.dndigital.glo.mvcs.models.vo.Page;
 	import net.dndigital.glo.mvcs.models.vo.Project;

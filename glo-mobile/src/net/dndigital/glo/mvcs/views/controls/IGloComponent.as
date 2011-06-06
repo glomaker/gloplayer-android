@@ -2,7 +2,7 @@ package net.dndigital.glo.mvcs.views.controls
 {
 	import flash.utils.Dictionary;
 	
-	import net.dndigital.core.IUIComponent;
+	import net.dndigital.components.IUIComponent;
 
 	/**
 	 * The IGloComponent interface defines api that programmer must implement to create child components for <code>IGloPlayer</code>.

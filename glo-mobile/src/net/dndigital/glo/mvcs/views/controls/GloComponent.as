@@ -2,10 +2,10 @@ package net.dndigital.glo.mvcs.views.controls
 {
 	import flash.events.Event;
 	
-	import net.dndigital.core.Application;
-	import net.dndigital.core.IContainer;
-	import net.dndigital.core.IUIComponent;
-	import net.dndigital.core.UIComponent;
+	import net.dndigital.components.Application;
+	import net.dndigital.components.IContainer;
+	import net.dndigital.components.IUIComponent;
+	import net.dndigital.components.UIComponent;
 	
 	public class GloComponent extends UIComponent implements IGloComponent
 	{
