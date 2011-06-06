@@ -2,9 +2,10 @@ package net.dndigital.glo.mvcs.views.controls
 {
 	import eu.kiichigo.utils.log;
 	
+	import net.dndigital.components.Container;
 	import net.dndigital.components.UIComponent;
 	
-	public class Controls extends UIComponent
+	public class Controls extends Container
 	{
 		//--------------------------------------------------------------------------
 		//

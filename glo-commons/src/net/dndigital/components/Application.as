@@ -5,11 +5,11 @@ package net.dndigital.components
 	/**
 	 * Represents top level container used as main Application component.
 	 * 
-	 * @see		net.dndigital.glo.components.IComponent
-	 * @see		net.dndigital.glo.components.Component
-	 * @see		net.dndigital.glo.components.ILayout
-	 * @see		net.dndigital.glo.components.IContainer
-	 * @see		net.dndigital.glo.components.Container
+	 * @see		net.dndigital.components.IComponent
+	 * @see		net.dndigital.components.Component
+	 * @see		net.dndigital.components.ILayout
+	 * @see		net.dndigital.components.IContainer
+	 * @see		net.dndigital.components.Container
 	 * 
 	 * @author David "nirth" Sergey.
 	 * @author DN Digital Ltd.
