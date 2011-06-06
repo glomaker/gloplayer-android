@@ -3,9 +3,11 @@ package net.dndigital.glo.components
 	import net.dndigital.core.IUIComponent;
 
 	/**
-	 * Marker interface, used to differentiate Components present in Glo project from other application controls..
-	 * 
-	 * @see		net.dndigital.glo.components.IComponent
+	 * The IGloComponent interface defines api that programmer must implement to create child components for <code>IGloPlayer</code>.
+	 *  
+	 * @see		net.dndigital.core.IUIComponent
+	 * @see		net.dndigital.core.UIComponent
+	 * @see		net.dndigital.glo.mvcs.models.vo.Component
 	 * 
 	 * @author David "nirth" Sergey.
 	 * @author DN Digital Ltd.
@@ -17,6 +19,14 @@ package net.dndigital.glo.components
 	 */
 	public interface IGloComponent extends IUIComponent
 	{
-		
+		/**
+		 * Any additional data passed to component from *.glo file.
+		 * 
+		 * @see		net.dndigital.glo.mvcs.models.vo.Component
+		 */
+		function get data():Object;
+		/**
+		 * @private
+		 */
 	}
 }

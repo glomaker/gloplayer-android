@@ -41,7 +41,6 @@ package net.dndigital.glo.mvcs
 			// Views and Mediators
 			mediatorMap.mapView(GloApplication, GloApplicationMediator);
 			mediatorMap.mapView(GloPlayer, GloPlayerMediator);
-			mediatorMap.mapView(Controls, ControlsMediator);
 			mediatorMap.mapView(GloMenu, GloMenuMediator);
 			
 			super.startup();

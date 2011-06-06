@@ -108,9 +108,6 @@ package net.dndigital.core
 			
 			initialized = true;
 			
-			if(!(parent is IContainer) && !(this is Application))
-				addEventListener(Event.ADDED_TO_STAGE, addedToStage);
-			
 			return this;
 		}
 		
@@ -304,16 +301,5 @@ package net.dndigital.core
 		 * Override this method to create and add children to the display list.
 		 */
 		protected function createChildren():void {}
-		
-		/**
-		 * @private
-		 * Handles added to stage. This handler should be invoked only if parent is not IContainer.
-		 */
-		protected function addedToStage(event:Event):void
-		{
-			removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
-			if(owner== null && !(this is Application))
-				validate();
-		}
 	}
 }

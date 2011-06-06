@@ -137,7 +137,7 @@ package net.dndigital.glo.mvcs.models.vo
 		/**
 		 * @private
 		 */
-		protected var _extra:Dictionary;
+		protected var _data:Dictionary;
 		/**
 		 * Data structure to hold any additional/extra properties for current component.
 		 *
@@ -146,15 +146,15 @@ package net.dndigital.glo.mvcs.models.vo
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get extra():Dictionary { return _extra; }
+		public function get data():Dictionary { return _data; }
 		/**
 		 * @private
 		 */
-		public function set extra(value:Dictionary):void
+		public function set data(value:Dictionary):void
 		{
-			if (_extra == value)
+			if (_data == value)
 				return;
-			_extra = value;
+			_data = value;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -169,9 +169,7 @@ package net.dndigital.glo.mvcs.models.vo
 		 */
 		public function toString():String
 		{
-			return eu.kiichigo.utils.formatToString(this, "id", "x", "y", "width", "height", "extra");
+			return eu.kiichigo.utils.formatToString(this, "id", "x", "y", "width", "height", "data");
 		}
-		
-		
 	}
 }

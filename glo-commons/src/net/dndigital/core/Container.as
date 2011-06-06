@@ -210,7 +210,7 @@ package net.dndigital.core
 		override public function invalidateDisplay():void
 		{
 			if (_children && _children.length)
-				for (var i:int = 0; i < _children.length; i ++ )
+				for (var i:int = 0; i < _children.length; i ++)
 					_children[i].invalidateDisplay();
 			
 			super.invalidateDisplay();

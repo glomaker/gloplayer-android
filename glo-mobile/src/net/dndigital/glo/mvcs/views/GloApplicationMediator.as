@@ -91,6 +91,7 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected function orientationChange(event:StageOrientationEvent):void
 		{
+			// FIXME: Find a way to use Application widht and height instead of full screen width/height.
 			view.width = contextView.stage.fullScreenWidth;
 			view.height = contextView.stage.fullScreenHeight;
 			log("orientationChange({0})", event);
