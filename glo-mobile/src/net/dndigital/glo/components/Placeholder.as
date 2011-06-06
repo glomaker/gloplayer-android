@@ -66,7 +66,7 @@ package net.dndigital.glo.components
 			graphics.drawRect(0, 0, width, height);
 			graphics.endFill();
 			
-			log("resized({0}, {1})", width, height);
+			//log("resized({0}, {1})", width, height);
 		}
 	}
 }

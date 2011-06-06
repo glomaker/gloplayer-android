@@ -312,10 +312,8 @@ package net.dndigital.core
 		protected function addedToStage(event:Event):void
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
-			if(owner== null && !(this is Application)) {
-				log("{0} is invalidating", this);
+			if(owner== null && !(this is Application))
 				validate();
-			}
 		}
 	}
 }
