@@ -4,7 +4,7 @@ package net.dndigital.glo.mvcs.views.controls
 	
 	import net.dndigital.core.UIComponent;
 	
-	public class Placeholder extends UIComponent
+	public class Placeholder extends GloComponent
 	{
 		//--------------------------------------------------------------------------
 		//

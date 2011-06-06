@@ -6,14 +6,17 @@ package net.dndigital.glo.mvcs.views
 	import flash.display.Sprite;
 	import flash.net.dns.AAAARecord;
 	
+	import net.dndigital.core.Container;
 	import net.dndigital.core.IUIComponent;
 	import net.dndigital.core.UIComponent;
-	import net.dndigital.glo.mvcs.views.controls.Image;
-	import net.dndigital.glo.mvcs.views.controls.TextArea;
-	import net.dndigital.glo.mvcs.views.controls.VideoPlayer;
 	import net.dndigital.glo.mvcs.models.vo.Component;
 	import net.dndigital.glo.mvcs.models.vo.Page;
 	import net.dndigital.glo.mvcs.models.vo.Project;
+	import net.dndigital.glo.mvcs.views.controls.Controls;
+	import net.dndigital.glo.mvcs.views.controls.IGloComponent;
+	import net.dndigital.glo.mvcs.views.controls.Image;
+	import net.dndigital.glo.mvcs.views.controls.TextArea;
+	import net.dndigital.glo.mvcs.views.controls.VideoPlayer;
 	
 	/**
 	 * 
@@ -29,7 +32,7 @@ package net.dndigital.glo.mvcs.views
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public class GloPlayer extends net.dndigital.core.UIComponent implements IGloView
+	public class GloPlayer extends Container implements IGloView
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -50,6 +53,12 @@ package net.dndigital.glo.mvcs.views
 		
 		/**
 		 * @private
+		 * Reference to Controls that manipulate next/previous slides and other aspects of player.
+		 */
+		protected const controls:Controls = new Controls;
+		
+		/**
+		 * @private
 		 * Reference to the project instance that was seccessfuly build.
 		 */
 		protected var builded:Project;
@@ -58,13 +67,13 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Collection of Pages Components.
 		 */
-		protected const pages:Vector.<Sprite> = new Vector.<Sprite>;
+		protected const pages:Vector.<IUIComponent> = new Vector.<IUIComponent>;
 		
 		/**
 		 * @private
 		 * Reference to currently displayed page.
 		 */
-		protected var current:Sprite;
+		protected var current:IUIComponent;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -130,14 +139,28 @@ package net.dndigital.glo.mvcs.views
 		/**
 		 * @inheritDoc
 		 */
+		override protected function createChildren():void
+		{
+			super.createChildren();
+			
+			controls.width = _width;
+			controls.height = 50;
+			add(controls);
+		}
+		/**
+		 * @inheritDoc
+		 */
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);
 			
+			controls.width = width;
+			controls.y = height - controls.height;
+			
 			if(project) {
 				graphics.clear();
 				graphics.beginFill(project.background);
-				graphics.drawRect(0, 0, width, height - 50);
+				graphics.drawRect(0, 0, width, height - controls.height);
 				graphics.endFill();
 			}
 		}
@@ -165,13 +188,13 @@ package net.dndigital.glo.mvcs.views
 		/**
 		 * @private
 		 */
-		protected function replace(index:int):Sprite
+		protected function replace(index:int):IUIComponent
 		{
 			if (current)
-				removeChild(current);
+				remove(current);
 			
 			if (pages != null && pages.length > 0)
-				current = addChild(pages[index]) as Sprite;
+				current = add(pages[index]) as IUIComponent;
 			else
 				current = null;
 			log("replace({0}) current={1}", index, current);
@@ -218,40 +241,40 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Build single page.
 		 */
-		protected function create(page:Page):Sprite
+		protected function create(page:Page):IUIComponent
 		{
-			const sprite:Sprite = new Sprite;
+			const c:UIComponent = new UIComponent;
 			
 			for (var i:int = 0; i < page.components.length; i ++)
 				switch(page.components[i].id)
 				{
 					case "textarea":
-						sprite.addChild(component(new TextArea, page.components[i]));
+						c.addChild(component(new TextArea, page.components[i]) as DisplayObject);
 						break;
 					case "imageloader":
-						sprite.addChild(component(new Image, page.components[i]));
+						c.addChild(component(new Image, page.components[i]) as DisplayObject);
 						break;
 					case "videoplayer":
-						sprite.addChild(component(new VideoPlayer, page.components[i]));
+						c.addChild(component(new VideoPlayer, page.components[i]) as DisplayObject);
 						break;
 					default:
 						break;
 				}
 			
-			return sprite;
+			return c;
 		}
 		
 		/**
 		 * @private
 		 * Initializes a component.
 		 */
-		protected function component(target:IUIComponent, data:Component):UIComponent
+		protected function component(target:IGloComponent, data:Component):IGloComponent
 		{
 			target.x 	  = data.x;
 			target.y 	  = data.y;
 			target.width  = data.width;
 			target.height = data.height;
-			return target.initialize() as UIComponent;
+			return target.initialize() as IGloComponent;
 		}
 	}
 }

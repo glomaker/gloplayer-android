@@ -1,5 +1,7 @@
 package net.dndigital.glo.mvcs.views.controls
 {
+	import flash.utils.Dictionary;
+	
 	import net.dndigital.core.IUIComponent;
 
 	/**
@@ -24,9 +26,11 @@ package net.dndigital.glo.mvcs.views.controls
 		 * 
 		 * @see		net.dndigital.glo.mvcs.models.vo.Component
 		 */
-		function get data():Object;
+		//function get data():Dictionary;
 		/**
 		 * @private
 		 */
+		//function set data(value:Dictionary):void;
+		
 	}
 }

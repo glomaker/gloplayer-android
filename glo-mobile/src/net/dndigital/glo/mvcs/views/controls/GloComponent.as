@@ -3,10 +3,11 @@ package net.dndigital.glo.mvcs.views.controls
 	import flash.events.Event;
 	
 	import net.dndigital.core.Application;
+	import net.dndigital.core.IContainer;
 	import net.dndigital.core.IUIComponent;
 	import net.dndigital.core.UIComponent;
 	
-	public class GloComponent extends UIComponent
+	public class GloComponent extends UIComponent implements IGloComponent
 	{
 		/**
 		 * @inheritDoc

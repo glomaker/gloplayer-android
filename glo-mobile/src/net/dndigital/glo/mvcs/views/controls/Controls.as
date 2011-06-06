@@ -64,11 +64,13 @@ package net.dndigital.glo.mvcs.views.controls
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);
-			
-			graphics.clear();
-			graphics.beginFill(0x494949);
-			graphics.drawRect(0, 0, width, height);
-			graphics.endFill();
+
+			if (!isNaN(width+height)) {
+				graphics.clear();
+				graphics.beginFill(0x494949);
+				graphics.drawRect(0, 0, width, height);
+				graphics.endFill();
+			}
 		}
 	}
 }
