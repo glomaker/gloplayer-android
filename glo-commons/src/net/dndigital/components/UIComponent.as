@@ -41,15 +41,21 @@ package net.dndigital.components
 		
 		/**
 		 * @private
-		 * Flag determines whether display is being invalidated;
+		 * Flag determines whether display is being invalidated.
 		 */
 		protected var resizing:Boolean = false;
 		
 		/**
 		 * @private
-		 * Flag determines whether data is being invalidated;
+		 * Flag determines whether data is being invalidated.
 		 */
 		protected var commiting:Boolean = false;
+		
+		/**
+		 * @private
+		 * Flag determines whether state is being invalidated.
+		 */
+		protected var changingState:Boolean = false;
 		
 		
 		/**
@@ -78,6 +84,30 @@ package net.dndigital.components
 		//--------------------------------------------------------------------------
 		
 		/**
+		 * @private
+		 */
+		protected var _state:String;
+		/**
+		 * @copy	net.dndigital.core.IComponent#state
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get state():String { return _state; }
+		/**
+		 * @private
+		 */
+		public function set state(value:String):void
+		{
+			if (_state == value)
+				return;
+			_state = value;
+			invalidateState();
+		}
+		
+		/**
 		 * @copy	net.dndigital.core.IComponent#owner
 		 * 
 		 * @see		net.dndigital.core.IContainer
@@ -97,6 +127,11 @@ package net.dndigital.components
 		
 		/**
 		 * @copy		net.dndigital.glo.components.IComponent#initialize
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
 		 */
 		public function initialize():IUIComponent
 		{
@@ -113,6 +148,11 @@ package net.dndigital.components
 		
 		/**
 		 * @copy		net.dndigital.glo.components.IComponent#delay
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
 		 */
 		public function delay(fun:Function, args:Array = null):void
 		{
@@ -135,6 +175,11 @@ package net.dndigital.components
 		
 		/**
 		 * @copy		net.dndigital.glo.components.IComponent#invalidateDisplay
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
 		 */
 		public function invalidateDisplay():void
 		{
@@ -146,7 +191,12 @@ package net.dndigital.components
 		}
 		
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#displayUpdated
+		 * @copy		net.dndigital.glo.components.IComponent#invalidateData
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
 		 */
 		public function invalidateData():void
 		{
@@ -158,7 +208,29 @@ package net.dndigital.components
 		}
 		
 		/**
+		 * @copy		net.dndigital.glo.components.IComponent#invalidateState
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function invalidateState():void
+		{
+			if(changingState)
+				return;
+			
+			delay(validateState);
+			changingState = true;
+		}
+		
+		/**
 		 * @copy		net.dndigital.glo.components.IComponent#validate
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
 		 */
 		public function validate():void
 		{
@@ -168,16 +240,23 @@ package net.dndigital.components
 			// And immediately validate
 			validateData();
 			validateDisplay();
+			validateState();
 		}
 		
 		/**
 		 * @copy		net.dndigital.glo.components.IComponent#invalidate
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
 		 */
 		public function invalidate():void
 		{
 			// Set to invalidate.
 			invalidateData();
 			invalidateDisplay();
+			invalidateState();
 		}
 
 				
@@ -192,7 +271,12 @@ package net.dndigital.components
 		 */
 		protected var _width:Number;
 		/**
-		 * @inheritDoc
+		 * @copy		net.dndigital.glo.components.IComponent#width
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
 		 */
 		override public function get width():Number
 		{
@@ -215,7 +299,12 @@ package net.dndigital.components
 		 */
 		protected var _height:Number;
 		/**
-		 * @inheritDoc
+		 * @copy		net.dndigital.glo.components.IComponent#height
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
 		 */
 		override public function get height():Number
 		{
@@ -239,38 +328,74 @@ package net.dndigital.components
 		//--------------------------------------------------------------------------
 		
 		/**
-		 * @private
-		 * Validates display, and invokes displayUpdated method. This method should not be called manually.
+		 * Validates display, and invokes <code>IUIComponent.resized</code>. This method should not be called manually.
 		 */
 		protected function validateDisplay():void
 		{
+			if(!resizing)
+				return;
+			
 			resizing = false;
 			resized(_width, _height);
 			
 		}
 		
 		/**
-		 * @private
-		 * Validates data and properties, and invokes dataUpdated method. This method should not be called manually.
+		 * Validates data and properties, and invokes <code>IUIComponent.commited</code> method. This method should not be called manually.
 		 */
 		protected function validateData():void
 		{
+			if(!commiting)
+				return;
+			
 			commiting = false;
 			commited();
 		}
 		
 		/**
-		 * Method called when components is resized via width or height property or custom progammer defined way. Override this method to extend or change functionality.  This method shouldn't be called manually, use invalidateDisplay to schedule instead.
+		 * Validates state, and invokes <code>IUIComponent.stateChanged</code> method. This method should not be called manually.
+		 */
+		protected function validateState():void
+		{
+			if(!changingState)
+				return;
+
+			changingState = false;
+			stateChanged();
+		}
+		
+		/**
+		 * Method called when components is resized via width or height property or custom progammer defined way. Override this method to extend or change functionality. This method shouldn't be called manually, use invalidateDisplay to schedule instead.
 		 * 
 		 * @param	width	New components width.
 		 * @param	height	New components height.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
 		 */
 		protected function resized(width:Number, height:Number):void {}
 		
 		/**
-		 * Method called when components properties updated. Override this method to extend or change functionality.  This method shouldn't be called manually, use invalidateData to schedule instead.
+		 * Method called when components properties updated. Override this method to extend or change functionality. This method shouldn't be called manually, use invalidateData to schedule instead.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
 		 */
 		protected function commited():void {}
+		
+		/**
+		 * Method called when components state is updated. Override this method to extend or change functionality. This method shouldn't be called manually, use invalidateState to schedule instead.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		protected function stateChanged():void {}
 		
 		/**
 		 * @private

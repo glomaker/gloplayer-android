@@ -18,6 +18,12 @@ package net.dndigital.components
 	 */
 	public interface IUIComponent extends IEventDispatcher, IBitmapDrawable
 	{
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+		
 		/**
 		 * Indicates position along horizontal axis.
 		 * 
@@ -75,6 +81,20 @@ package net.dndigital.components
 		function set height(value:Number):void;
 		
 		/**
+		 * Current State.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function get state():String;
+		/**
+		 * @private
+		 */
+		function set state(value:String):void;
+		
+		/**
 		 * Reference to an instance of <code>IContainer</code> that's owns current <code>IComponent</code>.
 		 * 
 		 * @see		net.dndigital.core.IContainer
@@ -85,6 +105,12 @@ package net.dndigital.components
 		 * @productversion Flex 4.5
 		 */
 		function get owner():IContainer;
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
 		
 		/**
 		 * Override this method to process any initialization that should be done prior to components first rendering.
@@ -128,6 +154,16 @@ package net.dndigital.components
 		 * @productversion Flex 4.5
 		 */
 		function invalidateData():void;
+		
+		/**
+		 * Invalidates state. Any logic in <code>IComponent.stateChanged</code> will be processed next time component redraws.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function invalidateState():void;
 		
 		/**
 		 * Forces validation of an <code>IComponent</code> instance immediately.
