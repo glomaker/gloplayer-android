@@ -1,6 +1,8 @@
 package net.dndigital.components
 {
 	
+	import eu.kiichigo.utils.formatToString;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
@@ -86,6 +88,20 @@ package net.dndigital.components
 		/**
 		 * @private
 		 */
+		protected var _defaultState:String = "normal";
+		/**
+		 * @copy	net.dndigital.core.IComponent#defaultState
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get defaultState():String { return _defaultState; }
+		
+		/**
+		 * @private
+		 */
 		protected var _state:String;
 		/**
 		 * @copy	net.dndigital.core.IComponent#state
@@ -95,7 +111,12 @@ package net.dndigital.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get state():String { return _state; }
+		public function get state():String
+		{
+			if (_state == null)
+				_state = _defaultState;
+			return _state;
+		}
 		/**
 		 * @private
 		 */
@@ -188,6 +209,9 @@ package net.dndigital.components
 			
 			delay(validateDisplay);
 			resizing = true;
+			// Invalidate parent's
+			if(owner)
+				owner.invalidateDisplay();
 		}
 		
 		/**
@@ -323,6 +347,22 @@ package net.dndigital.components
 		
 		//--------------------------------------------------------------------------
 		//
+		//  toString
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * Returns a string containing some of instance's properties.
+		 * 
+		 * @return	Class name and some of instance properties and values.
+		 */
+		override public function toString():String
+		{
+			return eu.kiichigo.utils.formatToString(this);
+		}
+		
+		//--------------------------------------------------------------------------
+		//
 		//  Private Methods
 		//
 		//--------------------------------------------------------------------------
@@ -334,10 +374,9 @@ package net.dndigital.components
 		{
 			if(!resizing)
 				return;
-			
+			log("validateDisplay()");
 			resizing = false;
-			resized(_width, _height);
-			
+			resized(_width, _height);	
 		}
 		
 		/**
@@ -361,7 +400,7 @@ package net.dndigital.components
 				return;
 
 			changingState = false;
-			stateChanged();
+			stateChanged(state);
 		}
 		
 		/**
@@ -395,7 +434,7 @@ package net.dndigital.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		protected function stateChanged():void {}
+		protected function stateChanged(state:String):void {}
 		
 		/**
 		 * @private

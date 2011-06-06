@@ -1,5 +1,10 @@
 package net.dndigital.components
 {
+	import eu.kiichigo.utils.log;
+	
+	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
+
 	/**
 	 * Use instances of <code>Buttons</code> when minimalistic and simple implementation of button functionality is needed.
 	 * 
@@ -16,6 +21,74 @@ package net.dndigital.components
 	 */
 	public class Button extends UIComponent
 	{
+		//--------------------------------------------------------------------------
+		//
+		//  Log
+		//
+		//--------------------------------------------------------------------------
 		
+		/**
+		 * @private
+		 */
+		protected static var log:Function = eu.kiichigo.utils.log(Button);
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Overriden API
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function initialize():IUIComponent
+		{
+			// Set IUIComponent.defaultState to be "up".
+			_defaultState = "up";
+			// Usual button UI nasties.
+			buttonMode = mouseEnabled = useHandCursor = true;
+			mouseChildren = false;
+			// Suscribe to mouse and touch listeners.
+			// FIXME: see if there is more touchevents to listen to.
+			addEventListener(MouseEvent.CLICK, handleMouse);
+			addEventListener(MouseEvent.MOUSE_DOWN, handleMouse);
+			addEventListener(TouchEvent.TOUCH_TAP, handleTouch);
+			
+			return super.initialize();
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Event Handling
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected function handleMouse(event:MouseEvent):void
+		{
+			log("handleMouse({0})", event);
+			switch (event.type) {
+				case MouseEvent.MOUSE_DOWN:
+					state = "down";
+					break;
+				case MouseEvent.MOUSE_UP:
+					state = "up";
+					break;
+				default:
+					state = "up";
+					break;
+			}
+		}
+		
+		/**
+		 * @private
+		 */
+		protected function handleTouch(event:TouchEvent):void
+		{
+			log("handleTouch({0})", event);
+		}
 	}
 }

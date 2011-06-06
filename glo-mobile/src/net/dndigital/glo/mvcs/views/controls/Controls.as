@@ -6,34 +6,7 @@ package net.dndigital.glo.mvcs.views.controls
 	import net.dndigital.components.UIComponent;
 	
 	public class Controls extends Container
-	{
-		//--------------------------------------------------------------------------
-		//
-		//  Assets
-		//
-		//--------------------------------------------------------------------------
-		
-		[Embed(source="assets/arrow.up.png")]
-		/**
-		 * @private
-		 * Asset for Up (normal) button state.
-		 */
-		protected static const UP:Class;
-		
-		[Embed(source="assets/arrow.down.png")]
-		/**
-		 * @private
-		 * Asset for Down button state.
-		 */
-		protected static const DOWN:Class;
-		
-		[Embed(source="assets/arrow.disabled.png")]
-		/**
-		 * @private
-		 * Asset for diabled button state.
-		 */
-		protected static const DISABLED:Class;
-		
+	{		
 		//--------------------------------------------------------------------------
 		//
 		//  Log
@@ -44,6 +17,24 @@ package net.dndigital.glo.mvcs.views.controls
 		 * @private
 		 */
 		protected static var log:Function = eu.kiichigo.utils.log(Controls);
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Instance Fields
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 * Next navigation button.
+		 */
+		protected const next:NavButton = new NavButton;
+		
+		/**
+		 * @private
+		 * Previous navigation button.
+		 */
+		protected const prev:NavButton = new NavButton;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -58,7 +49,8 @@ package net.dndigital.glo.mvcs.views.controls
 		{
 			super.createChildren();
 			
-			
+			add(next);
+			add(prev);
 		}
 		
 		/**
@@ -74,6 +66,22 @@ package net.dndigital.glo.mvcs.views.controls
 				graphics.drawRect(0, 0, width, height);
 				graphics.endFill();
 			}
+			
+			next.x = width - next.width - 10;;
+			next.y = (height - next.height) / 2;
+			
+			prev.x = 10;
+			prev.y = (height - prev.height) / 2;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function measure():void
+		{
+			super.measure();
+			
+			log("measure()");
 		}
 	}
 }

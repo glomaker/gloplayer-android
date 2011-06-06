@@ -24,7 +24,7 @@ THE SOFTWARE.
 package eu.kiichigo.utils
 {
 	/**
-	 * Formats instance to string. 
+	 * Formats instance to string.
 	 */
 	public function formatToString(instance:Object, ...properties:*):String
 	{

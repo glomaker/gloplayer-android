@@ -81,6 +81,17 @@ package net.dndigital.components
 		function set height(value:Number):void;
 		
 		/**
+		 * Name of default state that component is initialized with.
+		 * 
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function get defaultState():String;
+		
+		/**
 		 * Current State.
 		 * 
 		 * @langversion 3.0

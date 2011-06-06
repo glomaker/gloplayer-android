@@ -7,8 +7,8 @@ package net.dndigital.glo.mvcs.views.controls
 	/**
 	 * The IGloComponent interface defines api that programmer must implement to create child components for <code>IGloPlayer</code>.
 	 *  
-	 * @see		net.dndigital.core.IUIComponent
-	 * @see		net.dndigital.core.UIComponent
+	 * @see		net.dndigital.components.IUIComponent
+	 * @see		net.dndigital.components.UIComponent
 	 * @see		net.dndigital.glo.mvcs.models.vo.Component
 	 * 
 	 * @author David "nirth" Sergey.
