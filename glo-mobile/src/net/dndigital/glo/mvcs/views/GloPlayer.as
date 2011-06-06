@@ -8,9 +8,9 @@ package net.dndigital.glo.mvcs.views
 	
 	import net.dndigital.core.IUIComponent;
 	import net.dndigital.core.UIComponent;
-	import net.dndigital.glo.components.Image;
-	import net.dndigital.glo.components.TextArea;
-	import net.dndigital.glo.components.VideoPlayer;
+	import net.dndigital.glo.mvcs.views.controls.Image;
+	import net.dndigital.glo.mvcs.views.controls.TextArea;
+	import net.dndigital.glo.mvcs.views.controls.VideoPlayer;
 	import net.dndigital.glo.mvcs.models.vo.Component;
 	import net.dndigital.glo.mvcs.models.vo.Page;
 	import net.dndigital.glo.mvcs.models.vo.Project;

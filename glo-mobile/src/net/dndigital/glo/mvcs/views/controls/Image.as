@@ -1,8 +1,8 @@
-package net.dndigital.glo.components
+package net.dndigital.glo.mvcs.views.controls
 {
 	import net.dndigital.core.IUIComponent;
 
-	public final class TextArea extends Placeholder
+	public final class Image extends Placeholder
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -15,7 +15,7 @@ package net.dndigital.glo.components
 		 */
 		override public function initialize():IUIComponent
 		{	
-			color = 0xFF0000;
+			color = 0x00FF00;
 			
 			return super.initialize();
 		}

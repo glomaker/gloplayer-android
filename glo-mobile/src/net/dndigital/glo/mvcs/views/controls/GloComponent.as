@@ -1,4 +1,4 @@
-package net.dndigital.glo.components
+package net.dndigital.glo.mvcs.views.controls
 {
 	import flash.events.Event;
 	

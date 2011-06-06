@@ -1,4 +1,4 @@
-package net.dndigital.glo.components
+package net.dndigital.glo.mvcs.views.controls
 {
 	import net.dndigital.core.IUIComponent;
 
