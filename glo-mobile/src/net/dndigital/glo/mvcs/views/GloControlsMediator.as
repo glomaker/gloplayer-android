@@ -38,16 +38,18 @@ package net.dndigital.glo.mvcs.views
 		 */
 		override public function onRegister():void
 		{
-			eventMap.mapListener(view, ProjectEvent.NEXT_PAGE, pass);
-			eventMap.mapListener(view, ProjectEvent.PREV_PAGE, pass);
+			eventMap.mapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
+			eventMap.mapListener(view, ProjectEvent.PREV_PAGE, dispatch);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		override public function onRemove():void
+		{
+			eventMap.unmapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
+			eventMap.unmapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 		}
 		
-		/**
-		 * Passes event along to Context.
-		 */
-		protected function pass(event:Event):void
-		{
-			dispatch(event);
-		}
 	}
 }
