@@ -75,30 +75,6 @@ package net.dndigital.glo.mvcs.views.controls
 		 */
 		public var disabledSkin:BitmapData;
 		
-		/**
-		 * @private
-		 */
-		protected var _enabled:Boolean = true;
-		/**
-		 * enabled.
-		 *
-		 * @langversion 3.0
-		 * @playerversion Flash 10
-		 * @playerversion AIR 2.5
-		 * @productversion Flex 4.5
-		 */
-		public function get enabled():Boolean { return _enabled; }
-		/**
-		 * @private
-		 */
-		public function set enabled(value:Boolean):void
-		{
-			if (_enabled == value)
-				return;
-			_enabled = value;
-			invalidateData();
-		}
-		
 		//--------------------------------------------------------------------------
 		//
 		//  Overriden API
@@ -126,21 +102,6 @@ package net.dndigital.glo.mvcs.views.controls
 			
 			width = bitmap.width;
 			height = bitmap.height;
-			
-			invalidateDisplay();
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function commited():void
-		{
-			super.commited();
-			
-			if(_state == DISABLED && _enabled == true)
-				state = UP;
-			else if(_state != DISABLED && _enabled == false)
-				state = DISABLED;
 			
 			invalidateDisplay();
 		}

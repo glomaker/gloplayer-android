@@ -32,6 +32,40 @@ package net.dndigital.components
 		 */
 		protected static var log:Function = eu.kiichigo.utils.log(Button);
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected var enabledChanged:Boolean;
+		/**
+		 * @private
+		 */
+		protected var _enabled:Boolean;
+		/**
+		 * enabled.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get enabled():Boolean { return _enabled; }
+		/**
+		 * @private
+		 */
+		public function set enabled(value:Boolean):void
+		{
+			if (_enabled == value)
+				return;
+			_enabled = value;
+			enabledChanged = true;
+			invalidateData();
+		}
 		
 		//--------------------------------------------------------------------------
 		//
@@ -56,6 +90,23 @@ package net.dndigital.components
 			addEventListener(TouchEvent.TOUCH_TAP, handleTouch);
 			
 			return super.initialize();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function commited():void
+		{
+			super.commited();
+			
+			if (enabledChanged) {
+				if (_enabled)
+					state = _defaultState;
+				else
+					state = "disabled";
+				mouseEnabled = _enabled;
+				enabledChanged = false;
+			}
 		}
 		
 		//--------------------------------------------------------------------------

@@ -1,5 +1,7 @@
 package net.dndigital.glo.mvcs.models
 {
+	import eu.kiichigo.utils.formatToString;
+	
 	import flash.events.Event;
 	
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
@@ -31,7 +33,6 @@ package net.dndigital.glo.mvcs.models
 			if (_index == value)
 				return;
 			_index = value;
-			
 			dispatch(new ProjectEvent(ProjectEvent.PAGE, null, _index));
 		}
 		
@@ -56,6 +57,21 @@ package net.dndigital.glo.mvcs.models
 			if (_length == value)
 				return;
 			_length = value;
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  toString
+		//
+		//--------------------------------------------------------------------------
+		/**
+		 * Returns a string containing some of instance's properties.
+		 * 
+		 * @return	Class name and some of instance properties and values.
+		 */
+		public function toString():String
+		{
+			return eu.kiichigo.utils.formatToString(this, "index", "length");
 		}
 	}
 }

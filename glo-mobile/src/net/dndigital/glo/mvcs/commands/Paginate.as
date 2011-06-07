@@ -42,12 +42,15 @@ package net.dndigital.glo.mvcs.commands
 		{
 			super.execute();
 			
-			if (event.type == ProjectEvent.NEXT_PAGE &&
-				model.length > model.index)
-				model.index ++;
-			else if (event.type == ProjectEvent.PREV_PAGE &&
-					 model.index > 0)
-				model.index --;
+			if (event.type == ProjectEvent.NEXT_PAGE) {
+				if (model.index < (model.length - 1))
+					model.index ++;
+			}
+			
+			if (event.type == ProjectEvent.PREV_PAGE) {
+				if (model.index > 0)
+					model.index --;
+			}
 		}
 	}
 }

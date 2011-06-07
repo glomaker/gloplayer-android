@@ -47,6 +47,7 @@ package net.dndigital.glo.mvcs.commands
 			
 			model.length = event.project.length;
 			model.index = 0;
+			log("model={0}", model);
 		}
 	}
 }
