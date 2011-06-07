@@ -180,6 +180,14 @@ package net.dndigital.glo.mvcs.views
 				replace(index);
 				invalidateDisplay();
 			}
+			
+			log("commited() index={0}", _index);
+			if(_index == 0)
+				controls.lock(true);
+			else if(_index == (_project.length - 1))
+				controls.lock(false, true);
+			else
+				controls.lock(false, false);
 		}
 		
 		//--------------------------------------------------------------------------

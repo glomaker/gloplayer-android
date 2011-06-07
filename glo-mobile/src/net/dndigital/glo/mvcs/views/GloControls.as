@@ -57,6 +57,28 @@ package net.dndigital.glo.mvcs.views
 		
 		//--------------------------------------------------------------------------
 		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * Locks and unlocks navigation buttons.
+		 * 
+		 * @param	prev	Indicates whether previous navigation control should be disabled or not.
+		 * @param	next	Indicates whether next navigation control should be disabled or not.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function lock(prev:Boolean = false, next:Boolean = false):void
+		{
+			this.prev.enabled = !prev;
+			this.next.enabled = !next;
+		}
+		//--------------------------------------------------------------------------
+		//
 		//  Overriden API
 		//
 		//--------------------------------------------------------------------------
