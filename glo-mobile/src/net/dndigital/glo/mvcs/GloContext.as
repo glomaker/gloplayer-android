@@ -41,6 +41,7 @@ package net.dndigital.glo.mvcs
 			// Controllers and Commands
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, Bootstrap, ContextEvent, true);
 			commandMap.mapEvent(GloMenuEvent.SELECT_FILE, SelectProject, GloMenuEvent);
+			commandMap.mapEvent(GloMenuEvent.LOAD_GLO_1, LoadGLODirect, GloMenuEvent);
 			commandMap.mapEvent(ProjectEvent.PROJECT, ShowProject, ProjectEvent);
 			commandMap.mapEvent(ProjectEvent.NEXT_PAGE, Paginate, ProjectEvent);
 			commandMap.mapEvent(ProjectEvent.PREV_PAGE, Paginate, ProjectEvent);

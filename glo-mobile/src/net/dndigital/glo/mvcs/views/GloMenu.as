@@ -1,10 +1,12 @@
 package net.dndigital.glo.mvcs.views
 {
 	import flash.events.MouseEvent;
+	import flash.system.System;
 	
-	import net.dndigital.components.UIComponent;
 	import net.dndigital.components.Container;
+	import net.dndigital.components.UIComponent;
 	import net.dndigital.glo.mvcs.events.GloMenuEvent;
+	import net.dndigital.glo.mvcs.utils.ScreenMaths;
 	import net.dndigital.glo.test.StartButton;
 	
 	public class GloMenu extends Container implements IGloView
@@ -22,6 +24,7 @@ package net.dndigital.glo.mvcs.views
 		
 		
 		protected var startButton:StartButton;
+		protected var loadDirectButton:StartButton;
 		
 		/**
 		 * @ineritDoc
@@ -35,6 +38,13 @@ package net.dndigital.glo.mvcs.views
 			startButton.height = 22;
 			startButton.addEventListener(MouseEvent.CLICK, handleMenu);
 			add(startButton);
+			
+			loadDirectButton = new StartButton();
+			loadDirectButton.width = 120;
+			loadDirectButton.height = ScreenMaths.mmToPixels( 10 );
+			loadDirectButton.y = startButton.y + startButton.height + 20;
+			loadDirectButton.addEventListener(MouseEvent.CLICK, handleMenu);
+			add( loadDirectButton );
 		}
 		
 		/**
@@ -45,6 +55,7 @@ package net.dndigital.glo.mvcs.views
 			super.resized(width, height);
 			
 			startButton.x = (width - startButton.width) / 2;
+			loadDirectButton.x = (width - loadDirectButton.width) / 2;
 			//startButton.y = (height - startButton.height) / 2 + 10;
 		}
 		
@@ -55,8 +66,16 @@ package net.dndigital.glo.mvcs.views
 		protected function handleMenu(event:MouseEvent):void
 		{
 			// Right now it just handles single button.
-			
-			dispatchEvent(GloMenuEvent.SELECT_FILE_EVENT);
+			switch( event.target )
+			{
+				case startButton:
+					dispatchEvent(GloMenuEvent.SELECT_FILE_EVENT);
+					break;
+				
+				case loadDirectButton:
+					dispatchEvent(GloMenuEvent.LOAD_GLO_1_EVENT);
+					break;
+			}
 		}
 	}
 }

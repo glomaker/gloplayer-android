@@ -1,7 +1,6 @@
 package net.dndigital.glo.mvcs.views
 {
-	import flash.filesystem.File;
-	import flash.net.FileFilter;
+	import flash.events.Event;
 	
 	import net.dndigital.glo.mvcs.events.GloMenuEvent;
 	
@@ -46,14 +45,15 @@ package net.dndigital.glo.mvcs.views
 		{
 			//log("onRegister() view={0}", view);
 			
-			eventMap.mapListener(view, GloMenuEvent.SELECT_FILE, selectFile);
+			eventMap.mapListener(view, GloMenuEvent.SELECT_FILE, passThruEvent);
+			eventMap.mapListener(view, GloMenuEvent.LOAD_GLO_1, passThruEvent);
 		}
 		
 		/**
 		 * @private
 		 * Starts file selection routine.
 		 */
-		protected function selectFile(event:GloMenuEvent):void
+		protected function passThruEvent(event:Event):void
 		{
 			dispatch(event);
 		}
