@@ -243,7 +243,7 @@ package net.dndigital.glo.mvcs.views
 			while(pages.length) {
 				var page:Sprite = pages.shift();
 				if(page.stage)
-					removeChild(pages.shift());
+					remove(pages.shift());
 			}
 			pages.fixed = sealList;
 			return this;
