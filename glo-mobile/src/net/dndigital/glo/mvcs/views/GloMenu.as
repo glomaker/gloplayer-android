@@ -6,6 +6,7 @@ package net.dndigital.glo.mvcs.views
 	import net.dndigital.components.Container;
 	import net.dndigital.components.UIComponent;
 	import net.dndigital.glo.mvcs.events.GloMenuEvent;
+	import net.dndigital.glo.mvcs.utils.ScreenMaths;
 	import net.dndigital.glo.test.StartButton;
 	
 	public class GloMenu extends Container implements IGloView
@@ -40,7 +41,7 @@ package net.dndigital.glo.mvcs.views
 			
 			loadDirectButton = new StartButton();
 			loadDirectButton.width = 120;
-			loadDirectButton.height = 22;
+			loadDirectButton.height = ScreenMaths.mmToPixels( 10 );
 			loadDirectButton.y = startButton.y + startButton.height + 20;
 			loadDirectButton.addEventListener(MouseEvent.CLICK, handleMenu);
 			add( loadDirectButton );
