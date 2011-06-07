@@ -49,7 +49,6 @@ package net.dndigital.glo.mvcs.views.controls
 		{
 			if (_data == value)
 				return;
-			log("data({0})", value);
 			_data = value;
 		}
 		

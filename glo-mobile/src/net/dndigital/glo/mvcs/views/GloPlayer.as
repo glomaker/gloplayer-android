@@ -15,6 +15,7 @@ package net.dndigital.glo.mvcs.views
 	import net.dndigital.glo.mvcs.models.vo.Project;
 	import net.dndigital.glo.mvcs.views.controls.IGloComponent;
 	import net.dndigital.glo.mvcs.views.controls.Image;
+	import net.dndigital.glo.mvcs.views.controls.Placeholder;
 	import net.dndigital.glo.mvcs.views.controls.TextArea;
 	import net.dndigital.glo.mvcs.views.controls.VideoPlayer;
 	
@@ -269,6 +270,7 @@ package net.dndigital.glo.mvcs.views
 						container.addChild(component(new VideoPlayer, page.components[i]));
 						break;
 					default:
+						container.addChild(component(new Placeholder, page.components[i]));
 						break;
 				}
 		
