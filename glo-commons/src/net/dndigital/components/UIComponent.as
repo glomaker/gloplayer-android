@@ -361,7 +361,7 @@ package net.dndigital.components
 		override public function get name():String
 		{
 			if (_name == null)
-				_name = getClassName(this)
+				_name = getClassName(this);
 			return _name;
 		}
 		/**
@@ -391,8 +391,10 @@ package net.dndigital.components
 		override public function toString():String
 		{
 			if(owner)
-				return owner.name + "." + name;
-			return name;
+				var str:String = owner.toString() + "." + name;
+			else
+				str = name;
+			return str;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -408,7 +410,7 @@ package net.dndigital.components
 		{
 			if(!resizing)
 				return;
-			log("{0}.validateDisplay()", this);
+			//log("{0}.validateDisplay()", this);
 			resizing = false;
 			resized(_width, _height);	
 		}

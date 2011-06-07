@@ -44,51 +44,9 @@ package net.dndigital.glo.mvcs.views.controls
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Assets
-		//
-		//--------------------------------------------------------------------------
-		
-		[Embed(source="assets/arrow.up.png")]
-		/**
-		 * @private
-		 * Asset for Up (normal) button state.
-		 */
-		protected static const UP_ASSET:Class;
-		
-		[Embed(source="assets/arrow.down.png")]
-		/**
-		 * @private
-		 * Asset for Down button state.
-		 */
-		protected static const DOWN_ASSET:Class;
-		
-		[Embed(source="assets/arrow.disabled.png")]
-		/**
-		 * @private
-		 * Asset for diabled button state.
-		 */
-		protected static const DISABLED_ASSET:Class;
-		
-		//--------------------------------------------------------------------------
-		//
 		//  Instance Fields
 		//
 		//--------------------------------------------------------------------------
-		
-		/**
-		 * @private
-		 */
-		protected const up:BitmapData = new UP_ASSET().bitmapData;
-		
-		/**
-		 * @private
-		 */
-		protected const down:BitmapData = new DOWN_ASSET().bitmapData;
-		
-		/**
-		 * @private
-		 */
-		protected const disabled:BitmapData = new DISABLED_ASSET().bitmapData;
 		
 		/**
 		 * @private
@@ -101,6 +59,21 @@ package net.dndigital.glo.mvcs.views.controls
 		//  Properties
 		//
 		//--------------------------------------------------------------------------
+		
+		/**
+		 * Up Skin for <code>NavButton</code>
+		 */
+		public var upSkin:BitmapData;
+		
+		/**
+		 * Down Skin for <code>NavButton</code>
+		 */
+		public var downSkin:BitmapData;
+		
+		/**
+		 * Disabled Skin for <code>NavButton</code>
+		 */
+		public var disabledSkin:BitmapData;
 		
 		/**
 		 * @private
@@ -149,10 +122,12 @@ package net.dndigital.glo.mvcs.views.controls
 		{
 			super.stateChanged(state);
 			
-			bitmap.bitmapData = this[state];
+			bitmap.bitmapData = this[state + "Skin"];
 			
 			width = bitmap.width;
 			height = bitmap.height;
+			
+			invalidateDisplay();
 		}
 		
 		/**
@@ -166,6 +141,8 @@ package net.dndigital.glo.mvcs.views.controls
 				state = UP;
 			else if(_state != DISABLED && _enabled == false)
 				state = DISABLED;
+			
+			invalidateDisplay();
 		}
 	}
 }

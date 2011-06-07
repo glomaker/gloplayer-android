@@ -4,8 +4,17 @@ package net.dndigital.glo.mvcs.events
 	
 	import net.dndigital.glo.mvcs.models.vo.Project;
 
-	public class ProjectEvent extends Event
+	public final class ProjectEvent extends Event
 	{
+		//--------------------------------------------------------------------------
+		//
+		//  Cached Events
+		//
+		//--------------------------------------------------------------------------
+		
+		public static const NEXT_PAGE_EVENT:ProjectEvent = new ProjectEvent(ProjectEvent.NEXT_PAGE);
+		public static const PREV_PAGE_EVENT:ProjectEvent = new ProjectEvent(ProjectEvent.PREV_PAGE);
+
 		//--------------------------------------------------------------------------
 		//
 		//  Event Types Constants
@@ -13,6 +22,10 @@ package net.dndigital.glo.mvcs.events
 		//--------------------------------------------------------------------------
 		
 		public static const PROJECT:String = "project";
+		public static const PAGE:String = "page";
+		public static const NEXT_PAGE:String = "next";
+		public static const PREV_PAGE:String = "prev";
+		
 
 		//--------------------------------------------------------------------------
 		//
@@ -20,11 +33,12 @@ package net.dndigital.glo.mvcs.events
 		//
 		//--------------------------------------------------------------------------
 		
-		public function ProjectEvent(type:String, project:Project)
+		public function ProjectEvent(type:String, project:Project = null, index = -1)
 		{
 			super(type);
 
 			_project = project;
+			_index = index;
 		}
 
 		//--------------------------------------------------------------------------
@@ -43,6 +57,15 @@ package net.dndigital.glo.mvcs.events
 		 * @see		net.dndigital.glo.mvcs.models.vo.Project
 		 */
 		public function get project():Project { return _project }
+		
+		/**
+		 * @private
+		 */
+		protected var _index:int = -1;
+		/**
+		 * Index of a page to switch to.
+		 */
+		public function get index():int { return _index; }
 
 		//--------------------------------------------------------------------------
 		//
@@ -55,7 +78,7 @@ package net.dndigital.glo.mvcs.events
 		 */
 		public override function clone():Event
 		{
-			return new ProjectEvent(type, project);
+			return new ProjectEvent(type, _project, _index);
 		}
 		
 		/**
@@ -63,7 +86,7 @@ package net.dndigital.glo.mvcs.events
 		 */
 		public override function toString():String
 		{
-			return formatToString("ProjectEvent", "project");
+			return formatToString("ProjectEvent", "project", "index");
 		}
 	}
 }

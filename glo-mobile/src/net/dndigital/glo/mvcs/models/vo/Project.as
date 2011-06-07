@@ -148,6 +148,20 @@ package net.dndigital.glo.mvcs.models.vo
 			_pages = value;
 		}
 		
+		/**
+		 * @private
+		 */
+		protected var _length:int;
+		/**
+		 * Length of the Project in number of pages.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get length():int{ return int(_pages) || _pages.length; }
+		
 		//--------------------------------------------------------------------------
 		//
 		//  toString
@@ -160,7 +174,7 @@ package net.dndigital.glo.mvcs.models.vo
 		 */
 		public function toString():String
 		{
-			return eu.kiichigo.utils.formatToString(this, "width", "height", "background", "hasFullPaths", "pages");
+			return eu.kiichigo.utils.formatToString(this, "width", "height", "background", "hasFullPaths", "length", "pages");
 		}
 	}
 }

@@ -13,7 +13,6 @@ package net.dndigital.glo.mvcs.views
 	import net.dndigital.glo.mvcs.models.vo.Component;
 	import net.dndigital.glo.mvcs.models.vo.Page;
 	import net.dndigital.glo.mvcs.models.vo.Project;
-	import net.dndigital.glo.mvcs.views.controls.Controls;
 	import net.dndigital.glo.mvcs.views.controls.IGloComponent;
 	import net.dndigital.glo.mvcs.views.controls.Image;
 	import net.dndigital.glo.mvcs.views.controls.TextArea;
@@ -21,7 +20,7 @@ package net.dndigital.glo.mvcs.views
 	
 	/**
 	 * 
-	 *
+	 * @see		net.dndigital.glo.mvcs.views.GloPlayerMediator
 	 * @see		net.dndigital.glo.mvcs.models.vo.Project
 	 * @see 	net.dndigital.core.Component
 	 * 
@@ -56,7 +55,7 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Reference to Controls that manipulate next/previous slides and other aspects of player.
 		 */
-		protected const controls:Controls = new Controls;
+		protected const controls:GloControls = new GloControls;
 		
 		/**
 		 * @private
@@ -176,8 +175,11 @@ package net.dndigital.glo.mvcs.views
 			if(project != builded)
 				build().invalidateDisplay();
 			
-			if(pages != null && pages.length > 0 && _index != -1 && pages[_index] != current)
+			if(pages != null && pages.length > 0 && _index != -1 && pages[_index] != current) {
+				log("changing index");
 				replace(index);
+				invalidateDisplay();
+			}
 		}
 		
 		//--------------------------------------------------------------------------
@@ -215,9 +217,9 @@ package net.dndigital.glo.mvcs.views
 			for (var i:int = 0; i < project.pages.length; i ++)
 				pages.push(create(project.pages[i]));
 			
-			index = 0;
 			pages.fixed = true;
 			invalidateDisplay();
+			controls.invalidateDisplay();
 			builded = project;
 			return this;
 		}
@@ -242,26 +244,26 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Build single page.
 		 */
-		protected function create(page:Page):IContainer
+		protected function create(page:Page):IUIComponent
 		{
-			const container:Container = new Container;
+			const container:UIComponent = new UIComponent;
 			
 			for (var i:int = 0; i < page.components.length; i ++)
 				switch(page.components[i].id)
 				{
 					case "textarea":
-						container.add(component(new TextArea, page.components[i]));
+						container.addChild(component(new TextArea, page.components[i]));
 						break;
 					case "imageloader":
-						container.add(component(new Image, page.components[i]));
+						container.addChild(component(new Image, page.components[i]));
 						break;
 					case "videoplayer":
-						container.add(component(new VideoPlayer, page.components[i]));
+						container.addChild(component(new VideoPlayer, page.components[i]));
 						break;
 					default:
 						break;
 				}
-			
+		
 			return container;
 		}
 		
@@ -269,13 +271,13 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Initializes a component.
 		 */
-		protected function component(target:IGloComponent, data:Component):IGloComponent
+		protected function component(target:IGloComponent, data:Component):DisplayObject
 		{
 			target.x 	  = data.x;
 			target.y 	  = data.y;
 			target.width  = data.width;
 			target.height = data.height;
-			return target.initialize() as IGloComponent;
+			return target.initialize() as DisplayObject;
 		}
 	}
 }

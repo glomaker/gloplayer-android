@@ -1,14 +1,14 @@
 package net.dndigital.glo.mvcs.commands
-{
+{	
 	import eu.kiichigo.utils.log;
 	
-	import net.dndigital.glo.mvcs.events.ApplicationEvent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.models.GloModel;
+	import net.dndigital.glo.mvcs.views.GloPlayer;
 	
 	import org.robotlegs.mvcs.Command;
-	
-	public final class ShowProject extends Command
+
+	public class Paginate extends Command
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -19,8 +19,7 @@ package net.dndigital.glo.mvcs.commands
 		/**
 		 * @private
 		 */
-		protected static var log:Function = eu.kiichigo.utils.log(ShowProject);
-		
+		protected static var log:Function = eu.kiichigo.utils.log(Paginate);
 		
 		[Inject]
 		/**
@@ -32,7 +31,7 @@ package net.dndigital.glo.mvcs.commands
 		[Inject]
 		/**
 		 * @private
-		 * Reference to the Model.
+		 * 
 		 */
 		public var model:GloModel;
 		
@@ -43,10 +42,12 @@ package net.dndigital.glo.mvcs.commands
 		{
 			super.execute();
 			
-			dispatch(ApplicationEvent.SHOW_PLAYER_EVENT);
-			
-			model.length = event.project.length;
-			model.index = 0;
+			if (event.type == ProjectEvent.NEXT_PAGE &&
+				model.length > model.index)
+				model.index ++;
+			else if (event.type == ProjectEvent.PREV_PAGE &&
+					 model.index > 0)
+				model.index --;
 		}
 	}
 }

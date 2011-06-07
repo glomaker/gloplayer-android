@@ -69,7 +69,7 @@ package net.dndigital.components
 		 */
 		protected function handleMouse(event:MouseEvent):void
 		{
-			log("handleMouse({0})", event);
+			//log("handleMouse({0})", event);
 			switch (event.type) {
 				case MouseEvent.MOUSE_DOWN:
 					state = "down";

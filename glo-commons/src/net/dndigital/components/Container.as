@@ -138,11 +138,11 @@ package net.dndigital.components
 			// Quit if component already added.
 			if(_children.indexOf(component) != -1)
 				return null;
-			
+
 			if(index == -1)
-				$addChild(component as DisplayObject);
+				var result:IUIComponent = $addChild(component as DisplayObject) as IUIComponent;
 			else
-				$addChildAt(component as DisplayObject, index);
+				result = $addChildAt(component as DisplayObject, index) as IUIComponent;
 
 			// Update vector
 			if(_children.fixed)

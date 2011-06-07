@@ -209,5 +209,15 @@ package net.dndigital.components
 		 * @productversion Flex 4.5
 		 */
 		function invalidate():void;
+		
+		/**
+		 * Returns string representation of an instance of <code>IUIComponent</code>
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function toString():String;
 	}
 }

@@ -7,7 +7,7 @@ package net.dndigital.glo.mvcs.views
 	
 	import org.robotlegs.mvcs.Mediator;
 	
-	public class GloApplicationMediator extends Mediator
+	public final class GloApplicationMediator extends Mediator
 	{
 		//--------------------------------------------------------------------------
 		//

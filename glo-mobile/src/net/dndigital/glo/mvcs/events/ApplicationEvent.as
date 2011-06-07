@@ -5,7 +5,7 @@ package net.dndigital.glo.mvcs.events
 	import net.dndigital.glo.mvcs.views.GloApplication;
 	import net.dndigital.glo.mvcs.views.GloApplicationMediator;
 
-	public class ApplicationEvent extends Event
+	public final class ApplicationEvent extends Event
 	{
 		// Cached pre-allocated events.
 		public static const SHOW_PLAYER_EVENT:ApplicationEvent = new ApplicationEvent(SHOW_PLAYER);

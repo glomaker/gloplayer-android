@@ -50,6 +50,8 @@ package net.dndigital.glo.mvcs.views
 		override public function onRegister():void
 		{
 			view.project = service.project;
+			
+			eventMap.mapListener(eventDispatcher, ProjectEvent.PAGE, changePage)
 		}
 		
 		//--------------------------------------------------------------------------
@@ -65,6 +67,15 @@ package net.dndigital.glo.mvcs.views
 		protected function applyProject(event:ProjectEvent):void
 		{
 			view.project = event.project
+		}
+		
+		/**
+		 * @private
+		 * Handles page changing logic, from Context down to view.
+		 */
+		protected function changePage(event:ProjectEvent):void
+		{
+			view.index = event.index;
 		}
 	}
 }
