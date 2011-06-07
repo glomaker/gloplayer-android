@@ -12,6 +12,7 @@ package net.dndigital.glo.mvcs.events
 		//--------------------------------------------------------------------------
 		
 		public static const SELECT_FILE_EVENT:GloMenuEvent = new GloMenuEvent(GloMenuEvent.SELECT_FILE);
+		public static const LOAD_GLO_1_EVENT:GloMenuEvent = new GloMenuEvent(GloMenuEvent.LOAD_GLO_1);
 		
 		//--------------------------------------------------------------------------
 		//
@@ -20,6 +21,7 @@ package net.dndigital.glo.mvcs.events
 		//--------------------------------------------------------------------------
 		
 		public static const SELECT_FILE:String = "selectFile";
+		public static const LOAD_GLO_1:String = "loadGLO1";
 		
 		//--------------------------------------------------------------------------
 		//

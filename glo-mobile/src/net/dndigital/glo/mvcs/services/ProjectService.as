@@ -7,8 +7,6 @@ package net.dndigital.glo.mvcs.services
 	import flash.net.FileFilter;
 	import flash.system.System;
 	
-	import mx.core.IProgrammaticSkin;
-	
 	import net.dndigital.glo.GloError;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.models.vo.Project;
@@ -97,6 +95,25 @@ package net.dndigital.glo.mvcs.services
 			return this;
 		}
 		
+		/**
+		 * Loads GLO project XML from a file reference. 
+		 * @param file
+		 * @throws GLOError.INVALID_GLO_FILE if the XML doesn't validate.
+		 */		
+		public function loadFromFile( file:File ):void
+		{
+			var stream:FileStream = new FileStream();
+			stream.open(file, FileMode.READ);
+			stream.position = 0;
+			
+			var xml:XML = XML(stream.readUTFBytes(stream.bytesAvailable));
+			
+			if(!validateGlo(xml))
+				throw GloError.INVALID_GLO_FILE;
+			
+			parse(xml);
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Private Method
@@ -111,17 +128,8 @@ package net.dndigital.glo.mvcs.services
 		{
 			var file:File = event.target as File;
 				file.removeEventListener(Event.SELECT, fileSelected);
-			
-			var stream:FileStream = new FileStream();
-				stream.open(file, FileMode.READ);
-				stream.position = 0;
 				
-			var xml:XML = XML(stream.readUTFBytes(stream.bytesAvailable));
-			
-			if(!validateGlo(xml))
-				throw GloError.INVALID_GLO_FILE;
-			
-			parse(xml);
+			loadFromFile( file );
 		}
 		
 		/**

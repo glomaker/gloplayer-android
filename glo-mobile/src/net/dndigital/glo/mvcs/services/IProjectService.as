@@ -1,5 +1,7 @@
 package net.dndigital.glo.mvcs.services
 {
+	import flash.filesystem.File;
+	
 	import net.dndigital.glo.mvcs.models.vo.Project;
 	
 	/**
@@ -37,6 +39,13 @@ package net.dndigital.glo.mvcs.services
 		 * @productversion Flex 4.5
 		 */
 		function select():IProjectService;
+		
+		
+		/**
+		 * Loads a GLO project XML file from a filereference. 
+		 * @param f
+		 */		
+		function loadFromFile(f:File):void;
 		
 	}
 }
