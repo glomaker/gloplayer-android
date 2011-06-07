@@ -2,6 +2,7 @@ package net.dndigital.glo.mvcs.commands
 {
 	import flash.filesystem.File;
 	
+	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.services.IProjectService;
 	
 	import org.robotlegs.mvcs.Command;
@@ -30,7 +31,12 @@ package net.dndigital.glo.mvcs.commands
 			}
 			
 			// load
-			service.loadFromFile( f );		
+			try{
+				service.loadFromFile( f );
+			}catch(e:Error){
+				dispatch( new ProjectEvent( ProjectEvent.GLO_VALIDATE_ERROR ) );
+			}
+						
 		}
 		
 	}

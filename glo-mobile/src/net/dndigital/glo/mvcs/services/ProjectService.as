@@ -128,8 +128,12 @@ package net.dndigital.glo.mvcs.services
 		{
 			var file:File = event.target as File;
 				file.removeEventListener(Event.SELECT, fileSelected);
-				
-			loadFromFile( file );
+			
+			try{
+				loadFromFile( file );
+			}catch(e:Error){
+				dispatch( new ProjectEvent( ProjectEvent.GLO_VALIDATE_ERROR ) );
+			}
 		}
 		
 		/**
