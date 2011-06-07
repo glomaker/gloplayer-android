@@ -23,8 +23,11 @@ package net.dndigital.glo.mvcs.commands
 			var f:File = File.applicationStorageDirectory.resolvePath("assets/emi.glo");
 			
 			// copy (no overwrite)
-			var source:File = File.applicationDirectory.resolvePath("assets/emi.glo");
-			source.copyTo( f, false );
+			if( !f.exists )
+			{
+				var source:File = File.applicationDirectory.resolvePath("assets/emi.glo");
+				source.copyTo( f, false );
+			}
 			
 			// load
 			service.loadFromFile( f );		
