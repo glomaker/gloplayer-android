@@ -27,7 +27,7 @@ package net.dndigital.glo.mvcs.views.controls
 		/**
 		 * @private
 		 */
-		protected var _color:uint = 0xFFFFFF;
+		protected var _color:uint = 0x333333;
 		/**
 		 * Placeholder's color. Default value is 0xFFFFFF (white).
 		 *

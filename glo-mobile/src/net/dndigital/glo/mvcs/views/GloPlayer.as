@@ -285,6 +285,7 @@ package net.dndigital.glo.mvcs.views
 			target.y 	  = data.y;
 			target.width  = data.width;
 			target.height = data.height;
+			target.data   = data.data;
 			return target.initialize() as DisplayObject;
 		}
 	}

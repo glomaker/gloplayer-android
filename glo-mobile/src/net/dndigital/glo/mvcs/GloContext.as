@@ -29,6 +29,9 @@ package net.dndigital.glo.mvcs
 			super(contextView, autoStartup);
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function startup():void
 		{
 			// Singletons

@@ -1,6 +1,9 @@
 package net.dndigital.glo.mvcs.views.controls
 {
+	import eu.kiichigo.utils.log;
+	
 	import flash.events.Event;
+	import flash.utils.Dictionary;
 	
 	import net.dndigital.components.Application;
 	import net.dndigital.components.IContainer;
@@ -9,6 +12,52 @@ package net.dndigital.glo.mvcs.views.controls
 	
 	public class GloComponent extends UIComponent implements IGloComponent
 	{
+		//--------------------------------------------------------------------------
+		//
+		//  Log
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected static var log:Function = eu.kiichigo.utils.log(GloComponent);
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Property
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected var _data:Dictionary;
+		/**
+		 * data.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get data():Dictionary { return _data; }
+		/**
+		 * @private
+		 */
+		public function set data(value:Dictionary):void
+		{
+			if (_data == value)
+				return;
+			log("data({0})", value);
+			_data = value;
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Overrien API
+		//
+		//--------------------------------------------------------------------------
 		/**
 		 * @inheritDoc
 		 */
@@ -21,6 +70,12 @@ package net.dndigital.glo.mvcs.views.controls
 			
 			return this;
 		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Private Methods
+		//
+		//--------------------------------------------------------------------------
 		
 		/**
 		 * @private

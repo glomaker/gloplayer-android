@@ -26,11 +26,10 @@ package net.dndigital.glo.mvcs.views.controls
 		 * 
 		 * @see		net.dndigital.glo.mvcs.models.vo.Component
 		 */
-		//function get data():Dictionary;
+		function get data():Dictionary;
 		/**
 		 * @private
 		 */
-		//function set data(value:Dictionary):void;
-		
+		function set data(value:Dictionary):void;
 	}
 }

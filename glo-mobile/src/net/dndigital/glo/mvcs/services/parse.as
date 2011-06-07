@@ -12,7 +12,22 @@ package net.dndigital.glo.mvcs.services {
 
 import eu.kiichigo.utils.*;
 
+import flash.utils.Dictionary;
+
 import net.dndigital.glo.mvcs.models.vo.*;
+
+//--------------------------------------------------------------------------
+//
+//  Log
+//
+//--------------------------------------------------------------------------
+
+/**
+ * @private
+ */
+var log:Function = eu.kiichigo.utils.log("parse");
+
+
 
 /**
  * Parses a <code>xmlList</code> with <code>parser</code> into <code>vector</code>.
@@ -37,7 +52,7 @@ function $list(xmlList:XMLList, vector:*, parser:Function):* {
  * @return 			<code>Project</code> instance parsed from <code>xml</code>.
  */
 function $project(xml:XML):Project {
-	var project:Project = new Project;
+	const project:Project = new Project;
 		project.hasFullPaths = xml.@hasFullFilePaths;
 		project.width = xml.props.w;
 		project.height = xml.props.h;
@@ -53,7 +68,7 @@ function $project(xml:XML):Project {
  * @return 			<code>Page</code> instance parsed from <code>xml</code>.
  */
 function $page(xml:XML):Page {
-	var page:Page = new Page;
+	const page:Page = new Page;
 		page.components = $list(xml.component, new Vector.<Component>, $component);
 	return page;
 }
@@ -65,11 +80,27 @@ function $page(xml:XML):Page {
  * @return 			<code>Component</code> instance parsed from <code>xml</code>.
  */
 function $component(xml:XML):Component {
-	var component:Component = new Component;
+	const component:Component = new Component;
 		component.id = xml.@id;
 		component.x = xml.@x;
 		component.y = xml.@y;
 		component.width = xml.@width;
 		component.height = xml.@height;
+		component.data = new Dictionary;
+	for each (var node:XML in xml.children())
+		component.data[node.name()] = $additional(xml.children());
 	return component;
+}
+
+/**
+ * Parses additional data passed in component node.
+ */
+function $additional(xmlList:XMLList):Object {
+	const dict:Dictionary = new Dictionary;
+	for each (var node:XML in xmlList)
+		if(node.hasComplexContent())
+			dict[node.name()] = $additional(node.children());
+		else
+			dict[node.name()] = node.toString();
+	return dict;
 }
