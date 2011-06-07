@@ -1,6 +1,7 @@
 package net.dndigital.glo.mvcs.views
 {
 	import flash.events.MouseEvent;
+	import flash.system.System;
 	
 	import net.dndigital.components.Container;
 	import net.dndigital.components.UIComponent;
@@ -43,8 +44,6 @@ package net.dndigital.glo.mvcs.views
 			loadDirectButton.y = startButton.y + startButton.height + 20;
 			loadDirectButton.addEventListener(MouseEvent.CLICK, handleMenu);
 			add( loadDirectButton );
-			
-			
 		}
 		
 		/**
