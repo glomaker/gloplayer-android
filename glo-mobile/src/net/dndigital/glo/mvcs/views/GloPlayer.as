@@ -7,6 +7,7 @@ package net.dndigital.glo.mvcs.views
 	import flash.net.dns.AAAARecord;
 	
 	import net.dndigital.components.Container;
+	import net.dndigital.components.IContainer;
 	import net.dndigital.components.IUIComponent;
 	import net.dndigital.components.UIComponent;
 	import net.dndigital.glo.mvcs.models.vo.Component;
@@ -241,27 +242,27 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Build single page.
 		 */
-		protected function create(page:Page):IUIComponent
+		protected function create(page:Page):IContainer
 		{
-			const c:UIComponent = new UIComponent;
+			const container:Container = new Container;
 			
 			for (var i:int = 0; i < page.components.length; i ++)
 				switch(page.components[i].id)
 				{
 					case "textarea":
-						c.addChild(component(new TextArea, page.components[i]) as DisplayObject);
+						container.add(component(new TextArea, page.components[i]));
 						break;
 					case "imageloader":
-						c.addChild(component(new Image, page.components[i]) as DisplayObject);
+						container.add(component(new Image, page.components[i]));
 						break;
 					case "videoplayer":
-						c.addChild(component(new VideoPlayer, page.components[i]) as DisplayObject);
+						container.add(component(new VideoPlayer, page.components[i]));
 						break;
 					default:
 						break;
 				}
 			
-			return c;
+			return container;
 		}
 		
 		/**

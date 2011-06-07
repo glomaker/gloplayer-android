@@ -2,6 +2,7 @@ package net.dndigital.components
 {
 	
 	import eu.kiichigo.utils.formatToString;
+	import eu.kiichigo.utils.getClassName;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -345,6 +346,34 @@ package net.dndigital.components
 			invalidateDisplay();
 		}
 		
+		/**
+		 * @private
+		 */
+		protected var _name:String = null;
+		/**
+		 * @copy		net.dndigital.glo.components.IComponent#name
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		override public function get name():String
+		{
+			if (_name == null)
+				_name = getClassName(this)
+			return _name;
+		}
+		/**
+		 * @private
+		 */
+		override public function set name(value:String):void
+		{
+			if (_name == value)
+				return;
+			_name = value;
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  toString
@@ -352,13 +381,18 @@ package net.dndigital.components
 		//--------------------------------------------------------------------------
 		
 		/**
+		 * @private
+		 */
+		/**
 		 * Returns a string containing some of instance's properties.
 		 * 
 		 * @return	Class name and some of instance properties and values.
 		 */
 		override public function toString():String
 		{
-			return eu.kiichigo.utils.formatToString(this);
+			if(owner)
+				return owner.name + "." + name;
+			return name;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -374,7 +408,7 @@ package net.dndigital.components
 		{
 			if(!resizing)
 				return;
-			log("validateDisplay()");
+			log("{0}.validateDisplay()", this);
 			resizing = false;
 			resized(_width, _height);	
 		}

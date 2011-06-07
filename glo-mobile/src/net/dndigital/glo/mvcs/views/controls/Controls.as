@@ -67,7 +67,7 @@ package net.dndigital.glo.mvcs.views.controls
 				graphics.endFill();
 			}
 			
-			next.x = width - next.width - 10;;
+			next.x = width - next.width - 10;
 			next.y = (height - next.height) / 2;
 			
 			prev.x = 10;

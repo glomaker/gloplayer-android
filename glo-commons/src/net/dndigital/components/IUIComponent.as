@@ -106,6 +106,20 @@ package net.dndigital.components
 		function set state(value:String):void;
 		
 		/**
+		 * <code>IUIComponent</code>'s unique name.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function get name():String;
+		/**
+		 * @private
+		 */
+		function set name(value:String):void;
+		
+		/**
 		 * Reference to an instance of <code>IContainer</code> that's owns current <code>IComponent</code>.
 		 * 
 		 * @see		net.dndigital.core.IContainer
