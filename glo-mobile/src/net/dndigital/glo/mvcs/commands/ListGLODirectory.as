@@ -2,13 +2,14 @@ package net.dndigital.glo.mvcs.commands
 {
 	import eu.kiichigo.utils.log;
 	
-	import net.dndigital.glo.mvcs.events.ApplicationEvent;
-	import net.dndigital.glo.mvcs.events.ProjectEvent;
-	import net.dndigital.glo.mvcs.models.GloModel;
+	import flash.filesystem.File;
+	
+	import net.dndigital.glo.mvcs.events.GloMenuEvent;
+	import net.dndigital.glo.mvcs.services.IFileService;
 	
 	import org.robotlegs.mvcs.Command;
 	
-	public final class ShowProject extends Command
+	public final class ListGLODirectory extends Command
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -19,7 +20,7 @@ package net.dndigital.glo.mvcs.commands
 		/**
 		 * @private
 		 */
-		protected static var log:Function = eu.kiichigo.utils.log(ShowProject);
+		protected static const log:Function = eu.kiichigo.utils.log(ListGLODirectory);
 		
 		//--------------------------------------------------------------------------
 		//
@@ -30,16 +31,9 @@ package net.dndigital.glo.mvcs.commands
 		[Inject]
 		/**
 		 * @private
-		 * Project event, containing reference to received instance of <code>Project</code>.
+		 * An instance of <code>IFileService</code> that's used to get list of glo projects.
 		 */
-		public var event:ProjectEvent;
-		
-		[Inject]
-		/**
-		 * @private
-		 * Reference to the Model.
-		 */
-		public var model:GloModel;
+		public var fileService:IFileService;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -53,11 +47,9 @@ package net.dndigital.glo.mvcs.commands
 		override public function execute():void
 		{
 			super.execute();
-			
-			dispatch(ApplicationEvent.SHOW_PLAYER_EVENT);
-			
-			model.length = event.project.length;
-			model.index = 0;
+
+			dispatch(new GloMenuEvent(GloMenuEvent.DIRECTORY_LISTED, null, fileService.files));
 		}
+		
 	}
 }

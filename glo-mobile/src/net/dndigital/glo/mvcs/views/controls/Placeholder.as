@@ -2,7 +2,7 @@ package net.dndigital.glo.mvcs.views.controls
 {
 	import eu.kiichigo.utils.log;
 	
-	import net.dndigital.components.UIComponent;
+	import net.dndigital.components.GUIComponent;
 	
 	public class Placeholder extends GloComponent
 	{

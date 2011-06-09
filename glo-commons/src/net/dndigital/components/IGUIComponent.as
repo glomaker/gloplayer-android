@@ -53,7 +53,7 @@ package net.dndigital.components
 		function set y(value:Number):void;
 		
 		/**
-		 * Indicates width of an <code>IComponent</code>.
+		 * Indicates width of an <code>IGUIComponent</code>.
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -67,7 +67,7 @@ package net.dndigital.components
 		function set width(value:Number):void;
 		
 		/**
-		 * Indicates height of an <code>IComponent</code>.
+		 * Indicates height of an <code>IGUIComponent</code>.
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -106,7 +106,7 @@ package net.dndigital.components
 		function set state(value:String):void;
 		
 		/**
-		 * <code>IUIComponent</code>'s unique name.
+		 * <code>IGUIComponent</code>'s unique name.
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -120,7 +120,7 @@ package net.dndigital.components
 		function set name(value:String):void;
 		
 		/**
-		 * Reference to an instance of <code>IContainer</code> that's owns current <code>IComponent</code>.
+		 * Reference to an instance of <code>IContainer</code> that's owns current <code>IGUIComponent</code>.
 		 * 
 		 * @see		net.dndigital.core.IContainer
 		 * 
@@ -148,7 +148,7 @@ package net.dndigital.components
 		function initialize():IGUIComponent;
 		
 		/**
-		 * Method passed in <code>fun</code> argument will be invoked with <code>args</code> as arguments next time <code>IComponent</code> redraws.
+		 * Method passed in <code>fun</code> argument will be invoked with <code>args</code> as arguments next time <code>IGUIComponent</code> redraws.
 		 *  
 		 * @param fun	<code>Function</code> closure to be invoked.
 		 * @param args	<code>Function</code> closure's arguments.
@@ -171,7 +171,7 @@ package net.dndigital.components
 		function invalidateDisplay():void;
 		
 		/**
-		 * Invalidates data. Any logic in <code>IComponent.resized</code> will be processed next time component redraws.
+		 * Invalidates data. Any logic in <code>IGUIComponent.resized</code> will be processed next time component redraws.
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -181,7 +181,7 @@ package net.dndigital.components
 		function invalidateData():void;
 		
 		/**
-		 * Invalidates state. Any logic in <code>IComponent.stateChanged</code> will be processed next time component redraws.
+		 * Invalidates state. Any logic in <code>IGUIComponent.stateChanged</code> will be processed next time component redraws.
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -191,7 +191,7 @@ package net.dndigital.components
 		function invalidateState():void;
 		
 		/**
-		 * Forces validation of an <code>IComponent</code> instance immediately.
+		 * Forces validation of an <code>IGUIComponent</code> instance immediately.
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -211,7 +211,7 @@ package net.dndigital.components
 		function invalidate():void;
 		
 		/**
-		 * Returns string representation of an instance of <code>IUIComponent</code>
+		 * Returns string representation of an instance of <code>IGUIComponent</code>
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10

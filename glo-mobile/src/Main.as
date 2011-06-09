@@ -11,10 +11,10 @@ package
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
-	import net.dndigital.components.UIComponent;
-	import net.dndigital.components.IUIComponent;
+	import net.dndigital.components.GUIComponent;
+	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.glo.mvcs.GloContext;
-	import net.dndigital.glo.test.StartButton;
+	import net.dndigital.glo.mvcs.views.controls.MenuButton;
 	
 	import org.robotlegs.mvcs.Context;
 	

@@ -42,20 +42,29 @@ package net.dndigital.glo.mvcs.views
 		 * @inheritDoc
 		 */
 		override public function onRegister():void
-		{
-			//log("onRegister() view={0}", view);
+		{	
+			super.onRegister();
 			
-			eventMap.mapListener(view, GloMenuEvent.SELECT_FILE, passThruEvent);
-			eventMap.mapListener(view, GloMenuEvent.LOAD_GLO_1, passThruEvent);
+			eventMap.mapListener(eventDispatcher, GloMenuEvent.DIRECTORY_LISTED, directoryListed);
+			eventMap.mapListener(view, GloMenuEvent.LOAD_FILE, dispatch);
+			
+			dispatch(new GloMenuEvent(GloMenuEvent.LIST_FILES));
+			
 		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Event Handlers
+		//
+		//--------------------------------------------------------------------------
 		
 		/**
 		 * @private
-		 * Starts file selection routine.
+		 * 
 		 */
-		protected function passThruEvent(event:Event):void
+		protected function directoryListed(event:GloMenuEvent):void
 		{
-			dispatch(event);
+			view.files = event.files;
 		}
 	}
 }

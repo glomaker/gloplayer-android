@@ -1,16 +1,18 @@
 package net.dndigital.glo.mvcs.views.controls
 {
 	import eu.kiichigo.utils.log;
+	import eu.kiichigo.utils.loggable;
+	import eu.kiichigo.utils.path;
 	
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 	
 	import net.dndigital.components.Application;
+	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IContainer;
-	import net.dndigital.components.IUIComponent;
-	import net.dndigital.components.UIComponent;
+	import net.dndigital.components.IGUIComponent;
 	
-	public class GloComponent extends UIComponent implements IGloComponent
+	public class GloComponent extends GUIComponent implements IGloComponent
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -25,31 +27,53 @@ package net.dndigital.glo.mvcs.views.controls
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Property
+		//  Instance Fields
 		//
 		//--------------------------------------------------------------------------
 		
 		/**
 		 * @private
+		 * Holds instances of <code>Mapper</code> class that contain information for property assignation from data an instance of <code>IGloComponent</code>.
 		 */
-		protected var _data:Dictionary;
+		protected const mappers:Vector.<Mapper> = new Vector.<Mapper>;
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+		
 		/**
-		 * data.
+		 * @private
+		 * Flag, indicates whether Data was changed.
+		 */
+		protected var dataChanged:Boolean = false;
+		/**
+		 * @private
+		 */
+		protected var _data:Object;
+		/**
+		 * @copy	net.dndigital.glo.mvcs.views.controls.IGloComponent
 		 *
+		 * @see		net.dndigital.glo.mvcs.models.vo.Component
+		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get data():Dictionary { return _data; }
+		public function get data():Object { return _data; }
 		/**
 		 * @private
 		 */
-		public function set data(value:Dictionary):void
+		public function set data(value:Object):void
 		{
 			if (_data == value)
 				return;
 			_data = value;
+			dataChanged = true;
+			log("data({0*})", value);
+			invalidateData();
 		}
 		
 		//--------------------------------------------------------------------------
@@ -57,10 +81,11 @@ package net.dndigital.glo.mvcs.views.controls
 		//  Overrien API
 		//
 		//--------------------------------------------------------------------------
+		
 		/**
 		 * @inheritDoc
 		 */
-		override public function initialize():IUIComponent
+		override public function initialize():IGUIComponent
 		{
 			super.initialize();
 			
@@ -70,11 +95,69 @@ package net.dndigital.glo.mvcs.views.controls
 			return this;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function commited():void
+		{
+			super.commited();
+			
+			if (dataChanged) {
+				dataUpdated(_data);
+				dataChanged = false;
+			}
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Private Methods
 		//
 		//--------------------------------------------------------------------------
+		
+		/**
+		 * Method invoked when <code>IGloComponent.data</code> receives new set of properties.
+		 * Override this method for each component to process additional component's properties.
+		 * 
+		 * @private	data	<code>Dictionary</code> containing new properties.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		protected function dataUpdated(data:Object):void
+		{
+			if(mappers.length > 0)
+				for (var i:int = 0; i < mappers.length; i ++)
+					mappers[i].apply(this);
+		}
+		
+		/**
+		 * Maps property from <code>IGloComponent.data</code> to instance of <code>IGloComponent</code>.
+		 * 
+		 * @param	from		<code>String</code> indicates path to property on <code>IGloComponent.data</code>.
+		 * @param	to			<code>String</code> indicates path to property on <code>IGloComponent</code>.
+		 * @param	initializer	<code>Function</code> indicates initializer function that will performe any parsing or changing on item before it's applied to an instance <code>IGloComponent</code>.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		protected function mapProperty(from:String, to:String, initializer:Function = null):void
+		{ 
+			mappers.push(new Mapper(from, to, initializer));
+			//delay(lockMappers);
+		}
+		
+		/**
+		 * @private
+		 * Locks (Vector.fixed=true) collection of mappers.
+		 */
+		protected function lockMappers():void
+		{
+			mappers.fixed = true;
+		}
 		
 		/**
 		 * @private
@@ -88,3 +171,61 @@ package net.dndigital.glo.mvcs.views.controls
 		}
 	}
 }
+import eu.kiichigo.utils.path;
+
+import net.dndigital.glo.mvcs.views.controls.IGloComponent;
+
+class Mapper {
+	/**
+	 * Constructor. Creates new instance of <code>Mapper</code>.
+	 */
+	public function Mapper(from:String, to:String, initializer:Function = null)
+	{
+		super();
+		
+		this.from = from;
+		this.to = to;
+		this.initializer = initializer;
+	}
+	
+	/**
+	 * @private
+	 */
+	protected var from:String;
+	/**
+	 * @private
+	 */
+	protected var to:String;
+	/**
+	 * @private
+	 */
+	protected var initializer:Function;
+	
+	/**
+	 * Applies property located with <code>to</code> and <code>data</code> to <code>component</code>.
+	 * 	  
+	 * @param component Reference to <code>IGloComponent</code> which property should be mapped.
+	 */
+	public function apply(component:IGloComponent):void
+	{
+		var value:* = path(component.data, from);
+		if (initializer as Function)
+			value = initializer(value);
+		component[to] = value;
+	}
+}
+
+/**
+ * Identity initializer, works as basic lambda identity function and returns itself. This method is used as default initializer for mappers.
+ * Define own initializer methods if data should be parsed or changed before applied to <code>IGloComponent</code> from <code>IGloComponent.data</code>.
+ * 
+ * @param	item	Any object.
+ * 
+ * @return	Returns instance or value provided in <code>item</code>.
+ * 
+ * @langversion 3.0
+ * @playerversion Flash 10
+ * @playerversion AIR 2.5
+ * @productversion Flex 4.5
+ */
+function identity(item:*):* { return item; }

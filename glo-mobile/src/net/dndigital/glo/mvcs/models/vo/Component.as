@@ -137,7 +137,7 @@ package net.dndigital.glo.mvcs.models.vo
 		/**
 		 * @private
 		 */
-		protected var _data:Dictionary;
+		protected var _data:Object;
 		/**
 		 * Data structure to hold any additional/extra properties for current component.
 		 *
@@ -146,11 +146,11 @@ package net.dndigital.glo.mvcs.models.vo
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get data():Dictionary { return _data; }
+		public function get data():Object { return _data; }
 		/**
 		 * @private
 		 */
-		public function set data(value:Dictionary):void
+		public function set data(value:Object):void
 		{
 			if (_data == value)
 				return;

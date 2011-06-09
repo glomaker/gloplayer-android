@@ -1,9 +1,6 @@
 package net.dndigital.glo.mvcs.services {
-	import eu.kiichigo.utils.log;
 	
-	import net.dndigital.glo.mvcs.models.vo.Page;
 	import net.dndigital.glo.mvcs.models.vo.Project;
-	import net.dndigital.utils.Fun;
 
 	public function parse(xml:XML):Project {
 		return $project(xml);
@@ -86,9 +83,7 @@ function $component(xml:XML):Component {
 		component.y = xml.@y;
 		component.width = xml.@width;
 		component.height = xml.@height;
-		component.data = new Dictionary;
-	for each (var node:XML in xml.children())
-		component.data[node.name()] = $additional(xml.children());
+		component.data = $additional(xml.children());
 	return component;
 }
 
@@ -96,11 +91,12 @@ function $component(xml:XML):Component {
  * Parses additional data passed in component node.
  */
 function $additional(xmlList:XMLList):Object {
-	const dict:Dictionary = new Dictionary;
-	for each (var node:XML in xmlList)
-		if(node.hasComplexContent())
-			dict[node.name()] = $additional(node.children());
+	var data:Object = new Object;
+	for each (var node:XML in xmlList) {
+		if(node.hasSimpleContent())
+			data[node.name()] = node.toString();
 		else
-			dict[node.name()] = node.toString();
-	return dict;
+			data[node.name()] = $additional(node.children());
+	}
+	return data;
 }

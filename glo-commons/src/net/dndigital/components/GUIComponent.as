@@ -10,10 +10,10 @@ package net.dndigital.components
 	import net.dndigital.utils.Fun;
 	
 	/**
-	 * Represents basic visual Component instances. Instances of Component classes can be added to <code>IContainer</code>.
+	 * Represents basic visual Component instances. Instances of IGUIComponent classes can be added to <code>IContainer</code>.
 	 * 
 	 * @see		net.dndigital.glo.components.IContainer
-	 * @see		net.dndigital.glo.components.IComponent
+	 * @see		net.dndigital.glo.components.IGUIComponent
 	 * 
 	 * @author David "nirth" Sergey.
 	 * @author DN Digital Ltd.
@@ -76,7 +76,7 @@ package net.dndigital.components
 		
 		/**
 		 * @private
-		 * Indicates whether an instance of <code>Component</code> was initialized or not.
+		 * Indicates whether an instance of <code>IGUIComponent</code> was initialized or not.
 		 */
 		protected var initialized:Boolean = false;
 		
@@ -91,7 +91,7 @@ package net.dndigital.components
 		 */
 		protected var _defaultState:String = "normal";
 		/**
-		 * @copy	net.dndigital.core.IComponent#defaultState
+		 * @copy	net.dndigital.core.IGUIComponent#defaultState
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -105,7 +105,7 @@ package net.dndigital.components
 		 */
 		protected var _state:String;
 		/**
-		 * @copy	net.dndigital.core.IComponent#state
+		 * @copy	net.dndigital.core.IGUIComponent#state
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -148,7 +148,7 @@ package net.dndigital.components
 		//--------------------------------------------------------------------------
 		
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#initialize
+		 * @copy		net.dndigital.glo.components.IGUIComponent#initialize
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -169,7 +169,7 @@ package net.dndigital.components
 		}
 		
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#delay
+		 * @copy		net.dndigital.glo.components.IGUIComponent#delay
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -196,7 +196,7 @@ package net.dndigital.components
 		}
 		
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#invalidateDisplay
+		 * @copy		net.dndigital.glo.components.IGUIComponent#invalidateDisplay
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -216,7 +216,7 @@ package net.dndigital.components
 		}
 		
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#invalidateData
+		 * @copy		net.dndigital.glo.components.IGUIComponent#invalidateData
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -233,7 +233,7 @@ package net.dndigital.components
 		}
 		
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#invalidateState
+		 * @copy		net.dndigital.glo.components.IGUIComponent#invalidateState
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -250,7 +250,7 @@ package net.dndigital.components
 		}
 		
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#validate
+		 * @copy		net.dndigital.glo.components.IGUIComponent#validate
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -269,7 +269,7 @@ package net.dndigital.components
 		}
 		
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#invalidate
+		 * @copy		net.dndigital.glo.components.IGUIComponent#invalidate
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -296,7 +296,7 @@ package net.dndigital.components
 		 */
 		protected var _width:Number;
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#width
+		 * @copy		net.dndigital.glo.components.IGUIComponent#width
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -324,7 +324,7 @@ package net.dndigital.components
 		 */
 		protected var _height:Number;
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#height
+		 * @copy		net.dndigital.glo.components.IGUIComponent#height
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -351,7 +351,7 @@ package net.dndigital.components
 		 */
 		protected var _name:String = null;
 		/**
-		 * @copy		net.dndigital.glo.components.IComponent#name
+		 * @copy		net.dndigital.glo.components.IGUIComponent#name
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -404,7 +404,7 @@ package net.dndigital.components
 		//--------------------------------------------------------------------------
 		
 		/**
-		 * Validates display, and invokes <code>IUIComponent.resized</code>. This method should not be called manually.
+		 * Validates display, and invokes <code>IGUIComponent.resized</code>. This method should not be called manually.
 		 */
 		protected function validateDisplay():void
 		{
@@ -416,7 +416,7 @@ package net.dndigital.components
 		}
 		
 		/**
-		 * Validates data and properties, and invokes <code>IUIComponent.commited</code> method. This method should not be called manually.
+		 * Validates data and properties, and invokes <code>IGUIComponent.commited</code> method. This method should not be called manually.
 		 */
 		protected function validateData():void
 		{
@@ -428,7 +428,7 @@ package net.dndigital.components
 		}
 		
 		/**
-		 * Validates state, and invokes <code>IUIComponent.stateChanged</code> method. This method should not be called manually.
+		 * Validates state, and invokes <code>IGUIComponent.stateChanged</code> method. This method should not be called manually.
 		 */
 		protected function validateState():void
 		{
@@ -474,7 +474,7 @@ package net.dndigital.components
 		
 		/**
 		 * @private
-		 * Method invokes and flushed any method stored via <code>IComponent</code> delay.
+		 * Method invokes and flushed any method stored via <code>IGUIComponent</code> delay.
 		 */
 		protected function invokeDelayed(event:Event):void
 		{

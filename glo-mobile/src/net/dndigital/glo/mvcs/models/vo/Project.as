@@ -1,6 +1,8 @@
 package net.dndigital.glo.mvcs.models.vo
 {
 	import eu.kiichigo.utils.formatToString;
+	
+	import flash.filesystem.File;
 
 	/**
 	 * ValueObject. Represents data about Glo Project.
@@ -97,6 +99,30 @@ package net.dndigital.glo.mvcs.models.vo
 			_background = value;
 		}
 		
+		/**
+		 * @private
+		 */
+		protected var _directory:File;
+		/**
+		 * Indicates <code>Project</code>'s home directory for it's local path resolving.
+		 * 
+		 * @see		flash.filesystem.File
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get directory():File { return _directory; }
+		/**
+		 * @private
+		 */
+		public function set directory(value:File):void
+		{
+			if (_directory == value)
+				return;
+			_directory = value;
+		}
 		
 		
 		/**
@@ -174,7 +200,7 @@ package net.dndigital.glo.mvcs.models.vo
 		 */
 		public function toString():String
 		{
-			return eu.kiichigo.utils.formatToString(this, "width", "height", "background", "hasFullPaths", "length", "pages");
+			return eu.kiichigo.utils.formatToString(this, "width", "height", "background", "hasFullPaths", "length", "pages", "directory");
 		}
 	}
 }

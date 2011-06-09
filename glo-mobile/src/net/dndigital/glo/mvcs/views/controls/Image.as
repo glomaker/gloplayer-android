@@ -1,6 +1,6 @@
 package net.dndigital.glo.mvcs.views.controls
 {
-	import net.dndigital.components.IUIComponent;
+	import net.dndigital.components.IGUIComponent;
 
 	public final class Image extends Placeholder
 	{
@@ -13,7 +13,7 @@ package net.dndigital.glo.mvcs.views.controls
 		/**
 		 * @inheritDoc
 		 */
-		override public function initialize():IUIComponent
+		override public function initialize():IGUIComponent
 		{	
 			color = 0x00FF00;
 			

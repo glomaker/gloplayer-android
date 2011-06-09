@@ -2,7 +2,7 @@ package net.dndigital.glo.mvcs.views.controls
 {
 	import flash.utils.Dictionary;
 	
-	import net.dndigital.components.IUIComponent;
+	import net.dndigital.components.IGUIComponent;
 
 	/**
 	 * The IGloComponent interface defines api that programmer must implement to create child components for <code>IGloPlayer</code>.
@@ -19,17 +19,17 @@ package net.dndigital.glo.mvcs.views.controls
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public interface IGloComponent extends IUIComponent
+	public interface IGloComponent extends IGUIComponent
 	{
 		/**
-		 * Any additional data passed to component from *.glo file.
+		 * <code>Dictionary</code> containing data needed for <code>IGloComponent's</code> rendering.
 		 * 
 		 * @see		net.dndigital.glo.mvcs.models.vo.Component
 		 */
-		function get data():Dictionary;
+		function get data():Object;
 		/**
 		 * @private
 		 */
-		function set data(value:Dictionary):void;
+		function set data(value:Object):void;
 	}
 }

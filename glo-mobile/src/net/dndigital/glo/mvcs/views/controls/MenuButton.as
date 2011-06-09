@@ -1,16 +1,14 @@
 package net.dndigital.glo.mvcs.views.controls
 {
-	import com.adobe.serialization.json.JSON;
-	
-	import eu.kiichigo.utils.log;
-	
-	import flash.html.HTMLSWFCapability;
 	import flash.text.TextField;
-	import flash.utils.Dictionary;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	
+	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
-
-	public final class TextArea extends GloComponent
+	import net.dndigital.glo.mvcs.utils.ScreenMaths;
+	
+	public final class MenuButton extends GUIComponent
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -18,14 +16,15 @@ package net.dndigital.glo.mvcs.views.controls
 		//
 		//--------------------------------------------------------------------------
 		
+		import eu.kiichigo.utils.log;
 		/**
 		 * @private
 		 */
-		protected static const log:Function = eu.kiichigo.utils.log(TextArea);
+		protected static var log:Function = eu.kiichigo.utils.log(MenuButton);
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Instance Fields.
+		//  Instance Fields
 		//
 		//--------------------------------------------------------------------------
 		
@@ -39,35 +38,30 @@ package net.dndigital.glo.mvcs.views.controls
 		//  Properties
 		//
 		//--------------------------------------------------------------------------
-
+		
 		/**
-		 * @copy	flash.display.TextField#htmlText
+		 * @private
+		 */
+		protected var _label:String = "Label";
+		/**
+		 * label.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get htmlText():String { return textField.htmlText; }
+		public function get label():String { return _label; }
 		/**
 		 * @private
 		 */
-		public function set htmlText(value:String):void { textField.htmlText = value; }
-		
-		/**
-		 * @copy	flash.display.TextField#border
-		 *
-		 * @langversion 3.0
-		 * @playerversion Flash 10
-		 * @playerversion AIR 2.5
-		 * @productversion Flex 4.5
-		 */
-		public function get border():Boolean { return textField.border; }
-		/**
-		 * @private
-		 */
-		public function set border(value:Boolean):void { textField.border = value; }
-		
+		public function set label(value:String):void
+		{
+			if (_label == value)
+				return;
+			_label = value;
+			invalidateData();
+		}
 		
 		//--------------------------------------------------------------------------
 		//
@@ -80,12 +74,13 @@ package net.dndigital.glo.mvcs.views.controls
 		 */
 		override public function initialize():IGUIComponent
 		{
-			mapProperty("htmlText", "htmlText", JSON.decode);
-			mapProperty("borderStyle", "border");
+			mouseChildren = false;
+			useHandCursor = buttonMode = mouseEnabled = true;
 			
+			width = 120;
+			height = ScreenMaths.mmToPixels(7.5);
 			return super.initialize();
 		}
-		
 		/**
 		 * @inheritDoc
 		 */
@@ -93,10 +88,11 @@ package net.dndigital.glo.mvcs.views.controls
 		{
 			super.createChildren();
 			
-			textField.multiline = true;
-			addChild(textField)
+			addChild(textField);
+			textField.defaultTextFormat = new TextFormat("Verdana");
+			textField.selectable = false;
+			textField.autoSize = TextFieldAutoSize.LEFT;
 		}
-		
 		/**
 		 * @inheritDoc
 		 */
@@ -104,8 +100,26 @@ package net.dndigital.glo.mvcs.views.controls
 		{
 			super.resized(width, height);
 			
-			textField.width = width;
-			textField.height = height;
+			graphics.clear();
+			graphics.beginFill(0xFF6600);
+			graphics.drawRect(0, 0, width, height);
+			graphics.endFill();
+			
+			textField.x = (width - textField.width) /2;
+			textField.y = (height - textField.height) / 2;
+		}
+		
+		/**
+		 * inheritDoc
+		 */
+		override protected function commited():void
+		{
+			super.commited();
+			
+			if(_label != textField.text) {
+				textField.text = _label;
+				invalidateDisplay();
+			}
 		}
 	}
 }

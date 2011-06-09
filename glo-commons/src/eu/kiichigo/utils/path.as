@@ -51,8 +51,9 @@ package eu.kiichigo.utils {
 	 */
 	public function path(item:Object, path:String):* {
 		// If there is no path, or path is invalid we simpy return original <code>item</code>.
-		if (path == null || path.length == 0 || path.indexOf(".") == -1)
+		if (path == null || path.length == 0)
 			return item;
+		
 		// Break path to array.
 		var elements:Array = path.split(".");
 		while (elements.length)

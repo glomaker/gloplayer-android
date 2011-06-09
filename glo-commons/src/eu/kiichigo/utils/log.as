@@ -126,7 +126,7 @@ function $console( string:String ):void
 
 function $logObject( object:Object ):String
 {
-	var result:String = "\n";
+	var result:String = "";
 	for( var property:String in object ) {
 		var p:Object = object[property];
 		result += property + "=";
@@ -141,7 +141,7 @@ function $logObject( object:Object ):String
 		else
 			result += p.toString();
 		
-		result += "\t\n";
+		result += "    \n";
 	}
 	return "{\n"+ result + "}";
 }

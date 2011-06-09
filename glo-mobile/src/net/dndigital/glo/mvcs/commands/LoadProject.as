@@ -1,10 +1,11 @@
 package net.dndigital.glo.mvcs.commands
 {
+	import net.dndigital.glo.mvcs.events.GloMenuEvent;
 	import net.dndigital.glo.mvcs.services.IProjectService;
 	
 	import org.robotlegs.mvcs.Command;
 	
-	public class SelectProject extends Command
+	public class LoadProject extends Command
 	{
 		[Inject]
 		/**
@@ -13,6 +14,13 @@ package net.dndigital.glo.mvcs.commands
 		 */
 		public var projectService:IProjectService;
 		
+		[Inject]
+		/**
+		 * @private
+		 * Event
+		 */
+		public var event:GloMenuEvent;
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -20,7 +28,7 @@ package net.dndigital.glo.mvcs.commands
 		{
 			super.execute();
 			
-			projectService.select();
+			projectService.file = event.file;
 		}
 	}
 }

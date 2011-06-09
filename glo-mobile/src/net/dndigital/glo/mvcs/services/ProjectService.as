@@ -76,44 +76,28 @@ package net.dndigital.glo.mvcs.services
 		public function get project():Project { return _project; }
 
 		/**
-		 * Initiates File Selection.
-		 * 
-		 * @see		flash.filesystem.File
-		 * 
+		 * @private
+		 */
+		protected var _file:File;
+		/**
+		 * file.
+		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function select():IProjectService
-		{
-			var file:File = new File;
-				file.nativePath = File.applicationDirectory.nativePath + "/assets";
-				file.addEventListener(Event.SELECT, fileSelected);
-				file.browse([GLO_FILE_FILTER]);
-				
-			return this;
-		}
-		
+		public function get file():File { return _file; }
 		/**
-		 * Loads GLO project XML from a file reference. 
-		 * @param file
-		 * @throws GLOError.INVALID_GLO_FILE if the XML doesn't validate.
-		 */		
-		public function loadFromFile( file:File ):void
+		 * @private
+		 */
+		public function set file(value:File):void
 		{
-			var stream:FileStream = new FileStream();
-			stream.open(file, FileMode.READ);
-			stream.position = 0;
-			
-			var xml:XML = XML(stream.readUTFBytes(stream.bytesAvailable));
-			
-			if(!validateGlo(xml))
-				throw GloError.INVALID_GLO_FILE;
-			
-			parse(xml);
+			if (_file == value)
+				return;
+			_file = loadFile(value);
 		}
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Private Method
@@ -121,26 +105,40 @@ package net.dndigital.glo.mvcs.services
 		//--------------------------------------------------------------------------
 		
 		/**
-		 * @private
-		 * Handles file selection.
-		 */
-		protected function fileSelected(event:Event):void
+		 * Loads GLO project XML from a file reference.
+		 * 
+		 * @param file
+		 * 
+		 * @throws GLOError.INVALID_GLO_FILE if the XML doesn't validate.
+		 */		
+		protected function loadFile(file:File):File
 		{
-			var file:File = event.target as File;
-				file.removeEventListener(Event.SELECT, fileSelected);
-				
-			loadFromFile( file );
-		}
-		
-		/**
-		 * @private
-		 * Parses an XML file.
-		 */
-		protected function parse(xml:XML):void
-		{
-			_project = net.dndigital.glo.mvcs.services.parse(xml);
+			if(file == null)
+				return null;
+			
+			// Load file and convert it to XML.
+			var stream:FileStream = new FileStream();
+			stream.open(file, FileMode.READ);
+			stream.position = 0;
+			
+			var xml:XML = XML(stream.readUTFBytes(stream.bytesAvailable));
+			
+			// Validate projects integrity.
+			if(!validateGlo(xml))
+				throw GloError.INVALID_GLO_FILE;
+			
+			// Parse project
+			const project:Project = net.dndigital.glo.mvcs.services.parse(xml);
+				  project.directory = file.parent;
+			_project = project;
+			
+			// Notify application that project is parsed.
 			eventDispatcher.dispatchEvent(new ProjectEvent(ProjectEvent.PROJECT, _project));
+			
+			// Clean up xml.
 			System.disposeXML(xml);
+			
+			return file;
 		}
 	}
 }

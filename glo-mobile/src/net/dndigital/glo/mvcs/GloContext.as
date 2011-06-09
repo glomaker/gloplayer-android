@@ -36,12 +36,14 @@ package net.dndigital.glo.mvcs
 		{
 			// Singletons
 			injector.mapSingletonOf(IProjectService, ProjectService);
+			injector.mapSingletonOf(IFileService, FileService);
 			injector.mapSingletonOf(GloModel, GloModel);
 			
 			// Controllers and Commands
 			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, Bootstrap, ContextEvent, true);
-			commandMap.mapEvent(GloMenuEvent.SELECT_FILE, SelectProject, GloMenuEvent);
-			commandMap.mapEvent(GloMenuEvent.LOAD_GLO_1, LoadGLODirect, GloMenuEvent);
+			
+			commandMap.mapEvent(GloMenuEvent.LIST_FILES, ListGLODirectory, GloMenuEvent);
+			commandMap.mapEvent(GloMenuEvent.LOAD_FILE, LoadProject, GloMenuEvent);
 			commandMap.mapEvent(ProjectEvent.PROJECT, ShowProject, ProjectEvent);
 			commandMap.mapEvent(ProjectEvent.NEXT_PAGE, Paginate, ProjectEvent);
 			commandMap.mapEvent(ProjectEvent.PREV_PAGE, Paginate, ProjectEvent);

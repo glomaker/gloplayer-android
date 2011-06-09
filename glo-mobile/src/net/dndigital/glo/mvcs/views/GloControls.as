@@ -5,7 +5,7 @@ package net.dndigital.glo.mvcs.views
 	import flash.events.MouseEvent;
 	
 	import net.dndigital.components.Container;
-	import net.dndigital.components.UIComponent;
+	import net.dndigital.components.GUIComponent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.views.controls.NavButton;
 	
@@ -159,7 +159,7 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.measure();
 			
-			log("measure()");
+			//log("measure()");
 		}
 	}
 }

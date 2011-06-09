@@ -8,8 +8,8 @@ package net.dndigital.glo.mvcs.views
 	
 	import net.dndigital.components.Container;
 	import net.dndigital.components.IContainer;
-	import net.dndigital.components.IUIComponent;
-	import net.dndigital.components.UIComponent;
+	import net.dndigital.components.IGUIComponent;
+	import net.dndigital.components.GUIComponent;
 	import net.dndigital.glo.mvcs.models.vo.Component;
 	import net.dndigital.glo.mvcs.models.vo.Page;
 	import net.dndigital.glo.mvcs.models.vo.Project;
@@ -62,19 +62,19 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Reference to the project instance that was seccessfuly build.
 		 */
-		protected var builded:Project;
+		protected var built:Project;
 		
 		/**
 		 * @private
 		 * Collection of Pages Components.
 		 */
-		protected const pages:Vector.<IUIComponent> = new Vector.<IUIComponent>;
+		protected const pages:Vector.<IGUIComponent> = new Vector.<IGUIComponent>;
 		
 		/**
 		 * @private
 		 * Reference to currently displayed page.
 		 */
-		protected var current:IUIComponent;
+		protected var current:IGUIComponent;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -127,8 +127,8 @@ package net.dndigital.glo.mvcs.views
 			if (_project == value)
 				return;
 			_project = value;
-			invalidateData();
 			log("project({0})", value);
+			invalidateData();
 		}
 		
 		//--------------------------------------------------------------------------
@@ -173,16 +173,16 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.commited();
 			
-			if(project != builded)
+			if(project != built)
 				build().invalidateDisplay();
 			
 			if(pages != null && pages.length > 0 && _index != -1 && pages[_index] != current) {
-				log("changing index");
 				replace(index);
 				invalidateDisplay();
 			}
 			
-			log("commited() index={0}", _index);
+			//log("commited() index={0}", _index);
+			// Decide whether Navigation Buttons needs to be locked or not.
 			if(_index == 0)
 				controls.lock(true);
 			else if(_index == (_project.length - 1))
@@ -199,22 +199,26 @@ package net.dndigital.glo.mvcs.views
 		
 		/**
 		 * @private
+		 * Replaces a page which displayed now with provided in index.
 		 */
-		protected function replace(index:int):IUIComponent
+		protected function replace(index:int):IGUIComponent
 		{
 			if (current)
 				remove(current);
 			
 			if (pages != null && pages.length > 0)
-				current = add(pages[index]) as IUIComponent;
+				current = add(pages[index]) as IGUIComponent;
 			else
 				current = null;
-			log("replace({0}) current={1}", index, current);
+			
+			bringToFront(controls);
+			
 			return current;
 		}
 		
 		/**
 		 * @private
+		 * Builds player component. 
 		 */
 		protected function build():GloPlayer
 		{
@@ -224,18 +228,18 @@ package net.dndigital.glo.mvcs.views
 				return this;
 			
 			for (var i:int = 0; i < project.pages.length; i ++)
-				pages.push(create(project.pages[i]));
+				pages.push(createPage(project.pages[i]));
 			
 			pages.fixed = true;
-			invalidateDisplay();
-			controls.invalidateDisplay();
-			builded = project;
+			built = project;
+			
+			
 			return this;
 		}
 		
 		/**
 		 * @private
-		 * Clears Player from pages.
+		 * Removes pages from Player.
 		 */
 		protected function clear(sealList:Boolean = true):GloPlayer
 		{
@@ -243,9 +247,10 @@ package net.dndigital.glo.mvcs.views
 			while(pages.length) {
 				var page:Sprite = pages.shift();
 				if(page.stage)
-					removeChild(pages.shift());
+					remove(pages.shift());
 			}
 			pages.fixed = sealList;
+			built = null;
 			return this;
 		}
 		
@@ -253,24 +258,24 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Build single page.
 		 */
-		protected function create(page:Page):IUIComponent
+		protected function createPage(page:Page):IGUIComponent
 		{
-			const container:UIComponent = new UIComponent;
+			const container:GUIComponent = new GUIComponent;
 			
 			for (var i:int = 0; i < page.components.length; i ++)
 				switch(page.components[i].id)
 				{
 					case "textarea":
-						container.addChild(component(new TextArea, page.components[i]));
+						container.addChild(initializeComponent(new TextArea, page.components[i]));
 						break;
 					case "imageloader":
-						container.addChild(component(new Image, page.components[i]));
+						container.addChild(initializeComponent(new Image, page.components[i]));
 						break;
 					case "videoplayer":
-						container.addChild(component(new VideoPlayer, page.components[i]));
+						container.addChild(initializeComponent(new VideoPlayer, page.components[i]));
 						break;
 					default:
-						container.addChild(component(new Placeholder, page.components[i]));
+						container.addChild(initializeComponent(new Placeholder, page.components[i]));
 						break;
 				}
 		
@@ -281,7 +286,7 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Initializes a component.
 		 */
-		protected function component(target:IGloComponent, data:Component):DisplayObject
+		protected function initializeComponent(target:IGloComponent, data:Component):DisplayObject
 		{
 			target.x 	  = data.x;
 			target.y 	  = data.y;

@@ -11,8 +11,7 @@ package net.dndigital.glo.mvcs.events
 		//
 		//--------------------------------------------------------------------------
 		
-		public static const SELECT_FILE_EVENT:GloMenuEvent = new GloMenuEvent(GloMenuEvent.SELECT_FILE);
-		public static const LOAD_GLO_1_EVENT:GloMenuEvent = new GloMenuEvent(GloMenuEvent.LOAD_GLO_1);
+		public static const LIST_FILES_EVENT:GloMenuEvent = new GloMenuEvent(GloMenuEvent.LIST_FILES);
 		
 		//--------------------------------------------------------------------------
 		//
@@ -20,8 +19,9 @@ package net.dndigital.glo.mvcs.events
 		//
 		//--------------------------------------------------------------------------
 		
-		public static const SELECT_FILE:String = "selectFile";
-		public static const LOAD_GLO_1:String = "loadGLO1";
+		public static const LIST_FILES:String = "listFiles";
+		public static const DIRECTORY_LISTED:String = "directoryListed";
+		public static const LOAD_FILE:String = "loadFile";
 		
 		//--------------------------------------------------------------------------
 		//
@@ -29,11 +29,12 @@ package net.dndigital.glo.mvcs.events
 		//
 		//--------------------------------------------------------------------------
 
-		public function GloMenuEvent(type:String, file:File = null)
+		public function GloMenuEvent(type:String, file:File = null, files:Vector.<File> = null)
 		{
 			super(type);
 
 			_file = file;
+			_files = files;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -53,6 +54,20 @@ package net.dndigital.glo.mvcs.events
 		 */
 		public function get file():File { return _file }
 		
+		/**
+		 * @private
+		 */
+		protected var _files:Vector.<File>;
+		/**
+		 * Collection of files.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get files():Vector.<File> { return _files; }
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Overridden API
@@ -64,7 +79,7 @@ package net.dndigital.glo.mvcs.events
 		 */
 		public override function clone():Event
 		{
-			return new GloMenuEvent(type, file);
+			return new GloMenuEvent(type, _file, _files);
 		}
 		
 		/**
@@ -72,7 +87,7 @@ package net.dndigital.glo.mvcs.events
 		 */
 		public override function toString():String
 		{
-			return formatToString("GloMenuEvent", "file");
+			return formatToString("GloMenuEvent", "file", "files");
 		}
 	}
 }

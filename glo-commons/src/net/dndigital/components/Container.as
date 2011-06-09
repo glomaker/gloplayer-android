@@ -1,13 +1,17 @@
 package net.dndigital.components
 {
+	import eu.kiichigo.utils.apply;
+	
 	import flash.display.DisplayObject;
+	import flash.display.Sprite;
 	
 	import net.dndigital.errors.DeprecatedError;
+	import net.dndigital.utils.Fun;
 
 	/**
 	 * Represents instances of Containers. Containers used to hold multiple instances of <code>IComponents</code> and <code>IContainers</code> and align them properly.
 	 *  
-	 * @see		net.dndigital.glo.components.IComponent
+	 * @see		net.dndigital.glo.components.IGUIComponent
 	 * @see		net.dndigital.glo.components.Component
 	 * @see		net.dndigital.glo.components.ILayout
 	 * 
@@ -57,9 +61,9 @@ package net.dndigital.components
 		private var _layout:ILayout;
 		
 		/**
-		 * @copy 	net.dndigital.core.IContainer#layout
+		 * @copy 	net.dndigital.components.IContainer#layout
 		 * 
-		 * @see		net.dndigital.core.ILayout
+		 * @see		net.dndigital.components.ILayout
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -83,10 +87,10 @@ package net.dndigital.components
 		 */
 		protected const _children:Vector.<IGUIComponent> = new Vector.<IGUIComponent>;
 		/**
-		 * @copy 	net.dndigital.core.IContainer#children
+		 * @copy 	net.dndigital.components.IContainer#children
 		 * 
-		 * @see		net.dndigital.core.IComponent
-		 * @see		net.dndigital.core.Component
+		 * @see		net.dndigital.components.IGUIComponent
+		 * @see		net.dndigital.components..GUIComponent
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -105,9 +109,9 @@ package net.dndigital.components
 		//--------------------------------------------------------------------------
 		
 		/**
-		 * @copy 	net.dndigital.core.IContainer#invalidateChildren
+		 * @copy 	net.dndigital.components.IContainer#invalidateChildren
 		 * 
-		 * @see		net.dndigital.core.IComponent
+		 * @see		net.dndigital.components.IGUIComponent
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -124,9 +128,9 @@ package net.dndigital.components
 		}
 		
 		/**
-		 * @copy 	net.dndigital.core.IContainer#add
+		 * @copy 	net.dndigital.components.IContainer#add
 		 * 
-		 * @see		net.dndigital.core.IComponent
+		 * @see		net.dndigital.components.IGUIComponent
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -136,14 +140,19 @@ package net.dndigital.components
 		public function add(component:IGUIComponent, properties:Object = null, index:int = -1):IGUIComponent
 		{
 			// Quit if component already added.
-			if(_children.indexOf(component) != -1)
+			if(_children.indexOf(component) != -1) {
+				bringToFront(component);
 				return null;
-
+			}
+			
+			if (properties != null)
+				apply(component, properties);
+			
 			if(index == -1)
-				var result:IGUIComponent = $addChild(component as DisplayObject) as IGUIComponent;
+				$addChild(component as DisplayObject) as IGUIComponent;
 			else
-				result = $addChildAt(component as DisplayObject, index) as IGUIComponent;
-
+				$addChildAt(component as DisplayObject, index) as IGUIComponent;
+			
 			// Update vector
 			if(_children.fixed)
 				_children.fixed = false;
@@ -160,9 +169,9 @@ package net.dndigital.components
 		}
 		
 		/**
-		 * @copy 	net.dndigital.core.IContainer#remove
+		 * @copy 	net.dndigital.components.IContainer#remove
 		 * 
-		 * @see		net.dndigital.core.IComponent
+		 * @see		net.dndigital.components.IGUIComponent
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -196,6 +205,43 @@ package net.dndigital.components
 			invalidateChildren();
 			
 			return result;
+		}
+		
+		
+		/**
+		 * @copy 	net.dndigital.components.IContainer#removeAll
+		 * 
+		 * @see		net.dndigital.components.IGUIComponent
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function removeAll(destructor:Function = null):IContainer
+		{
+			for (var i:int = 0; i < _children.length; i ++)
+				if (destructor as Function)
+					destructor(remove(_children[i]));
+				else
+					remove(_children[i]);
+			return this;
+		}
+		
+		/**
+		 * @copy	net.dndigital.components.IContainer#bringToFront
+		 * 
+		 * @see		net.dndigital.components.IGUIComponent
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function bringToFront(component:IGUIComponent):IGUIComponent
+		{
+			swapChildren(component as DisplayObject, getChildAt(numChildren - 1));
+			return component;
 		}
 		
 		//--------------------------------------------------------------------------

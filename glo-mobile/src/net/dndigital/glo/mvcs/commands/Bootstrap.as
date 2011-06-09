@@ -48,7 +48,6 @@ package net.dndigital.glo.mvcs.commands
 				application.width = contextView.stage.fullScreenWidth;
 				application.height = contextView.stage.fullScreenHeight;
 				
-			log("height={0},{1},{2}", contextView.stage);
 			contextView.addChild(application);
 		}
 	}

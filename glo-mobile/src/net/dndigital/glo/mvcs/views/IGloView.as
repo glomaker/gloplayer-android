@@ -1,6 +1,6 @@
 package net.dndigital.glo.mvcs.views
 {
-	import net.dndigital.components.IUIComponent;
+	import net.dndigital.components.IGUIComponent;
 
 	/**
 	 * Marker Interface. Use to determine whether DisplayObject or Component is valid view or not.
@@ -13,7 +13,7 @@ package net.dndigital.glo.mvcs.views
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public interface IGloView extends IUIComponent
+	public interface IGloView extends IGUIComponent
 	{
 	}
 }

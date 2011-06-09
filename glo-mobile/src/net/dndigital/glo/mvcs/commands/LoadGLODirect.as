@@ -20,17 +20,17 @@ package net.dndigital.glo.mvcs.commands
 		{
 			// hard-coded filename for testing and no error handling for non-existent files
 			// file will be copied to applicationStorageDirectory on first use
-			var f:File = File.applicationStorageDirectory.resolvePath("assets/emi.glo");
+			var f:File = File.applicationStorageDirectory.resolvePath("assets/singlepage.glo");
 			
 			// copy (no overwrite)
 			if( !f.exists )
 			{
-				var source:File = File.applicationDirectory.resolvePath("assets/emi.glo");
+				var source:File = File.applicationDirectory.resolvePath("assets/singlepage.glo");
 				source.copyTo( f, false );
 			}
 			
 			// load
-			service.loadFromFile( f );		
+			service.loadFromFile( f );
 		}
 		
 	}

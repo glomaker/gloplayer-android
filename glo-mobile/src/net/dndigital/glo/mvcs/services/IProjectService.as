@@ -29,8 +29,9 @@ package net.dndigital.glo.mvcs.services
 		function get project():Project;
 
 		/**
-		 * Initiates File Selection.
+		 * Indicates file that should be loaded and parsed by service.
 		 * 
+		 * @see		net.dndigital.glo.mvcs.models.vo.Project
 		 * @see		flash.filesystem.File
 		 * 
 		 * @langversion 3.0
@@ -38,14 +39,10 @@ package net.dndigital.glo.mvcs.services
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		function select():IProjectService;
-		
-		
+		function get file():File;
 		/**
-		 * Loads a GLO project XML file from a filereference. 
-		 * @param f
-		 */		
-		function loadFromFile(f:File):void;
-		
+		 * @private
+		 */
+		function set file(value:File):void;
 	}
 }
