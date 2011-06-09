@@ -72,7 +72,6 @@ package net.dndigital.glo.mvcs.views.controls
 				return;
 			_data = value;
 			dataChanged = true;
-			log("data({0*})", value);
 			invalidateData();
 		}
 		
@@ -147,7 +146,7 @@ package net.dndigital.glo.mvcs.views.controls
 		protected function mapProperty(from:String, to:String, initializer:Function = null):void
 		{ 
 			mappers.push(new Mapper(from, to, initializer));
-			//delay(lockMappers);
+			delay(lockMappers);
 		}
 		
 		/**

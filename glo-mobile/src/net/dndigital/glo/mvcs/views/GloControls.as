@@ -98,7 +98,7 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.createChildren();
 
-			add( bg );
+			add(bg);
 			
 			[Embed(source="assets/next.up.png")]
 			const nextUpAsset:Class;
@@ -131,6 +131,8 @@ package net.dndigital.glo.mvcs.views
 			prev.addEventListener(MouseEvent.CLICK, handleClick);
 			
 			add(prev);
+			
+			invalidateDisplay();
 		}
 
 		protected function handleClick(event:MouseEvent):void
@@ -149,7 +151,7 @@ package net.dndigital.glo.mvcs.views
 			super.resized(width, height);
 
 			if (!isNaN(width+height)) {
-				with( bg.graphics )
+				with (bg.graphics)
 				{
 					clear();
 					beginFill(0x494949);
@@ -158,6 +160,7 @@ package net.dndigital.glo.mvcs.views
 				}
 			}
 			
+			log("width={0} next.width={1}");
 			next.x = width - next.width - 10;
 			next.y = (height - next.height) / 2;
 			
@@ -171,7 +174,7 @@ package net.dndigital.glo.mvcs.views
 		override protected function measure():void
 		{
 			super.measure();
-			
+			invalidateDisplay()
 			//log("measure()");
 		}
 	}

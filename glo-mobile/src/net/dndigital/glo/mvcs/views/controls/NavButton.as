@@ -102,8 +102,20 @@ package net.dndigital.glo.mvcs.views.controls
 			
 			width = bitmap.width;
 			height = bitmap.height;
-			
+			log("stateChanged({0}) width={1} height={2}", state, width, height);
 			invalidateDisplay();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function resized(width:Number, height:Number):void
+		{
+			super.resized(width, height);
+			
+			// FIXME make it proper within component framework.
+			if(owner)
+			   owner.invalidateDisplay();
 		}
 	}
 }

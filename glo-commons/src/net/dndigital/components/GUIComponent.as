@@ -208,11 +208,12 @@ package net.dndigital.components
 			if(resizing)
 				return;
 			
+			// Invalidate parent's
+			if (owner)
+				owner.invalidateDisplay()
+			
 			delay(validateDisplay);
 			resizing = true;
-			// Invalidate parent's
-			if(owner)
-				owner.invalidateDisplay();
 		}
 		
 		/**
