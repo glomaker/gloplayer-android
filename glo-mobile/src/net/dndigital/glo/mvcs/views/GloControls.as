@@ -2,6 +2,8 @@ package net.dndigital.glo.mvcs.views
 {
 	import eu.kiichigo.utils.log;
 	
+	import flash.display.Shape;
+	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	
 	import net.dndigital.components.Container;
@@ -55,6 +57,12 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected const prev:NavButton = new NavButton;
 		
+		/**
+		 * @private
+		 * Background (Sprite so it remains interactive)
+		 */
+		public const bg:GUIComponent = new GUIComponent();
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
@@ -89,6 +97,8 @@ package net.dndigital.glo.mvcs.views
 		override protected function createChildren():void
 		{
 			super.createChildren();
+
+			add( bg );
 			
 			[Embed(source="assets/next.up.png")]
 			const nextUpAsset:Class;
@@ -139,10 +149,13 @@ package net.dndigital.glo.mvcs.views
 			super.resized(width, height);
 
 			if (!isNaN(width+height)) {
-				graphics.clear();
-				graphics.beginFill(0x494949);
-				graphics.drawRect(0, 0, width, height);
-				graphics.endFill();
+				with( bg.graphics )
+				{
+					clear();
+					beginFill(0x494949);
+					drawRect(0, 0, width, height);
+					endFill();
+				}
 			}
 			
 			next.x = width - next.width - 10;

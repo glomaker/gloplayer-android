@@ -116,7 +116,6 @@ package net.dndigital.glo.mvcs.services
 			if(file == null)
 				return null;
 			
-			// Load file and convert it to XML.
 			var stream:FileStream = new FileStream();
 			stream.open(file, FileMode.READ);
 			stream.position = 0;
@@ -129,7 +128,7 @@ package net.dndigital.glo.mvcs.services
 			
 			// Parse project
 			const project:Project = net.dndigital.glo.mvcs.services.parse(xml);
-				  project.directory = file.parent;
+			project.directory = file.parent;
 			_project = project;
 			
 			// Notify application that project is parsed.
