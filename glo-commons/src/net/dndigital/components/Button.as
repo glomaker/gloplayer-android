@@ -19,7 +19,7 @@ package net.dndigital.components
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public class Button extends UIComponent
+	public class Button extends GUIComponent
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -76,7 +76,7 @@ package net.dndigital.components
 		/**
 		 * @inheritDoc
 		 */
-		override public function initialize():IUIComponent
+		override public function initialize():IGUIComponent
 		{
 			// Set IUIComponent.defaultState to be "up".
 			_defaultState = "up";

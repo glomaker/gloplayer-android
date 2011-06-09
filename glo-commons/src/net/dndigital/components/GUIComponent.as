@@ -23,7 +23,7 @@ package net.dndigital.components
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public class UIComponent extends Sprite implements IUIComponent
+	public class GUIComponent extends Sprite implements IGUIComponent
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -34,7 +34,7 @@ package net.dndigital.components
 		/**
 		 * @private
 		 */
-		protected static var log:Function = eu.kiichigo.utils.log(UIComponent);
+		protected static var log:Function = eu.kiichigo.utils.log(GUIComponent);
 		
 		//--------------------------------------------------------------------------
 		//
@@ -155,7 +155,7 @@ package net.dndigital.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function initialize():IUIComponent
+		public function initialize():IGUIComponent
 		{
 			if(initialized)
 				return this;

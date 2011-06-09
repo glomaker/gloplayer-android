@@ -14,7 +14,7 @@ package net.dndigital.components
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public interface IContainer extends IUIComponent
+	public interface IContainer extends IGUIComponent
 	{
 		/**
 		 * Indicates current Layout engine. Layout engine should implement <code>ILayout</code> interface. If <code>IContainer.layout</code> is null display children are not aligned.
@@ -41,7 +41,7 @@ package net.dndigital.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		function get children():Vector.<IUIComponent>;
+		function get children():Vector.<IGUIComponent>;
 		
 		
 		/**
@@ -60,7 +60,7 @@ package net.dndigital.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		function add(component:IUIComponent, properties:Object = null, index:int = -1):IUIComponent;
+		function add(component:IGUIComponent, properties:Object = null, index:int = -1):IGUIComponent;
 		
 		
 		/**
@@ -77,7 +77,7 @@ package net.dndigital.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		function remove(component:Object):IUIComponent;
+		function remove(component:Object):IGUIComponent;
 		
 		/**
 		 * Invalidates children. Any logic in <code>IContainer.measured</code> will be processed next time component redraws.

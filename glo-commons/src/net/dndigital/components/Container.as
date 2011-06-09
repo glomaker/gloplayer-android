@@ -19,7 +19,7 @@ package net.dndigital.components
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public class Container extends UIComponent implements IContainer
+	public class Container extends GUIComponent implements IContainer
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -81,7 +81,7 @@ package net.dndigital.components
 		/**
 		 * @private
 		 */
-		protected const _children:Vector.<IUIComponent> = new Vector.<IUIComponent>;
+		protected const _children:Vector.<IGUIComponent> = new Vector.<IGUIComponent>;
 		/**
 		 * @copy 	net.dndigital.core.IContainer#children
 		 * 
@@ -93,7 +93,7 @@ package net.dndigital.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get children():Vector.<IUIComponent> 
+		public function get children():Vector.<IGUIComponent> 
 		{
 			return _children;
 		}
@@ -133,16 +133,16 @@ package net.dndigital.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function add(component:IUIComponent, properties:Object = null, index:int = -1):IUIComponent
+		public function add(component:IGUIComponent, properties:Object = null, index:int = -1):IGUIComponent
 		{
 			// Quit if component already added.
 			if(_children.indexOf(component) != -1)
 				return null;
 
 			if(index == -1)
-				var result:IUIComponent = $addChild(component as DisplayObject) as IUIComponent;
+				var result:IGUIComponent = $addChild(component as DisplayObject) as IGUIComponent;
 			else
-				result = $addChildAt(component as DisplayObject, index) as IUIComponent;
+				result = $addChildAt(component as DisplayObject, index) as IGUIComponent;
 
 			// Update vector
 			if(_children.fixed)
@@ -169,18 +169,18 @@ package net.dndigital.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function remove(component:Object):IUIComponent
+		public function remove(component:Object):IGUIComponent
 		{
 			// Quit if component is not present.
 			if(_children.indexOf(component) < 0)
 				return null;
 			
-			var result:IUIComponent;
+			var result:IGUIComponent;
 			
-			if(component is IUIComponent)		// if IComponent is provided use removeChild
-				result = $removeChild(component as DisplayObject) as IUIComponent;
+			if(component is IGUIComponent)		// if IComponent is provided use removeChild
+				result = $removeChild(component as DisplayObject) as IGUIComponent;
 			else							// otherwise use removeChildAt and assume it's a number.
-				result = $removeChildAt(Number(component)) as IUIComponent;
+				result = $removeChildAt(Number(component)) as IGUIComponent;
 			
 			// Update children vector.
 			var childIndex:int = _children.indexOf(result);

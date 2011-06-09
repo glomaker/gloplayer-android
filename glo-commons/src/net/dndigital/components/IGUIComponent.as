@@ -16,7 +16,7 @@ package net.dndigital.components
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public interface IUIComponent extends IEventDispatcher, IBitmapDrawable
+	public interface IGUIComponent extends IEventDispatcher, IBitmapDrawable
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -145,7 +145,7 @@ package net.dndigital.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		function initialize():IUIComponent;
+		function initialize():IGUIComponent;
 		
 		/**
 		 * Method passed in <code>fun</code> argument will be invoked with <code>args</code> as arguments next time <code>IComponent</code> redraws.
