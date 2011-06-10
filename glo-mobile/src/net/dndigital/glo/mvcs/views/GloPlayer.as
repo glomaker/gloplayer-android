@@ -180,8 +180,8 @@ package net.dndigital.glo.mvcs.views
 			}
 			
 			// Decide whether Navigation Buttons needs to be locked or not.			
-			controls.lock(_index == 0 || false,
-						  _index == _project.length - 1 || false);
+			controls.lock(_index == 0,
+						  _index == _project.length - 1);
 				
 		}
 		
