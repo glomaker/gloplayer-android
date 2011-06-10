@@ -179,14 +179,10 @@ package net.dndigital.glo.mvcs.views
 				invalidateDisplay();
 			}
 			
-			log("commited() index={0}", _index);
-			// Decide whether Navigation Buttons needs to be locked or not.
-			if(_index == 0)
-				controls.lock(true);
-			else if(_index == (_project.length - 1))
-				controls.lock(false, true);
-			else
-				controls.lock(false, false);
+			// Decide whether Navigation Buttons needs to be locked or not.			
+			controls.lock(_index == 0 || false,
+						  _index == _project.length - 1 || false);
+				
 		}
 		
 		//--------------------------------------------------------------------------
