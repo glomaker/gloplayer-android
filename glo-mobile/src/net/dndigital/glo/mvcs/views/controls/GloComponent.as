@@ -208,6 +208,8 @@ class Mapper {
 	public function apply(component:IGloComponent):void
 	{
 		var value:* = path(component.data, from);
+		if (value === null)
+			return;
 		if (initializer as Function)
 			value = initializer(value);
 		component[to] = value;

@@ -52,7 +52,21 @@ package net.dndigital.glo.mvcs.views.controls
 		/**
 		 * @private
 		 */
-		public function set htmlText(value:String):void { textField.htmlText = value; }
+		public function set htmlText(value:String):void { textField.htmlText = value || ""; }
+		
+		/**
+		 * @copy	flash.display.TextField#text
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get text():String { return textField.text; }
+		/**
+		 * @private
+		 */
+		public function set text(value:String):void { textField.text = value || ""; }
 		
 		/**
 		 * @copy	flash.display.TextField#border
@@ -81,6 +95,7 @@ package net.dndigital.glo.mvcs.views.controls
 		override public function initialize():IGUIComponent
 		{
 			mapProperty("htmlText", "htmlText", JSON.decode);
+			mapProperty("text", "text", JSON.decode);
 			mapProperty("borderStyle", "border");
 			
 			return super.initialize();

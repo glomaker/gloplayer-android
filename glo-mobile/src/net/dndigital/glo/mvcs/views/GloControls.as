@@ -160,7 +160,7 @@ package net.dndigital.glo.mvcs.views
 				}
 			}
 			
-			log("width={0} next.width={1}");
+			//log("width={0} next.width={1}");
 			next.x = width - next.width - 10;
 			next.y = (height - next.height) / 2;
 			

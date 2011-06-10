@@ -216,7 +216,7 @@ package net.dndigital.glo.mvcs.views
 		
 		/**
 		 * @private
-		 * Builds player component. 
+		 * Builds Pages and inner Components in a player.
 		 */
 		protected function build():GloPlayer
 		{
@@ -226,7 +226,7 @@ package net.dndigital.glo.mvcs.views
 				return this;
 			
 			for (var i:int = 0; i < project.pages.length; i ++)
-				pages.push(createPage(project.pages[i]));
+				pages.push(page(project.pages[i]));
 			
 			pages.fixed = true;
 			built = project;
@@ -254,9 +254,9 @@ package net.dndigital.glo.mvcs.views
 		
 		/**
 		 * @private
-		 * Build single page.
+		 * Creates single page.
 		 */
-		protected function createPage(page:Page):IGUIComponent
+		protected function page(page:Page):IGUIComponent
 		{
 			const container:GUIComponent = new GUIComponent;
 			
@@ -264,16 +264,16 @@ package net.dndigital.glo.mvcs.views
 				switch(page.components[i].id)
 				{
 					case "textarea":
-						container.addChild(initializeComponent(new TextArea, page.components[i]));
+						container.addChild(component(new TextArea, page.components[i]));
 						break;
 					case "imageloader":
-						container.addChild(initializeComponent(new Image, page.components[i]));
+						container.addChild(component(new Image, page.components[i]));
 						break;
 					case "videoplayer":
-						container.addChild(initializeComponent(new VideoPlayer, page.components[i]));
+						container.addChild(component(new VideoPlayer, page.components[i]));
 						break;
 					default:
-						container.addChild(initializeComponent(new Placeholder, page.components[i]));
+						container.addChild(component(new Placeholder, page.components[i]));
 						break;
 				}
 		
@@ -284,7 +284,7 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Initializes a component.
 		 */
-		protected function initializeComponent(target:IGloComponent, data:Component):DisplayObject
+		protected function component(target:IGloComponent, data:Component):DisplayObject
 		{
 			target.x 	  = data.x;
 			target.y 	  = data.y;

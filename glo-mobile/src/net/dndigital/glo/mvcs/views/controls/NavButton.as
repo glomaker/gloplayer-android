@@ -102,7 +102,7 @@ package net.dndigital.glo.mvcs.views.controls
 			
 			width = bitmap.width;
 			height = bitmap.height;
-			log("stateChanged({0}) width={1} height={2}", state, width, height);
+			//log("stateChanged({0}) width={1} height={2}", state, width, height);
 			invalidateDisplay();
 		}
 		
