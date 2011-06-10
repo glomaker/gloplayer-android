@@ -25,10 +25,6 @@
         <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Enter text&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
         <borderStyle>true</borderStyle>
       </component>
-      <component id="textarea" x="104" y="161" width="261" height="360">
-        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Enter text&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
-        <borderStyle>true</borderStyle>
-      </component>
       <component id="imageloader" x="415" y="165" width="339" height="173">
         <source isPath="true">"content/arrow.down.png"</source>
         <maintainRatio>true</maintainRatio>
@@ -36,6 +32,14 @@
       <component id="imageloader" x="437" y="390" width="318" height="81">
         <source isPath="true">"content/arrow.down.png"</source>
         <maintainRatio>false</maintainRatio>
+      </component>
+      <component id="rectangle" x="75" y="195" width="180" height="115">
+        <cornerRadius>0</cornerRadius>
+        <bgcolour>15658734</bgcolour>
+      </component>
+      <component id="rectangle" x="121" y="362" width="202" height="146">
+        <cornerRadius>15</cornerRadius>
+        <bgcolour>13395456</bgcolour>
       </component>
     </page>
     <page>
@@ -163,5 +167,5 @@
       </component>
     </page>
   </nodes>
-  <filehash>20664c611e04b9f795a15d53a4dbed69</filehash>
+  <filehash>b2a27f6d52abdbad0f140aa6902cb66a</filehash>
 </glo>
