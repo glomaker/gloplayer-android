@@ -8,6 +8,8 @@ package net.dndigital.glo.mvcs.views.controls
 	
 	import net.dndigital.components.Button;
 	
+	import org.bytearray.display.ScaleBitmap;
+	
 	public final class NavButton extends Button
 	{
 		//--------------------------------------------------------------------------
@@ -52,7 +54,7 @@ package net.dndigital.glo.mvcs.views.controls
 		 * @private
 		 * An instance of Bitmap that will hold current graphical asset.
 		 */
-		protected const bitmap:Bitmap = new Bitmap;
+		protected const bitmap:ScaleBitmap = new ScaleBitmap;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -100,8 +102,8 @@ package net.dndigital.glo.mvcs.views.controls
 			
 			bitmap.bitmapData = this[state + "Skin"];
 			
-			width = bitmap.width;
-			height = bitmap.height;
+			//width = bitmap.width;
+			//height = bitmap.height;
 			//log("stateChanged({0}) width={1} height={2}", state, width, height);
 			invalidateDisplay();
 		}
@@ -112,7 +114,7 @@ package net.dndigital.glo.mvcs.views.controls
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);
-			
+			bitmap.setSize(width, height);
 			// FIXME make it proper within component framework.
 			if(owner)
 			   owner.invalidateDisplay();

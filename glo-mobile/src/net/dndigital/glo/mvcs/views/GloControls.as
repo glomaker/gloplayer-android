@@ -9,6 +9,7 @@ package net.dndigital.glo.mvcs.views
 	import net.dndigital.components.Container;
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
+	import net.dndigital.glo.mvcs.utils.ScreenMaths;
 	import net.dndigital.glo.mvcs.views.controls.NavButton;
 	
 	/**
@@ -132,6 +133,9 @@ package net.dndigital.glo.mvcs.views
 			
 			add(prev);
 			
+			// Size component according to screen dpi
+			next.width = next.height = prev.width = prev.height = ScreenMaths.mmToPixels(9.5);
+			
 			invalidateDisplay();
 		}
 
@@ -160,7 +164,6 @@ package net.dndigital.glo.mvcs.views
 				}
 			}
 			
-			//log("width={0} next.width={1}");
 			next.x = width - next.width - 10;
 			next.y = (height - next.height) / 2;
 			

@@ -12,6 +12,7 @@ package net.dndigital.glo.mvcs.views
 	import net.dndigital.glo.mvcs.models.vo.Component;
 	import net.dndigital.glo.mvcs.models.vo.Page;
 	import net.dndigital.glo.mvcs.models.vo.Project;
+	import net.dndigital.glo.mvcs.utils.ScreenMaths;
 	import net.dndigital.glo.mvcs.views.controls.IGloComponent;
 	import net.dndigital.glo.mvcs.views.controls.Image;
 	import net.dndigital.glo.mvcs.views.controls.Placeholder;
@@ -150,7 +151,7 @@ package net.dndigital.glo.mvcs.views
 			super.createChildren();
 			
 			controls.width = _width;
-			controls.height = 50;
+			controls.height = ScreenMaths.mmToPixels(10);
 			add(controls);
 		}
 		/**
