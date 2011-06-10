@@ -45,7 +45,7 @@ package net.dndigital.components
 		/**
 		 * @private
 		 */
-		protected var _enabled:Boolean;
+		protected var _enabled:Boolean = true;
 		/**
 		 * enabled.
 		 *

@@ -82,6 +82,7 @@ package net.dndigital.glo.mvcs.views
 		 */
 		public function lock(prev:Boolean = false, next:Boolean = false):void
 		{
+			log("lock({0}, {1})", prev, next);
 			this.prev.enabled = !prev;
 			this.next.enabled = !next;
 		}
@@ -175,7 +176,6 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.measure();
 			invalidateDisplay()
-			//log("measure()");
 		}
 	}
 }
