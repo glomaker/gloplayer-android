@@ -29,7 +29,11 @@
         <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Enter text&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
         <borderStyle>true</borderStyle>
       </component>
-      <component id="imageloader" x="415" y="165" width="339" height="211">
+      <component id="imageloader" x="415" y="165" width="339" height="173">
+        <source isPath="true">"content/arrow.down.png"</source>
+        <maintainRatio>true</maintainRatio>
+      </component>
+      <component id="imageloader" x="437" y="390" width="318" height="81">
         <source isPath="true">"content/arrow.down.png"</source>
         <maintainRatio>false</maintainRatio>
       </component>
@@ -48,12 +52,13 @@
         <isroot>false</isroot>
       </node>
       <layout id="titleoverimage"/>
-      <component id="textarea" x="62.4" y="37.2" height="81" width="656">
-        <text>"Title"</text>
+      <component id="textarea" x="62" y="37" width="656" height="81">
+        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Enter text&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
+        <borderStyle>true</borderStyle>
       </component>
-      <component id="imageloader" x="36.8" y="162" height="349.79999999999995" width="712">
-        <source isPath="true">"FilePathProperty::NoUrlSet"</source>
-        <maintainRatio>false</maintainRatio>
+      <component id="imageloader" x="35" y="99" width="737" height="436">
+        <source isPath="true">"content/forest.jpg"</source>
+        <maintainRatio>true</maintainRatio>
       </component>
     </page>
     <page>
@@ -98,7 +103,7 @@
         <DividerWidth>429</DividerWidth>
       </component>
       <component id="imageloader" x="35.199999999999996" y="205.20000000000002" width="388" height="285">
-        <source isPath="true">"FilePathProperty::NoUrlSet"</source>
+        <source isPath="true">"file:///Users/Nirth/Documents/Clients/DNDigital/Glo/glo-mobile/src/assets/images/FilePathProperty::NoUrlSet"</source>
         <maintainRatio>false</maintainRatio>
       </component>
     </page>
@@ -153,10 +158,10 @@
         <text>"Title"</text>
       </component>
       <component id="imageloader" x="36.8" y="162" height="349.79999999999995" width="712">
-        <source isPath="true">"FilePathProperty::NoUrlSet"</source>
+        <source isPath="true">"file:///Users/Nirth/Documents/Clients/DNDigital/Glo/glo-mobile/src/assets/images/FilePathProperty::NoUrlSet"</source>
         <maintainRatio>false</maintainRatio>
       </component>
     </page>
   </nodes>
-  <filehash>76f4e91a9890cdc47d4ce41ee60fe50c</filehash>
+  <filehash>20664c611e04b9f795a15d53a4dbed69</filehash>
 </glo>

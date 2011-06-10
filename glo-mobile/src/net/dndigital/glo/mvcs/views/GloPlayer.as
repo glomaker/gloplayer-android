@@ -264,9 +264,9 @@ package net.dndigital.glo.mvcs.views
 		
 		/**
 		 * @private
-		 * Handles component resing.
+		 * Handles rearranging and resizing components on pages.
 		 */
-		protected function resize(width:int, height:int):void
+		protected function rearrange(width:int, height:int):void
 		{
 			var w:int = _project.width;
 			var h:int = _project.height;
@@ -313,7 +313,7 @@ package net.dndigital.glo.mvcs.views
 		{
 			if (components.indexOf(target) == -1)
 				components.push(target);
-			
+			//log("component()", vo.directory.nativePath);
 			target.x 	 		= vo.x;
 			target.y 	  		= vo.y;
 			target.width  		= vo.width;

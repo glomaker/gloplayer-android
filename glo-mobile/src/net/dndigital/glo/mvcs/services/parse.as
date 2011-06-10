@@ -1,23 +1,20 @@
 package net.dndigital.glo.mvcs.services {
 	
+	import flash.filesystem.File;
+	
 	import net.dndigital.glo.mvcs.models.vo.Project;
 
-	public function parse(xml:XML):Project {
-		return $project(xml);
+	public function parse(xml:XML, directory:File):Project {
+		return $project(xml, directory);
 	}
 }
 
 import eu.kiichigo.utils.*;
 
+import flash.filesystem.File;
 import flash.utils.Dictionary;
 
 import net.dndigital.glo.mvcs.models.vo.*;
-
-//--------------------------------------------------------------------------
-//
-//  Log
-//
-//--------------------------------------------------------------------------
 
 /**
  * @private
@@ -48,13 +45,14 @@ function $list(xmlList:XMLList, vector:*, parser:Function):* {
  * @param xml 		<code>XML</code> to be parsed.
  * @return 			<code>Project</code> instance parsed from <code>xml</code>.
  */
-function $project(xml:XML):Project {
-	const project:Project = new Project;
-		project.hasFullPaths = xml.@hasFullFilePaths;
-		project.width = xml.props.w;
-		project.height = xml.props.h;
-		project.background = xml.props.rgb;
-		project.pages = $list(xml.nodes.page, new Vector.<Page>, $page);
+function $project(xml:XML, directory:File):Project {
+	const project:Project 		= new Project;
+		project.hasFullPaths 	= xml.@hasFullFilePaths;
+		project.width 			= xml.props.w;
+		project.height 			= xml.props.h;
+		project.background 		= xml.props.rgb;
+		project.pages 			= $list(xml.nodes.page, new Vector.<Page>, curry($page, true, directory));
+		project.directory 		= directory;
 	return project;
 }
 
@@ -64,9 +62,9 @@ function $project(xml:XML):Project {
  * @param xml 		<code>XML</code> to be parsed.
  * @return 			<code>Page</code> instance parsed from <code>xml</code>.
  */
-function $page(xml:XML):Page {
+function $page(xml:XML, directory:File):Page {
 	const page:Page = new Page;
-		page.components = $list(xml.component, new Vector.<Component>, $component);
+		page.components = $list(xml.component, new Vector.<Component>, curry($component, true, directory));
 	return page;
 }
 
@@ -76,27 +74,28 @@ function $page(xml:XML):Page {
  * @param xml 		<code>XML</code> to be parsed.
  * @return 			<code>Component</code> instance parsed from <code>xml</code>.
  */
-function $component(xml:XML):Component {
+function $component(xml:XML, directory:File):Component {
 	const component:Component = new Component;
 		component.id = xml.@id;
 		component.x = xml.@x;
 		component.y = xml.@y;
 		component.width = xml.@width;
 		component.height = xml.@height;
-		component.data = $additional(xml.children());
+		component.directory = directory;
+		component.data = $data(xml.children());
 	return component;
 }
 
 /**
  * Parses additional data passed in component node.
  */
-function $additional(xmlList:XMLList):Object {
+function $data(xmlList:XMLList):Object {
 	var data:Object = new Object;
 	for each (var node:XML in xmlList) {
 		if(node.hasSimpleContent())
 			data[node.name()] = node.toString();
 		else
-			data[node.name()] = $additional(node.children());
+			data[node.name()] = $data(node.children());
 	}
 	return data;
 }

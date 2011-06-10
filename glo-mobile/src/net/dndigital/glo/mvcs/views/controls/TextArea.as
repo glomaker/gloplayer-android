@@ -94,8 +94,8 @@ package net.dndigital.glo.mvcs.views.controls
 		 */
 		override public function initialize():IGUIComponent
 		{
-			mapProperty("htmlText", "htmlText");
-			mapProperty("text", "text");
+			mapProperty("htmlText");
+			mapProperty("text");
 			mapProperty("borderStyle", "border");
 			
 			return super.initialize();

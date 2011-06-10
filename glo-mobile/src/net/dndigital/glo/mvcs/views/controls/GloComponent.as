@@ -144,8 +144,10 @@ package net.dndigital.glo.mvcs.views.controls
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		protected function mapProperty(from:String, to:String):void
+		protected function mapProperty(from:String, to:String = null):void
 		{ 
+			if (to === null)
+				to = from;
 			mappers.push(new Mapper(from, to));
 			delay(lockMappers);
 		}
