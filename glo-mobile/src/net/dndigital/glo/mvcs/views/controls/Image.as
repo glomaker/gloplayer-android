@@ -75,7 +75,7 @@ package net.dndigital.glo.mvcs.views.controls
 		 */
 		public function set source(value:String):void
 		{
-			if (_source == value)
+			if (_source == value || value.indexOf("FilePathProperty::NoUrlSet") >= 0)
 				return;
 			_source = value;
 			

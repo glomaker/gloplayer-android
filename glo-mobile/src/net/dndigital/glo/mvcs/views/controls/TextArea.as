@@ -6,6 +6,7 @@ package net.dndigital.glo.mvcs.views.controls
 	
 	import flash.html.HTMLSWFCapability;
 	import flash.text.TextField;
+	import flash.text.TextFormat;
 	import flash.utils.Dictionary;
 	
 	import net.dndigital.components.IGUIComponent;
@@ -109,6 +110,7 @@ package net.dndigital.glo.mvcs.views.controls
 			super.createChildren();
 			
 			textField.multiline = true;
+			textField.defaultTextFormat = new TextFormat("Arial");
 			addChild(textField)
 		}
 		
