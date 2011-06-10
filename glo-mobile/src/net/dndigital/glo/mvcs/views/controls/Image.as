@@ -145,7 +145,9 @@ package net.dndigital.glo.mvcs.views.controls
 				if (bitmap && bitmap.bitmapData) {
 					if (original.x != width || original.y != height) {
 						if (maintainRatio) {
+							// Calculate a cooficient.
 							var c:Number = Math.min(width / original.x, height / original.y);
+							// Apply size
 							bitmap.setSize(original.x * c, original.y * c);
 						} else {
 							bitmap.setSize(width, height);
@@ -178,7 +180,12 @@ package net.dndigital.glo.mvcs.views.controls
 		protected function loadImage(path:String):void
 		{
 			const fileStream:FileStream = new FileStream();
-			fileStream.open(component.directory.resolvePath(path), FileMode.READ);
+			try {
+				fileStream.open(component.directory.resolvePath(path), FileMode.READ);
+			} catch (e:Error) {
+				log("loadImage({0}) error={1} \n{2}", path, e.message, e.getStackTrace());
+				return;
+			}
 			fileStream.position = 0;
 			
 			const bytes:ByteArray = new ByteArray;
