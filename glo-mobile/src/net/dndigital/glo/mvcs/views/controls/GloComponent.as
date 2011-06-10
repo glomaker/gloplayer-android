@@ -11,6 +11,7 @@ package net.dndigital.glo.mvcs.views.controls
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IContainer;
 	import net.dndigital.components.IGUIComponent;
+	import net.dndigital.glo.mvcs.models.vo.Component;
 	
 	public class GloComponent extends GUIComponent implements IGloComponent
 	{
@@ -47,13 +48,13 @@ package net.dndigital.glo.mvcs.views.controls
 		 * @private
 		 * Flag, indicates whether Data was changed.
 		 */
-		protected var dataChanged:Boolean = false;
+		protected var componentVOChanged:Boolean = false;
 		/**
 		 * @private
 		 */
-		protected var _data:Object;
+		protected var _component:Component;
 		/**
-		 * @copy	net.dndigital.glo.mvcs.views.controls.IGloComponent
+		 * @copy	net.dndigital.glo.mvcs.views.controls.IGloComponent#component
 		 *
 		 * @see		net.dndigital.glo.mvcs.models.vo.Component
 		 * 
@@ -62,16 +63,16 @@ package net.dndigital.glo.mvcs.views.controls
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get data():Object { return _data; }
+		public function get component():Component { return _component; }
 		/**
 		 * @private
 		 */
-		public function set data(value:Object):void
+		public function set component(value:Component):void
 		{
-			if (_data == value)
+			if (_component == value)
 				return;
-			_data = value;
-			dataChanged = true;
+			_component = value;
+			componentVOChanged = true;
 			invalidateData();
 		}
 		
@@ -101,9 +102,9 @@ package net.dndigital.glo.mvcs.views.controls
 		{
 			super.commited();
 			
-			if (dataChanged) {
-				dataUpdated(_data);
-				dataChanged = false;
+			if (componentVOChanged) {
+				dataUpdated(_component);
+				componentVOChanged = false;
 			}
 		}
 		
@@ -143,9 +144,9 @@ package net.dndigital.glo.mvcs.views.controls
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		protected function mapProperty(from:String, to:String, initializer:Function = null):void
+		protected function mapProperty(from:String, to:String):void
 		{ 
-			mappers.push(new Mapper(from, to, initializer));
+			mappers.push(new Mapper(from, to));
 			delay(lockMappers);
 		}
 		
@@ -170,6 +171,8 @@ package net.dndigital.glo.mvcs.views.controls
 		}
 	}
 }
+import com.adobe.serialization.json.JSON;
+
 import eu.kiichigo.utils.path;
 
 import net.dndigital.glo.mvcs.views.controls.IGloComponent;
@@ -178,13 +181,12 @@ class Mapper {
 	/**
 	 * Constructor. Creates new instance of <code>Mapper</code>.
 	 */
-	public function Mapper(from:String, to:String, initializer:Function = null)
+	public function Mapper(from:String, to:String)
 	{
 		super();
 		
 		this.from = from;
 		this.to = to;
-		this.initializer = initializer;
 	}
 	
 	/**
@@ -195,24 +197,20 @@ class Mapper {
 	 * @private
 	 */
 	protected var to:String;
-	/**
-	 * @private
-	 */
-	protected var initializer:Function;
 	
 	/**
 	 * Applies property located with <code>to</code> and <code>data</code> to <code>component</code>.
 	 * 	  
 	 * @param component Reference to <code>IGloComponent</code> which property should be mapped.
 	 */
-	public function apply(component:IGloComponent):void
+	public function apply(gloComponent:IGloComponent):void
 	{
-		var value:* = path(component.data, from);
+		var value:* = path(gloComponent.component.data, from);
 		if (value === null)
 			return;
-		if (initializer as Function)
-			value = initializer(value);
-		component[to] = value;
+		
+		value = JSON.decode(value);
+		gloComponent[to] = value;
 	}
 }
 

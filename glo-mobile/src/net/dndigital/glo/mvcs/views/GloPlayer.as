@@ -1,5 +1,6 @@
 package net.dndigital.glo.mvcs.views
 {
+	import eu.kiichigo.utils.filter;
 	import eu.kiichigo.utils.log;
 	
 	import flash.display.DisplayObject;
@@ -49,6 +50,12 @@ package net.dndigital.glo.mvcs.views
 		//  Private Fields
 		//
 		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 * Collection of component that displayed in a GloPlayer.
+		 */
+		protected const components:Vector.<IGloComponent> = new Vector.<IGloComponent>;
 		
 		/**
 		 * @private
@@ -162,6 +169,8 @@ package net.dndigital.glo.mvcs.views
 				graphics.drawRect(0, 0, width, height - controls.height);
 				graphics.endFill();
 			}
+			
+			log("resized");
 		}
 		
 		/**
@@ -182,7 +191,6 @@ package net.dndigital.glo.mvcs.views
 			// Decide whether Navigation Buttons needs to be locked or not.			
 			controls.lock(_index == 0,
 						  _index == _project.length - 1);
-				
 		}
 		
 		//--------------------------------------------------------------------------
@@ -207,6 +215,8 @@ package net.dndigital.glo.mvcs.views
 			
 			bringToFront(controls);
 			
+			if (_index != index)
+				_index = index;
 			return current;
 		}
 		
@@ -238,14 +248,33 @@ package net.dndigital.glo.mvcs.views
 		protected function clear(sealList:Boolean = true):GloPlayer
 		{
 			pages.fixed = false;
-			while(pages.length) {
+			while (pages.length) {
 				var page:Sprite = pages.shift();
-				if(page.stage)
+				if (page.stage)
 					remove(pages.shift());
 			}
 			pages.fixed = sealList;
 			built = null;
+			
+			while (components.length)
+				components.pop();
+
 			return this;
+		}
+		
+		/**
+		 * @private
+		 * Handles component resing.
+		 */
+		protected function resize(width:int, height:int):void
+		{
+			var w:int = _project.width;
+			var h:int = _project.height;
+		
+			for (var i:uint = 0; i < components.length; i ++) {
+				var c:IGloComponent = components[i];
+				var vo:Component	= c.component;
+			}
 		}
 		
 		/**
@@ -280,13 +309,16 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Initializes a component.
 		 */
-		protected function component(target:IGloComponent, data:Component):DisplayObject
+		protected function component(target:IGloComponent, vo:Component):DisplayObject
 		{
-			target.x 	  = data.x;
-			target.y 	  = data.y;
-			target.width  = data.width;
-			target.height = data.height;
-			target.data   = data.data;
+			if (components.indexOf(target) == -1)
+				components.push(target);
+			
+			target.x 	 		= vo.x;
+			target.y 	  		= vo.y;
+			target.width  		= vo.width;
+			target.height 		= vo.height;
+			target.component   	= vo;
 			return target.initialize() as DisplayObject;
 		}
 	}
