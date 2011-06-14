@@ -25,9 +25,7 @@ package net.dndigital.errors
 		public function DeprecatedError(deprecated:String, current:String,
 										message:String = "Method {0} is deprecated, please use {1} instead.")
 		{
-			message.split("{0}").join(deprecated).split("{1}").join(current);
-			
-			super(message);
+			super(message.split("{0}").join(deprecated).split("{1}").join(current));
 		}
 	}
 }
