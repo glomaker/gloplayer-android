@@ -1,4 +1,4 @@
-package net.dndigital.glo.mvcs.views.components
+package net.dndigital.glo.mvcs.views.playercomponents
 {
 	import flash.utils.Dictionary;
 	

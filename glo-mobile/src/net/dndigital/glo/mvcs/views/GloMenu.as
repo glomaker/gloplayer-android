@@ -87,7 +87,7 @@ package net.dndigital.glo.mvcs.views
 				for (var i:int = 0; i < _files.length; i ++) {
 					var button:MenuButton = new MenuButton;
 						button.y = i * ScreenMaths.mmToPixels(7.7);
-						button.label = _files[i].name;
+						button.file = _files[i];
 						button.addEventListener(MouseEvent.CLICK, handleButton);
 					add(button);
 				}
@@ -110,7 +110,7 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected function handleButton(event:MouseEvent):void
 		{
-			dispatchEvent(new GloMenuEvent(GloMenuEvent.LOAD_FILE, _files.filter(filter({name: event.target.label}))[0]));
+			dispatchEvent(new GloMenuEvent(GloMenuEvent.LOAD_FILE, event.target.file));
 		}
 	}
 }

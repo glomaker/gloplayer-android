@@ -3,6 +3,8 @@ package net.dndigital.glo.mvcs.services
 	import eu.kiichigo.utils.log;
 	
 	import flash.filesystem.File;
+	import flash.system.Capabilities;
+	import flash.system.System;
 	
 	import org.robotlegs.mvcs.Actor;
 	
@@ -20,8 +22,6 @@ package net.dndigital.glo.mvcs.services
 		protected static const log:Function = eu.kiichigo.utils.log(FileService);
 		
 		
-		protected static const DEFAULT:File = File.applicationDirectory;
-		
 		/**
 		 * @copy	net.dndigital.glo.mvcs.services.IFileService#files
 		 * 
@@ -34,7 +34,8 @@ package net.dndigital.glo.mvcs.services
 		 */
 		public function get files():Vector.<File>
 		{
-			return scanDirectory(DEFAULT);
+			return scanDirectory(File.documentsDirectory.resolvePath("GloPlayer/Glos")).concat(
+				   scanDirectory(File.applicationDirectory));
 		}
 		
 		/**
@@ -53,6 +54,7 @@ package net.dndigital.glo.mvcs.services
 		 */
 		protected function scanDirectory(directory:File, list:Vector.<File> = null, tailed:Boolean = false):Vector.<File>
 		{
+			log("scanDirectory({0})", directory.url);
 			if (list == null)
 				list = new Vector.<File>;
 			
@@ -62,7 +64,7 @@ package net.dndigital.glo.mvcs.services
 				if((dir[i] as File).isDirectory)
 					scanDirectory(dir[i] as File, list, true);
 				else if(dir[i].extension == "glo")
-					list.push(dir[i] as File);
+					list.push(dir[i] as File), log("pushing {0}", (dir[i] as File).url);
 			
 			if (!tailed)
 				list.fixed = true;

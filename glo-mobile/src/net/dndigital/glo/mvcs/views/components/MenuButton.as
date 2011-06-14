@@ -1,5 +1,6 @@
 package net.dndigital.glo.mvcs.views.components
 {
+	import flash.filesystem.File;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -42,26 +43,32 @@ package net.dndigital.glo.mvcs.views.components
 		/**
 		 * @private
 		 */
-		protected var _label:String = "Label";
+		protected var fileChanged:Boolean = false;
 		/**
-		 * label.
+		 * @private
+		 */
+		protected var _file:File;
+		/**
+		 * file.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get label():String { return _label; }
+		public function get file():File { return _file; }
 		/**
 		 * @private
 		 */
-		public function set label(value:String):void
+		public function set file(value:File):void
 		{
-			if (_label == value)
+			if (_file == value)
 				return;
-			_label = value;
-			invalidateData();
+			_file = value;
+			fileChanged = true;
+			invalidateData()
 		}
+		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -89,7 +96,7 @@ package net.dndigital.glo.mvcs.views.components
 			super.createChildren();
 			
 			addChild(textField);
-			textField.defaultTextFormat = new TextFormat("Verdana");
+			textField.defaultTextFormat = new TextFormat("Verdana", 16);
 			textField.selectable = false;
 			textField.autoSize = TextFieldAutoSize.LEFT;
 		}
@@ -116,9 +123,17 @@ package net.dndigital.glo.mvcs.views.components
 		{
 			super.commited();
 			
-			if(_label != textField.text) {
-				textField.text = _label;
-				invalidateDisplay();
+			if (fileChanged) {
+				var name:String = file.name.split(".glo").join("");
+				if (name.toUpperCase() != "PROJECT")
+					textField.text = name;
+				else 
+					textField.text = (file.url.split("Glos")[1] as String).
+						split("/").join("").
+						split("\"").join("").
+						split("project.glo").join("");
+				
+				fileChanged = false;
 			}
 		}
 	}

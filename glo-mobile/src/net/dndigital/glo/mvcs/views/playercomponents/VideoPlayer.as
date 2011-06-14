@@ -1,14 +1,12 @@
-package net.dndigital.glo.mvcs.views.components
+package net.dndigital.glo.mvcs.views.playercomponents
 {
-	import flash.display.Bitmap;
 	import flash.media.Video;
 	
-	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
 	
 	import org.bytearray.display.ScaleBitmap;
-	
-	public final class Video extends GUIComponent
+
+	public final class VideoPlayer extends Placeholder
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -19,7 +17,7 @@ package net.dndigital.glo.mvcs.views.components
 		/**
 		 * @private
 		 */
-		protected const video:flash.media.Video = new flash.media.Video;
+		protected const video:Video = new Video
 		
 		/**
 		 * @private
