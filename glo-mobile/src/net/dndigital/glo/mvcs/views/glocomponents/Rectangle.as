@@ -4,6 +4,20 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	
 	import net.dndigital.components.IGUIComponent;
 
+	/**
+	 * Rectangle component draws rectangular shapes on Player's page.
+	 * 
+	 * @see		net.dndigital.glo.mvcs.views.glocomponents.IGloComponent
+	 * @see		net.dndigital.glo.mvcs.views.glocomponents.GloComponent
+	 * 
+	 * @author David "nirth" Sergey.
+	 * @author DN Digital Ltd.
+	 *
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 2.5
+	 * @productversion Flex 4.5
+	 */
 	public final class Rectangle extends GloComponent
 	{
 		//--------------------------------------------------------------------------
@@ -28,7 +42,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected var _cornerRadius:Number;
 		/**
-		 * cornerRadius.
+		 * Rectangle's corner radious in pixels.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -52,7 +66,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected var _color:uint;
 		/**
-		 * color.
+		 * Color in which rectangle should be filled.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10

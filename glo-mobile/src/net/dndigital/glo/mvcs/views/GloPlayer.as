@@ -302,6 +302,9 @@ package net.dndigital.glo.mvcs.views
 					case "rectangle":
 						container.addChild(component(new Rectangle, page.components[i]));
 						break;
+					case "videoplayer":
+						container.addChild(component(new VideoPlayer, page.components[i]));
+						break;
 					default:
 						container.addChild(component(new Placeholder, page.components[i]));
 						break;
@@ -318,7 +321,6 @@ package net.dndigital.glo.mvcs.views
 		{
 			if (components.indexOf(target) == -1)
 				components.push(target);
-			//log("component()", vo.directory.nativePath);
 			target.x 	 		= vo.x;
 			target.y 	  		= vo.y;
 			target.width  		= vo.width;

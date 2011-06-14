@@ -11,6 +11,20 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	
 	import net.dndigital.components.IGUIComponent;
 
+	/**
+	 * TextArea component renders formatted and not formatted text.
+	 * 
+	 * @see		net.dndigital.glo.mvcs.views.glocomponents.IGloComponent
+	 * @see		net.dndigital.glo.mvcs.views.glocomponents.GloComponent
+	 * 
+	 * @author David "nirth" Sergey.
+	 * @author DN Digital Ltd.
+	 *
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 2.5
+	 * @productversion Flex 4.5
+	 */
 	public final class TextArea extends GloComponent
 	{
 		//--------------------------------------------------------------------------

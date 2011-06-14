@@ -1,18 +1,26 @@
 package net.dndigital.glo.mvcs.views.glocomponents
 {
 	import eu.kiichigo.utils.log;
-	import eu.kiichigo.utils.loggable;
 	import eu.kiichigo.utils.path;
 	
-	import flash.events.Event;
-	import flash.utils.Dictionary;
-	
-	import net.dndigital.components.Application;
 	import net.dndigital.components.GUIComponent;
-	import net.dndigital.components.IContainer;
-	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.glo.mvcs.models.vo.Component;
 	
+	/**
+	 * Base class for GloComponents such as <code>TextArea</code> and <code>Image</code>. Class <code>GloComponent</code> defines basic structure for the component to be rendered in player.
+	 *  
+	 * @see		net.dndigital.components.IGUIComponent
+	 * @see		net.dndigital.components.GUIComponent
+	 * @see		net.dndigital.glo.mvcs.models.vo.Component
+	 * 
+	 * @author David "nirth" Sergey.
+	 * @author DN Digital Ltd.
+	 *
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 2.5
+	 * @productversion Flex 4.5
+	 */
 	public class GloComponent extends GUIComponent implements IGloComponent
 	{
 		//--------------------------------------------------------------------------
