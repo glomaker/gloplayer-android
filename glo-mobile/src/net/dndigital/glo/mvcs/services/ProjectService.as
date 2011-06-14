@@ -127,8 +127,7 @@ package net.dndigital.glo.mvcs.services
 				throw GloError.INVALID_GLO_FILE;
 			
 			// Parse project
-			const project:Project = net.dndigital.glo.mvcs.services.parse(xml);
-			project.directory = file.parent;
+			const project:Project = net.dndigital.glo.mvcs.services.parse(xml, file.parent);
 			_project = project;
 			
 			// Notify application that project is parsed.

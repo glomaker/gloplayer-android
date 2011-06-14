@@ -11,7 +11,7 @@ package net.dndigital.glo.mvcs.views
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.glo.mvcs.events.GloMenuEvent;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
-	import net.dndigital.glo.mvcs.views.controls.MenuButton;
+	import net.dndigital.glo.mvcs.views.components.MenuButton;
 	
 	public class GloMenu extends Container implements IGloView
 	{

@@ -2,6 +2,7 @@ package net.dndigital.glo.mvcs.models.vo
 {
 	import eu.kiichigo.utils.formatToString;
 	
+	import flash.filesystem.File;
 	import flash.utils.Dictionary;
 
 	/**
@@ -157,6 +158,30 @@ package net.dndigital.glo.mvcs.models.vo
 			_data = value;
 		}
 		
+		/**
+		 * @private
+		 */
+		protected var _directory:File;
+		/**
+		 * Directory of the project.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get directory():File { return _directory; }
+		/**
+		 * @private
+		 */
+		public function set directory(value:File):void
+		{
+			if (_directory == value)
+				return;
+			_directory = value;
+		}
+		
+		
 		//--------------------------------------------------------------------------
 		//
 		//  toString
@@ -169,7 +194,7 @@ package net.dndigital.glo.mvcs.models.vo
 		 */
 		public function toString():String
 		{
-			return eu.kiichigo.utils.formatToString(this, "id", "x", "y", "width", "height", "data");
+			return eu.kiichigo.utils.formatToString(this, "id", "x", "y", "width", "height", "data", "directory");
 		}
 	}
 }

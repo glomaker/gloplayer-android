@@ -1,5 +1,6 @@
 package net.dndigital.glo.mvcs.views
 {
+	import eu.kiichigo.utils.filter;
 	import eu.kiichigo.utils.log;
 	
 	import flash.display.DisplayObject;
@@ -11,11 +12,13 @@ package net.dndigital.glo.mvcs.views
 	import net.dndigital.glo.mvcs.models.vo.Component;
 	import net.dndigital.glo.mvcs.models.vo.Page;
 	import net.dndigital.glo.mvcs.models.vo.Project;
-	import net.dndigital.glo.mvcs.views.controls.IGloComponent;
-	import net.dndigital.glo.mvcs.views.controls.Image;
-	import net.dndigital.glo.mvcs.views.controls.Placeholder;
-	import net.dndigital.glo.mvcs.views.controls.TextArea;
-	import net.dndigital.glo.mvcs.views.controls.VideoPlayer;
+	import net.dndigital.glo.mvcs.utils.ScreenMaths;
+	import net.dndigital.glo.mvcs.views.components.IGloComponent;
+	import net.dndigital.glo.mvcs.views.components.Image;
+	import net.dndigital.glo.mvcs.views.components.Placeholder;
+	import net.dndigital.glo.mvcs.views.components.Rectangle;
+	import net.dndigital.glo.mvcs.views.components.TextArea;
+	import net.dndigital.glo.mvcs.views.components.VideoPlayer;
 	
 	/**
 	 * 
@@ -49,6 +52,12 @@ package net.dndigital.glo.mvcs.views
 		//  Private Fields
 		//
 		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 * Collection of component that displayed in a GloPlayer.
+		 */
+		protected const components:Vector.<IGloComponent> = new Vector.<IGloComponent>;
 		
 		/**
 		 * @private
@@ -143,7 +152,7 @@ package net.dndigital.glo.mvcs.views
 			super.createChildren();
 			
 			controls.width = _width;
-			controls.height = 50;
+			controls.height = ScreenMaths.mmToPixels(10);
 			add(controls);
 		}
 		/**
@@ -162,6 +171,8 @@ package net.dndigital.glo.mvcs.views
 				graphics.drawRect(0, 0, width, height - controls.height);
 				graphics.endFill();
 			}
+			
+			log("resized");
 		}
 		
 		/**
@@ -182,7 +193,6 @@ package net.dndigital.glo.mvcs.views
 			// Decide whether Navigation Buttons needs to be locked or not.			
 			controls.lock(_index == 0,
 						  _index == _project.length - 1);
-				
 		}
 		
 		//--------------------------------------------------------------------------
@@ -207,6 +217,8 @@ package net.dndigital.glo.mvcs.views
 			
 			bringToFront(controls);
 			
+			if (_index != index)
+				_index = index;
 			return current;
 		}
 		
@@ -238,14 +250,33 @@ package net.dndigital.glo.mvcs.views
 		protected function clear(sealList:Boolean = true):GloPlayer
 		{
 			pages.fixed = false;
-			while(pages.length) {
+			while (pages.length) {
 				var page:Sprite = pages.shift();
-				if(page.stage)
+				if (page.stage)
 					remove(pages.shift());
 			}
 			pages.fixed = sealList;
 			built = null;
+			
+			while (components.length)
+				components.pop();
+
 			return this;
+		}
+		
+		/**
+		 * @private
+		 * Handles rearranging and resizing components on pages.
+		 */
+		protected function rearrange(width:int, height:int):void
+		{
+			var w:int = _project.width;
+			var h:int = _project.height;
+		
+			for (var i:uint = 0; i < components.length; i ++) {
+				var c:IGloComponent = components[i];
+				var vo:Component	= c.component;
+			}
 		}
 		
 		/**
@@ -268,6 +299,9 @@ package net.dndigital.glo.mvcs.views
 					case "videoplayer":
 						container.addChild(component(new VideoPlayer, page.components[i]));
 						break;
+					case "rectangle":
+						container.addChild(component(new Rectangle, page.components[i]));
+						break;
 					default:
 						container.addChild(component(new Placeholder, page.components[i]));
 						break;
@@ -280,14 +314,17 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Initializes a component.
 		 */
-		protected function component(target:IGloComponent, data:Component):DisplayObject
+		protected function component(target:IGloComponent, vo:Component):DisplayObject
 		{
-			target.x 	  = data.x;
-			target.y 	  = data.y;
-			target.width  = data.width;
-			target.height = data.height;
-			target.data   = data.data;
-			return target.initialize() as DisplayObject;
+			if (components.indexOf(target) == -1)
+				components.push(target);
+			//log("component()", vo.directory.nativePath);
+			target.x 	 		= vo.x;
+			target.y 	  		= vo.y;
+			target.width  		= vo.width;
+			target.height 		= vo.height;
+			target.component   	= vo;
+			return target as DisplayObject;
 		}
 	}
 }

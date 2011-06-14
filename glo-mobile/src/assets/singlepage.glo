@@ -27,9 +27,9 @@
       </component>
       <component id="textarea" x="85" y="164" width="591" height="360">
         <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;That&amp;apos;s some text!&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
-        <borderStyle>true</borderStyle>
+        <borderStyle>false</borderStyle>
       </component>
     </page>
   </nodes>
-  <filehash>7452940bca7794fea4d35d0ee5466627</filehash>
+  <filehash>8bbb7bfe285b93459336312f693346b6</filehash>
 </glo>
