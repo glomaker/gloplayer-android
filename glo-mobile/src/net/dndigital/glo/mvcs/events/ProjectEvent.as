@@ -14,6 +14,7 @@ package net.dndigital.glo.mvcs.events
 		
 		public static const NEXT_PAGE_EVENT:ProjectEvent = new ProjectEvent(ProjectEvent.NEXT_PAGE);
 		public static const PREV_PAGE_EVENT:ProjectEvent = new ProjectEvent(ProjectEvent.PREV_PAGE);
+		public static const MENU_EVENT:ProjectEvent = new ProjectEvent(ProjectEvent.MENU);
 
 		//--------------------------------------------------------------------------
 		//
@@ -25,6 +26,7 @@ package net.dndigital.glo.mvcs.events
 		public static const PAGE:String = "page";
 		public static const NEXT_PAGE:String = "next";
 		public static const PREV_PAGE:String = "prev";
+		public static const MENU:String = "menu";
 		public static const GLO_VALIDATE_ERROR:String = "glovalidateerror";
 		
 

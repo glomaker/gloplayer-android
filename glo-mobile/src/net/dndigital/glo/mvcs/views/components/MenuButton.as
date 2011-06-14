@@ -125,13 +125,15 @@ package net.dndigital.glo.mvcs.views.components
 			
 			if (fileChanged) {
 				var name:String = file.name.split(".glo").join("");
-				if (name.toUpperCase() != "PROJECT")
-					textField.text = name;
-				else 
-					textField.text = (file.url.split("Glos")[1] as String).
+				if (name.toUpperCase() == "PROJECT")
+					name = (file.url.split("Glos")[1] as String).
 						split("/").join("").
 						split("\"").join("").
 						split("project.glo").join("");
+				
+				textField.text = name;
+				
+				invalidateDisplay();
 				
 				fileChanged = false;
 			}

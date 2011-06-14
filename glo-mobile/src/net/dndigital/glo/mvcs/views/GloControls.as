@@ -5,9 +5,11 @@ package net.dndigital.glo.mvcs.views
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.text.TextField;
 	
 	import net.dndigital.components.Container;
 	import net.dndigital.components.GUIComponent;
+	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
 	import net.dndigital.glo.mvcs.views.components.NavButton;
@@ -60,9 +62,10 @@ package net.dndigital.glo.mvcs.views
 		
 		/**
 		 * @private
-		 * Background (Sprite so it remains interactive)
+		 * Text Field indicates slide progress.
 		 */
-		public const bg:GUIComponent = new GUIComponent();
+		protected const progess:TextField = new TextField;
+
 		
 		//--------------------------------------------------------------------------
 		//
@@ -95,11 +98,18 @@ package net.dndigital.glo.mvcs.views
 		/**
 		 * @inheritDoc
 		 */
+		override public function initialize():IGUIComponent
+		{
+			addEventListener(MouseEvent.CLICK, handleClick);
+			
+			return super.initialize();
+		}
+		/**
+		 * @inheritDoc
+		 */
 		override protected function createChildren():void
 		{
 			super.createChildren();
-
-			add(bg);
 			
 			[Embed(source="assets/next.up.png")]
 			const nextUpAsset:Class;
@@ -113,7 +123,6 @@ package net.dndigital.glo.mvcs.views
 			next.upSkin = new nextUpAsset().bitmapData;
 			next.downSkin = new nextDownAsset().bitmapData;
 			next.disabledSkin = new nextDisabledAsset().bitmapData;
-			next.addEventListener(MouseEvent.CLICK, handleClick);
 			
 			add(next);
 
@@ -129,7 +138,6 @@ package net.dndigital.glo.mvcs.views
 			prev.upSkin = new prevUpAsset().bitmapData;
 			prev.downSkin = new prevDownAsset().bitmapData;
 			prev.disabledSkin = new prevDisabledAsset().bitmapData;
-			prev.addEventListener(MouseEvent.CLICK, handleClick);
 			
 			add(prev);
 			
@@ -139,13 +147,6 @@ package net.dndigital.glo.mvcs.views
 			invalidateDisplay();
 		}
 
-		protected function handleClick(event:MouseEvent):void
-		{
-			if(event.target == next)
-				dispatchEvent(ProjectEvent.NEXT_PAGE_EVENT);
-			else
-				dispatchEvent(ProjectEvent.PREV_PAGE_EVENT);
-		}
 		
 		/**
 		 * @inheritDoc
@@ -155,13 +156,10 @@ package net.dndigital.glo.mvcs.views
 			super.resized(width, height);
 
 			if (!isNaN(width+height)) {
-				with (bg.graphics)
-				{
-					clear();
-					beginFill(0x494949);
-					drawRect(0, 0, width, height);
-					endFill();
-				}
+				graphics.clear();
+				graphics.beginFill(0x494949);
+				graphics.drawRect(0, 0, width, height);
+				graphics.endFill();
 			}
 			
 			next.x = width - next.width - 10;
@@ -178,6 +176,16 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.measure();
 			invalidateDisplay()
+		}
+		
+		protected function handleClick(event:MouseEvent):void
+		{
+			if (event.target == next)
+				dispatchEvent(ProjectEvent.NEXT_PAGE_EVENT);
+			else if(event.target == prev)
+				dispatchEvent(ProjectEvent.PREV_PAGE_EVENT);
+			else
+				dispatchEvent(ProjectEvent.MENU_EVENT);
 		}
 	}
 }

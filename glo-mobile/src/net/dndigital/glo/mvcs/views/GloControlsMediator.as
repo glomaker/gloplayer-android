@@ -42,7 +42,7 @@ package net.dndigital.glo.mvcs.views
 		{
 			eventMap.mapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.PREV_PAGE, dispatch);
-			eventMap.mapListener(view.bg, MouseEvent.CLICK, handleBgClick);
+			eventMap.mapListener(view, ProjectEvent.MENU, handleMenuClick);
 		}
 
 		/**
@@ -52,21 +52,16 @@ package net.dndigital.glo.mvcs.views
 		{
 			eventMap.unmapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.PREV_PAGE, dispatch);
-			eventMap.unmapListener(view.bg, MouseEvent.CLICK, handleBgClick);
+			eventMap.unmapListener(view, ProjectEvent.MENU, handleMenuClick);
 		}
 		
 		/**
 		 * Event handler - controls background was clicked. 
 		 * @param e
 		 */		
-		protected function handleBgClick( e:MouseEvent ):void
+		protected function handleMenuClick(event:ProjectEvent):void
 		{
-			// bit of a hack - if the click was somewhere near the middle, return to menu
-			// cf. ticket #30
-			if( e.localX > 100 && e.localX < view.stage.stageWidth - 100 )
-			{
-				dispatch( ApplicationEvent.SHOW_MENU_EVENT );
-			}
+			dispatch(ApplicationEvent.SHOW_MENU_EVENT);
 		}
 		
 	}

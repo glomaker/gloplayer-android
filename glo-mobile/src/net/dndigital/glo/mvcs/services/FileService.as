@@ -54,7 +54,6 @@ package net.dndigital.glo.mvcs.services
 		 */
 		protected function scanDirectory(directory:File, list:Vector.<File> = null, tailed:Boolean = false):Vector.<File>
 		{
-			log("scanDirectory({0})", directory.url);
 			if (list == null)
 				list = new Vector.<File>;
 			
@@ -64,7 +63,7 @@ package net.dndigital.glo.mvcs.services
 				if((dir[i] as File).isDirectory)
 					scanDirectory(dir[i] as File, list, true);
 				else if(dir[i].extension == "glo")
-					list.push(dir[i] as File), log("pushing {0}", (dir[i] as File).url);
+					list.push(dir[i] as File);
 			
 			if (!tailed)
 				list.fixed = true;
