@@ -180,10 +180,11 @@ package net.dndigital.glo.mvcs.views.components
 		protected function loadImage(path:String):void
 		{
 			const fileStream:FileStream = new FileStream();
+			log("loading({0})", component.directory.resolvePath(path).nativePath);
 			try {
 				fileStream.open(component.directory.resolvePath(path), FileMode.READ);
 			} catch (e:Error) {
-				log("loadImage({0}) error={1} \n{2}", path, e.message, e.getStackTrace());
+				//log("loadImage({0}) error={1} \n{2}", path, e.message, e.getStackTrace());
 				return;
 			}
 			fileStream.position = 0;

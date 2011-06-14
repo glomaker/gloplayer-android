@@ -1,4 +1,4 @@
-<glo version="Version 2.0" hasFullFilePaths="true">
+<glo version="Version 2.0" hasFullFilePaths="false">
   <props>
     <w>800</w>
     <h>600</h>
@@ -26,11 +26,11 @@
         <borderStyle>true</borderStyle>
       </component>
       <component id="imageloader" x="415" y="165" width="339" height="173">
-        <source isPath="true">"file:///Users/Nirth/Documents/Clients/DNDigital/Glo/glo-mobile/src/assets/images/content/arrow.down.png"</source>
+        <source isPath="true">"content/arrow.down.png"</source>
         <maintainRatio>true</maintainRatio>
       </component>
       <component id="imageloader" x="437" y="390" width="318" height="81">
-        <source isPath="true">"file:///Users/Nirth/Documents/Clients/DNDigital/Glo/glo-mobile/src/assets/images/content/arrow.down.png"</source>
+        <source isPath="true">"content/arrow.down.png"</source>
         <maintainRatio>false</maintainRatio>
       </component>
       <component id="rectangle" x="75" y="195" width="180" height="115">
@@ -65,7 +65,7 @@
         <borderStyle>true</borderStyle>
       </component>
       <component id="imageloader" x="35" y="99" width="737" height="436">
-        <source isPath="true">"file:///Users/Nirth/Documents/Clients/DNDigital/Glo/glo-mobile/src/assets/images/content/forest.jpg"</source>
+        <source isPath="true">"content/forest.jpg"</source>
         <maintainRatio>true</maintainRatio>
       </component>
     </page>
@@ -182,5 +182,5 @@
       </component>
     </page>
   </nodes>
-  <filehash>4b8f2dde830436b3e63270ca83721507</filehash>
+  <filehash>9e1fdb490d9de3be8744fad24ce9885a</filehash>
 </glo>

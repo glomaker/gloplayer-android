@@ -28,7 +28,7 @@ package net.dndigital.glo.mvcs.views.components
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Overriden API
+		//  
 		//
 		//--------------------------------------------------------------------------
 		
@@ -43,7 +43,6 @@ package net.dndigital.glo.mvcs.views.components
 		 */
 		override public function initialize():IGUIComponent
 		{
-			
 			return super.initialize();
 		}
 		
