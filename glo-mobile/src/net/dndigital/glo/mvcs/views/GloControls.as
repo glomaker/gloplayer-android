@@ -10,7 +10,7 @@ package net.dndigital.glo.mvcs.views
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
-	import net.dndigital.glo.mvcs.views.controls.NavButton;
+	import net.dndigital.glo.mvcs.views.components.NavButton;
 	
 	/**
 	 * View controls flow and playback of the <code>GloPlayer</code> view, and handles page swaping.

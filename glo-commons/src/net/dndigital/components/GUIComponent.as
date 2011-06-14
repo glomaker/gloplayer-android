@@ -82,6 +82,26 @@ package net.dndigital.components
 		
 		//--------------------------------------------------------------------------
 		//
+		//  Constructor
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * Constructor
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function GUIComponent()
+		{
+			super();
+			
+			addEventListener(Event.ADDED_TO_STAGE, addedToStage);
+		}
+		//--------------------------------------------------------------------------
+		//
 		//  IComponent Properties
 		//
 		//--------------------------------------------------------------------------
@@ -502,5 +522,19 @@ package net.dndigital.components
 		 * Override this method to create and add children to the display list.
 		 */
 		protected function createChildren():void {}
+		
+		/**
+		 * @private
+		 * Handles added to stage. This handler should be invoked only if parent is not IContainer.
+		 */
+		protected function addedToStage(event:Event):void
+		{
+			removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
+			
+			if (parent is Container || this is Application)
+				return;
+			
+			initialize();
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package net.dndigital.glo.mvcs.views.controls
+package net.dndigital.glo.mvcs.views.components
 {
 	import eu.kiichigo.utils.log;
 	import eu.kiichigo.utils.loggable;
@@ -85,19 +85,6 @@ package net.dndigital.glo.mvcs.views.controls
 		/**
 		 * @inheritDoc
 		 */
-		override public function initialize():IGUIComponent
-		{
-			super.initialize();
-			
-			if(!(parent is IContainer) && !(this is Application))
-				addEventListener(Event.ADDED_TO_STAGE, addedToStage);
-			
-			return this;
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
 		override protected function commited():void
 		{
 			super.commited();
@@ -160,24 +147,13 @@ package net.dndigital.glo.mvcs.views.controls
 		{
 			mappers.fixed = true;
 		}
-		
-		/**
-		 * @private
-		 * Handles added to stage. This handler should be invoked only if parent is not IContainer.
-		 */
-		protected function addedToStage(event:Event):void
-		{
-			removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
-			if(owner== null && !(this is Application))
-				validate();
-		}
 	}
 }
 import com.adobe.serialization.json.JSON;
 
 import eu.kiichigo.utils.path;
 
-import net.dndigital.glo.mvcs.views.controls.IGloComponent;
+import net.dndigital.glo.mvcs.views.components.IGloComponent;
 
 class Mapper {
 	/**

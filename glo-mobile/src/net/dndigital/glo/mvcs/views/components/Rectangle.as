@@ -1,4 +1,4 @@
-package net.dndigital.glo.mvcs.views.controls
+package net.dndigital.glo.mvcs.views.components
 {
 	import eu.kiichigo.utils.log;
 	
@@ -99,6 +99,7 @@ package net.dndigital.glo.mvcs.views.controls
 			graphics.beginFill(_color);
 			graphics.drawRoundRect(0, 0, width, height, _cornerRadius, _cornerRadius);
 			graphics.endFill();
+			
 		}
 	
 	}

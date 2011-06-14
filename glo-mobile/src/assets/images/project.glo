@@ -1,4 +1,4 @@
-<glo version="Version 2.0" hasFullFilePaths="false">
+<glo version="Version 2.0" hasFullFilePaths="true">
   <props>
     <w>800</w>
     <h>600</h>
@@ -21,16 +21,16 @@
         <isroot>true</isroot>
       </node>
       <layout id="titleinfopage"/>
-      <component id="textarea" x="11" y="11" width="767" height="124">
+      <component id="textarea" x="11" y="11" width="333" height="124">
         <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Enter text&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
         <borderStyle>true</borderStyle>
       </component>
       <component id="imageloader" x="415" y="165" width="339" height="173">
-        <source isPath="true">"content/arrow.down.png"</source>
+        <source isPath="true">"file:///Users/Nirth/Documents/Clients/DNDigital/Glo/glo-mobile/src/assets/images/content/arrow.down.png"</source>
         <maintainRatio>true</maintainRatio>
       </component>
       <component id="imageloader" x="437" y="390" width="318" height="81">
-        <source isPath="true">"content/arrow.down.png"</source>
+        <source isPath="true">"file:///Users/Nirth/Documents/Clients/DNDigital/Glo/glo-mobile/src/assets/images/content/arrow.down.png"</source>
         <maintainRatio>false</maintainRatio>
       </component>
       <component id="rectangle" x="75" y="195" width="180" height="115">
@@ -40,6 +40,10 @@
       <component id="rectangle" x="121" y="362" width="202" height="146">
         <cornerRadius>15</cornerRadius>
         <bgcolour>13395456</bgcolour>
+      </component>
+      <component id="textarea" x="435" y="56" width="302" height="56">
+        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Enter text&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
+        <borderStyle>true</borderStyle>
       </component>
     </page>
     <page>
@@ -61,7 +65,7 @@
         <borderStyle>true</borderStyle>
       </component>
       <component id="imageloader" x="35" y="99" width="737" height="436">
-        <source isPath="true">"content/forest.jpg"</source>
+        <source isPath="true">"file:///Users/Nirth/Documents/Clients/DNDigital/Glo/glo-mobile/src/assets/images/content/forest.jpg"</source>
         <maintainRatio>true</maintainRatio>
       </component>
     </page>
@@ -79,7 +83,7 @@
         <isroot>false</isroot>
       </node>
       <layout id="accessviews"/>
-      <component id="accessviews" x="12.8" y="18.6" width="773.6" height="517.8">
+      <component id="accessviews" x="12" y="18" width="773" height="517">
         <AccessVDP>
           <internalData speakerCount="3" topicCount="3"/>
           <speaker title="&quot;Speaker 1&quot;">
@@ -87,18 +91,27 @@
             <sound isPath="true" id="&quot;Topic_1&quot;">""</sound>
             <sound isPath="true" id="&quot;Topic_2&quot;">""</sound>
             <sound isPath="true" id="&quot;Topic_3&quot;">""</sound>
+            <script isPath="true" id="&quot;Topic_1&quot;">""</script>
+            <script isPath="true" id="&quot;Topic_2&quot;">""</script>
+            <script isPath="true" id="&quot;Topic_3&quot;">""</script>
           </speaker>
           <speaker title="&quot;Speaker 2&quot;">
             <image isPath="true">""</image>
             <sound isPath="true" id="&quot;Topic_1&quot;">""</sound>
             <sound isPath="true" id="&quot;Topic_2&quot;">""</sound>
             <sound isPath="true" id="&quot;Topic_3&quot;">""</sound>
+            <script isPath="true" id="&quot;Topic_1&quot;">""</script>
+            <script isPath="true" id="&quot;Topic_2&quot;">""</script>
+            <script isPath="true" id="&quot;Topic_3&quot;">""</script>
           </speaker>
           <speaker title="&quot;Speaker 3&quot;">
             <image isPath="true">""</image>
             <sound isPath="true" id="&quot;Topic_1&quot;">""</sound>
             <sound isPath="true" id="&quot;Topic_2&quot;">""</sound>
             <sound isPath="true" id="&quot;Topic_3&quot;">""</sound>
+            <script isPath="true" id="&quot;Topic_1&quot;">""</script>
+            <script isPath="true" id="&quot;Topic_2&quot;">""</script>
+            <script isPath="true" id="&quot;Topic_3&quot;">""</script>
           </speaker>
           <topic id="&quot;Topic_1&quot;" data="&quot;Topic 1&quot;"/>
           <topic id="&quot;Topic_2&quot;" data="&quot;Topic 2&quot;"/>
@@ -106,7 +119,7 @@
         </AccessVDP>
         <DividerWidth>429</DividerWidth>
       </component>
-      <component id="imageloader" x="35.199999999999996" y="205.20000000000002" width="388" height="285">
+      <component id="imageloader" x="35" y="205" width="388" height="285">
         <source isPath="true">"file:///Users/Nirth/Documents/Clients/DNDigital/Glo/glo-mobile/src/assets/images/FilePathProperty::NoUrlSet"</source>
         <maintainRatio>false</maintainRatio>
       </component>
@@ -125,23 +138,25 @@
         <isroot>false</isroot>
       </node>
       <layout id="mcquiztext"/>
-      <component id="MCQ" x="50.4" y="162.60000000000002" width="402.4" height="244.79999999999998">
+      <component id="MCQ" x="50" y="162" width="402" height="244">
         <question>"Type your question here..."</question>
-        <fontSize>15</fontSize>
         <submit>"Submit"</submit>
-        <correct>-1</correct>
+        <correct>0</correct>
+        <fontSize>15</fontSize>
         <answers>["Answer 1","Answer 2","Answer 3"]</answers>
-        <feedbacks>["Feedback 1","Feedback 2","Feedback 3]</feedbacks>
+        <feedbacks>["Feedback 1","Feedback 2","Feedback 3"]</feedbacks>
       </component>
-      <component id="rectangle" x="521.6" y="2.4" width="278.4" height="549">
+      <component id="rectangle" x="521" y="2" width="278" height="549">
         <cornerRadius>0</cornerRadius>
         <bgcolour>15658734</bgcolour>
       </component>
-      <component id="textarea" x="551.1999999999999" y="27.599999999999998" width="224.00000000000003" height="496.2">
-        <text>"Enter a description here"</text>
+      <component id="textarea" x="551" y="27" width="224" height="496">
+        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Enter text&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
+        <borderStyle>true</borderStyle>
       </component>
-      <component id="textarea" x="46.400000000000006" y="33.6" width="430.40000000000003" height="72.6">
-        <text>"Enter a title here"</text>
+      <component id="textarea" x="46" y="33" width="430" height="72">
+        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Enter text&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
+        <borderStyle>true</borderStyle>
       </component>
     </page>
     <page>
@@ -167,5 +182,5 @@
       </component>
     </page>
   </nodes>
-  <filehash>b2a27f6d52abdbad0f140aa6902cb66a</filehash>
+  <filehash>4b8f2dde830436b3e63270ca83721507</filehash>
 </glo>

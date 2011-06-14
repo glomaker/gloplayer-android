@@ -1,4 +1,4 @@
-package net.dndigital.glo.mvcs.views.controls
+package net.dndigital.glo.mvcs.views.components
 {
 	import net.dndigital.components.IGUIComponent;
 
