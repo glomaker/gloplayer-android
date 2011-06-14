@@ -7,6 +7,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	import flash.net.NetStream;
 	
 	import net.dndigital.components.IGUIComponent;
+	import net.dndigital.glo.events.NetStreamEvent;
 	
 	import org.bytearray.display.ScaleBitmap;
 
@@ -48,6 +49,17 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * @private
 		 */
 		protected const connection:NetConnection = new NetConnection;
+		
+		/**
+		 * @private
+		 */
+		protected var netStream:NetStream;
+		
+		/**
+		 * @private
+		 * NetStreamClient instance that monitors netstream related events.
+		 */
+		protected const client:NetStreamClient = new NetStreamClient;
 		
 		/**
 		 * @private
@@ -104,7 +116,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			mapProperty("source");
 			
 			connection.connect(null);
+			netStream = new NetStream(connection);
+			netStream.client = client;
 			
+			client.addEventListener(NetStreamEvent.META_DATA, netStreamMetaData);
+			log("initialize()");
 			return super.initialize();
 		}
 		
@@ -124,6 +140,20 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		override protected function resized(width:Number, height:Number):void
 		{
+			if (video.videoWidth > 0 && video.videoWidth > 0) {
+				if (video.videoWidth != width || video.videoHeight != height) {
+					// Calculate a cooficient.
+					var c:Number = Math.min(width / video.videoWidth, height / video.videoHeight);
+					// Apply size
+					video.width = video.videoWidth * c;
+					video.height = video.videoHeight * c;
+					
+					video.x = (width - video.width) / 2;
+					video.y = (height - video.height) / 2;
+					//	video.videoWidth * c, video.videoHeight * c);
+				}
+				log("resized({0}, {1}) video({2}, {3})", width, height, video.videoWidth, video.videoHeight);
+			}
 			super.resized(width, height);
 		}
 		//--------------------------------------------------------------------------
@@ -137,12 +167,23 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function loadVideo(path:String):void
 		{
-			var stream:NetStream = new NetStream(connection);
-				stream.client = new NetStreamClient;
-				stream.play(component.directory.resolvePath(path).url);
+			netStream.play(component.directory.resolvePath(path).url);
 				
-			video.attachNetStream(stream);
-			log("loadVideo({0})", component.directory.resolvePath(path).url);
+			video.attachNetStream(netStream);
+		}
+		
+		/**
+		 * @private
+		 * Handles arrival of netstream meta data.
+		 */
+		protected function netStreamMetaData(event:NetStreamEvent):void
+		{
+			log("netStreamMetaData({0})", event);
+			
+			video.width = event.width;
+			video.height = event.height;
+			
+			invalidateDisplay();
 		}
 	}
 }
