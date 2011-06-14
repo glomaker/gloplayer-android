@@ -1,4 +1,4 @@
-package net.dndigital.glo.mvcs.views.playercomponents
+package net.dndigital.glo.mvcs.views.glocomponents
 {
 	import eu.kiichigo.utils.log;
 	import eu.kiichigo.utils.loggable;
@@ -153,7 +153,7 @@ import com.adobe.serialization.json.JSON;
 
 import eu.kiichigo.utils.path;
 
-import net.dndigital.glo.mvcs.views.playercomponents.IGloComponent;
+import net.dndigital.glo.mvcs.views.glocomponents.IGloComponent;
 
 class Mapper {
 	/**

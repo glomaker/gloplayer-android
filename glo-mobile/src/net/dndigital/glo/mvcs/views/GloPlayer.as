@@ -13,12 +13,12 @@ package net.dndigital.glo.mvcs.views
 	import net.dndigital.glo.mvcs.models.vo.Page;
 	import net.dndigital.glo.mvcs.models.vo.Project;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
-	import net.dndigital.glo.mvcs.views.playercomponents.IGloComponent;
-	import net.dndigital.glo.mvcs.views.playercomponents.Image;
-	import net.dndigital.glo.mvcs.views.playercomponents.Placeholder;
-	import net.dndigital.glo.mvcs.views.playercomponents.Rectangle;
-	import net.dndigital.glo.mvcs.views.playercomponents.TextArea;
-	import net.dndigital.glo.mvcs.views.playercomponents.VideoPlayer;
+	import net.dndigital.glo.mvcs.views.glocomponents.IGloComponent;
+	import net.dndigital.glo.mvcs.views.glocomponents.Image;
+	import net.dndigital.glo.mvcs.views.glocomponents.Placeholder;
+	import net.dndigital.glo.mvcs.views.glocomponents.Rectangle;
+	import net.dndigital.glo.mvcs.views.glocomponents.TextArea;
+	import net.dndigital.glo.mvcs.views.glocomponents.VideoPlayer;
 	
 	/**
 	 * 

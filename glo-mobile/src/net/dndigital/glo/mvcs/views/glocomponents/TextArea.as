@@ -1,4 +1,4 @@
-package net.dndigital.glo.mvcs.views.playercomponents
+package net.dndigital.glo.mvcs.views.glocomponents
 {
 	import com.adobe.serialization.json.JSON;
 	
