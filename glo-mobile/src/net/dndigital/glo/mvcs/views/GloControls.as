@@ -258,7 +258,7 @@ package net.dndigital.glo.mvcs.views
 			
 			if (progressChanged) {
 				progress.visible = _currentPage != -1 && _totalPages != -1;
-				progress.text = "Slide " + ( _currentPage + 1).toString() + " out of " + _totalPages.toString();
+				progress.text = "Slide " + ( _currentPage + 1).toString() + " of " + _totalPages.toString();
 				invalidateDisplay();
 				progressChanged = false;
 			}

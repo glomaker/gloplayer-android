@@ -13,6 +13,9 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	
 	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.glo.mvcs.events.NetStreamEvent;
+	import net.dndigital.glo.mvcs.utils.ScreenMaths;
+	import net.dndigital.glo.mvcs.views.components.IconButton;
+	import net.dndigital.glo.mvcs.views.components.PlayButton;
 	
 	import org.bytearray.display.ScaleBitmap;
 
@@ -43,6 +46,18 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected static const log:Function = eu.kiichigo.utils.log(VideoPlayer);
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Instance Fields
+		//
+		//--------------------------------------------------------------------------
+
+		[Embed(source="assets/video.player.play.button.png")]
+		/**
+		 * @private
+		 * Play Button asset.
+		 */
+		protected static const playButtonAsset:Class;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -75,6 +90,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * @private
 		 */
 		protected const snapshot:ScaleBitmap = new ScaleBitmap;
+		
+		/**
+		 * @private
+		 */
+		protected const playButton:PlayButton = new PlayButton;
 		
 		/**
 		 * @private
@@ -157,6 +177,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			if (!paused)
 				netStream.pause();
 			paused = true;
+			invalidateDisplay();
 			return this;
 		}
 		
@@ -178,6 +199,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			if (paused)
 				netStream.resume();
 			paused = false;
+			invalidateDisplay();
 			return this;
 		}
 		
@@ -238,8 +260,18 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		{
 			super.createChildren();
 			
-			//video.smoothing = true;
+			// Setup video.
+			
+			video.smoothing = true;
 			addChild(video);
+			
+			// Setup button.
+			
+			
+			playButton.upSkin = new playButtonAsset().bitmapData;
+			playButton.width = playButton.height = 2;
+			playButton.visible = false;
+			addChild(playButton);
 		}
 		
 		/**
@@ -257,6 +289,17 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					
 					video.x = (width - video.width) / 2;
 					video.y = (height - video.height) / 2;
+					
+					// Play Button
+					playButton.visible = paused;
+					if (playButton.visible) {
+						var desiredSize:int = ScreenMaths.mmToPixels(50);
+						if (desiredSize > video.width || desiredSize > video.height)
+							desiredSize = Math.min(video.width, video.height);
+						playButton.width = playButton.height = desiredSize;
+						playButton.x = (width - playButton.width) / 2;
+						playButton.y = (height - playButton.height) / 2;
+					}
 				}
 			}
 			super.resized(width, height);
@@ -265,12 +308,14 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @inheritDoc
 		 */
-		override protected function destroy(event:Event = null):void
+		override public function destroy():void
 		{
-			super.destroy(event);
+			super.destroy();
 			
 			if (netStream)
 				netStream.close();
+			
+			video.clear();
 		}
 		
 		//--------------------------------------------------------------------------

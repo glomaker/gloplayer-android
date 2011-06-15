@@ -111,14 +111,23 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			if (_player == value)
 				return;
 			if (_player)
-				_player.removeEventListener(PlayerEvent.DESTROY, destroy);
+				_player.removeEventListener(PlayerEvent.DESTROY, handleDestroy);
 			_player = value;
 			if (_player)
-				_player.addEventListener(PlayerEvent.DESTROY, destroy);
+				_player.addEventListener(PlayerEvent.DESTROY, handleDestroy);
 		}
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
 		
-		
+		public function destroy():void
+		{
+			if (_player)
+				_player.removeEventListener(PlayerEvent.DESTROY, handleDestroy);
+		}
 		//--------------------------------------------------------------------------
 		//
 		//  Overrien API
@@ -191,10 +200,14 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			mappers.fixed = true;
 		}
 		
+		
 		/**
 		 * Handles component destruction.
 		 */
-		protected function destroy(event:Event = null):void { }
+		protected function handleDestroy(event:Event):void
+		{
+			destroy();
+		}
 	}
 }
 import com.adobe.serialization.json.JSON;
