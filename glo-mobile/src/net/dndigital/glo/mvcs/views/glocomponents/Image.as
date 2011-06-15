@@ -180,6 +180,17 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			super.commited();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function destroy():void
+		{
+			super.destroy();
+			
+			if (bitmap && bitmap.bitmapData)
+				bitmap.bitmapData.dispose();
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Private Methods

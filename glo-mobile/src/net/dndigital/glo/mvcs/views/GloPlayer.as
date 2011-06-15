@@ -1,27 +1,52 @@
 package net.dndigital.glo.mvcs.views
 {
-	import eu.kiichigo.utils.filter;
 	import eu.kiichigo.utils.log;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.TransformGestureEvent;
 	
-	import net.dndigital.components.Container;
-	import net.dndigital.components.GUIComponent;
-	import net.dndigital.components.IGUIComponent;
+	import net.dndigital.components.*;
+	import net.dndigital.glo.events.PlayerEvent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
-	import net.dndigital.glo.mvcs.models.vo.Component;
-	import net.dndigital.glo.mvcs.models.vo.Page;
-	import net.dndigital.glo.mvcs.models.vo.Project;
+	import net.dndigital.glo.mvcs.models.vo.*;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
-	import net.dndigital.glo.mvcs.views.glocomponents.IGloComponent;
-	import net.dndigital.glo.mvcs.views.glocomponents.Image;
-	import net.dndigital.glo.mvcs.views.glocomponents.Placeholder;
-	import net.dndigital.glo.mvcs.views.glocomponents.Rectangle;
-	import net.dndigital.glo.mvcs.views.glocomponents.TextArea;
-	import net.dndigital.glo.mvcs.views.glocomponents.VideoPlayer;
-	
+	import net.dndigital.glo.mvcs.views.glocomponents.*;
+
+	/**
+	 * Dispatched when instance of <code>GloPlayer</code> is about to switch to next page.
+	 *
+	 * @eventType net.dndigital.glo.mvcs.events.ProjectEvent.NEXT_PAGE
+	 * 
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 1.5
+	 * @productversion Flex 4.5
+	 */
+	[Event(name="nextPage", type="net.dndigital.glo.mvcs.events.ProjectEvent")]
+	/**
+	 * Dispatched when instance of <code>GloPlayer</code> is about to switch to previous page.
+	 *
+	 * @eventType net.dndigital.glo.mvcs.events.ProjectEvent.PREV_PAGE
+	 * 
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 1.5
+	 * @productversion Flex 4.5
+	 */
+	[Event(name="prevPage", type="net.dndigital.glo.mvcs.events.ProjectEvent")]
+	/**
+	 * Dispatched when instance of <code>GloPlayer</code> is about to be destroyed.
+	 *
+	 * @eventType net.dndigital.glo.events.PlayerEvent.DESTROY
+	 * 
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 1.5
+	 * @productversion Flex 4.5
+	 */
+	[Event(name="destroy", type="net.dndigital.glo.events.PlayerEvent")]
 	/**
 	 * 
 	 * @see		net.dndigital.glo.mvcs.views.GloPlayerMediator
@@ -152,6 +177,8 @@ package net.dndigital.glo.mvcs.views
 		override public function initialize():IGUIComponent
 		{
 			addEventListener(TransformGestureEvent.GESTURE_SWIPE, handleSwipe);
+			
+			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
 			
 			return super.initialize();
 		}
@@ -350,6 +377,15 @@ package net.dndigital.glo.mvcs.views
 				dispatchEvent(ProjectEvent.NEXT_PAGE_EVENT);
 			else
 				dispatchEvent(ProjectEvent.PREV_PAGE_EVENT);
+		}
+		
+		/**
+		 * Handles REMOVED_FROM_STAGE event, and notifies sub children of it's impending destruction.
+		 */
+		protected function removedFromStage(event:Event):void
+		{
+			log("removedFromStage()");
+			dispatchEvent(PlayerEvent.DESTROY_EVENT);
 		}
 	}
 }

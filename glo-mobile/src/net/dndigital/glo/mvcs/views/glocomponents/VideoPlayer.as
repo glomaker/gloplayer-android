@@ -2,6 +2,10 @@ package net.dndigital.glo.mvcs.views.glocomponents
 {
 	import eu.kiichigo.utils.log;
 	
+	import flash.display.BitmapData;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
 	import flash.media.Video;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
@@ -71,12 +75,39 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected const snapshot:ScaleBitmap = new ScaleBitmap;
 		
+		/**
+		 * @private
+		 * Flag, indicates whether movie is paused or not.
+		 */
+		protected var paused:Boolean = false;
+		
+		/**
+		 * @private
+		 * Flag, indicates whether movie is loaded or not.
+		 */
+		protected var loaded:Boolean = false;
+
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
 		//
 		//--------------------------------------------------------------------------
 	
+		/**
+		 * @private
+		 */
+		protected var _duration:Number;
+		/**
+		 * Duration of a movie in seconds.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get duration():Number { return _duration; }
+		
 		/**
 		 * @private
 		 */
@@ -101,6 +132,74 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			loadVideo(value);
 		}
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * Pauses an instance of <code>VideoPlayer</code>.
+		 *  
+		 * @return Current instance of <code>VideoPlayer</code>
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function pause():VideoPlayer
+		{
+			if (!loaded)
+				return this;
+			
+			if (!paused)
+				netStream.pause();
+			paused = true;
+			return this;
+		}
+		
+		/**
+		 * Plays or Resumes an instance of <code>VideoPlayer</code>.
+		 *  
+		 * @return Current instance of <code>VideoPlayer</code>
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function play():VideoPlayer
+		{
+			if (!loaded)
+				return this;
+			
+			if (paused)
+				netStream.resume();
+			paused = false;
+			return this;
+		}
+		
+		/**
+		 * Toggles <code>VideoPlayer</code> to play or resume.
+		 *  
+		 * @return Current instance of <code>VideoPlayer</code>
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function toggle():VideoPlayer
+		{
+			if(!loaded)
+				return this;
+			
+			if (paused)
+				return play();
+			else
+				return pause();
+		}
 		
 		//--------------------------------------------------------------------------
 		//
@@ -124,7 +223,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			client.addEventListener(NetStreamEvent.META_DATA, netStreamMetaData);
 			
 			// Setup Event Listeners.
-			//addEventListener(t
+			addEventListener(MouseEvent.CLICK, handleMouse);
+			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
 			
 			return super.initialize();
 		}
@@ -155,12 +255,21 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					
 					video.x = (width - video.width) / 2;
 					video.y = (height - video.height) / 2;
-					//	video.videoWidth * c, video.videoHeight * c);
 				}
-				log("resized({0}, {1}) video({2}, {3})", width, height, video.videoWidth, video.videoHeight);
 			}
 			super.resized(width, height);
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function destroy():void
+		{
+			super.destroy();
+			
+			netStream.close();
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Private Methods
@@ -173,6 +282,10 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		protected function loadVideo(path:String):void
 		{
 			netStream.play(component.directory.resolvePath(path).url);
+			paused = false;
+			loaded = true;
+			createSnapshot(video, netStream);
+			pause();
 				
 			video.attachNetStream(netStream);
 		}
@@ -183,12 +296,49 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function netStreamMetaData(event:NetStreamEvent):void
 		{
-			log("netStreamMetaData({0})", event);
-			
 			video.width = event.width;
 			video.height = event.height;
+			_duration = event.duration;
 			
 			invalidateDisplay();
+		}
+		
+		/**
+		 * @private
+		 * Handles Mouse Events
+		 */
+		protected final function handleMouse(event:MouseEvent):void
+		{
+			if (event.type == MouseEvent.CLICK)
+				toggle();
+		}
+		
+		/**
+		 * @private
+		 * Creates a snapshot of a video.
+		 */
+		protected final function createSnapshot(video:Video, netStream:NetStream):BitmapData
+		{
+			var time:Number = netStream.time;
+			
+			if (_duration < 5 )
+				netStream.seek(_duration / 2);
+			else
+				netStream.seek(5);
+			
+			var bitmapData:BitmapData = new BitmapData(video.width, video.height, true, 0x00000000);
+				bitmapData.draw(video);
+				
+			return bitmapData;
+		}
+		
+		/**
+		 * @private
+		 * Handles Event.REMOVED_FROM_STAGE which is caught when current instance of <code>VideoPlayer</code> is removed from stage.
+		 */
+		protected final function removedFromStage(event:Event):void
+		{
+			pause();
 		}
 	}
 }
