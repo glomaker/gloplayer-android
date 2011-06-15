@@ -113,14 +113,19 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		override public function initialize():IGUIComponent
 		{
+			// Map Properties
 			mapProperty("source");
 			
+			// Prepare NetConnection and NetStream instances for video.
 			connection.connect(null);
 			netStream = new NetStream(connection);
 			netStream.client = client;
 			
 			client.addEventListener(NetStreamEvent.META_DATA, netStreamMetaData);
-			log("initialize()");
+			
+			// Setup Event Listeners.
+			//addEventListener(t
+			
 			return super.initialize();
 		}
 		

@@ -10,6 +10,8 @@ package
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.ui.Multitouch;
+	import flash.ui.MultitouchInputMode;
 	
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
@@ -47,6 +49,11 @@ package
 			
 			// RobotLegs bootstrap
 			gloContext = new GloContext(this);
+			
+			// Multitouch Gestures
+			Multitouch.inputMode = MultitouchInputMode.GESTURE;
+			
+			log("Welcome to GloPlayer, Multitouch(supports:{0} gestures:{1})", Multitouch.supportsGestureEvents, Multitouch.supportedGestures);
 		}
 	}
 }

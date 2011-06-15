@@ -5,10 +5,12 @@ package net.dndigital.glo.mvcs.views
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.TransformGestureEvent;
 	
 	import net.dndigital.components.Container;
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
+	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.models.vo.Component;
 	import net.dndigital.glo.mvcs.models.vo.Page;
 	import net.dndigital.glo.mvcs.models.vo.Project;
@@ -144,6 +146,15 @@ package net.dndigital.glo.mvcs.views
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function initialize():IGUIComponent
+		{
+			addEventListener(TransformGestureEvent.GESTURE_SWIPE, handleSwipe);
+			
+			return super.initialize();
+		}
 		/**
 		 * @inheritDoc
 		 */
@@ -327,6 +338,18 @@ package net.dndigital.glo.mvcs.views
 			target.height 		= vo.height;
 			target.component   	= vo;
 			return target as DisplayObject;
+		}
+		
+		/**
+		 * @private
+		 * Handles swipe events.
+		 */
+		protected final function handleSwipe(event:TransformGestureEvent):void
+		{
+			if(event.offsetX == -1)
+				dispatchEvent(ProjectEvent.NEXT_PAGE_EVENT);
+			else
+				dispatchEvent(ProjectEvent.PREV_PAGE_EVENT);
 		}
 	}
 }
