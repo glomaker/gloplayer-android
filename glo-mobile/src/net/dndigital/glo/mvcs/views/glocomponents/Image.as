@@ -183,9 +183,9 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @inheritDoc
 		 */
-		override protected function destroy():void
+		override protected function destroy(event:Event = null):void
 		{
-			super.destroy();
+			super.destroy(event);
 			
 			if (bitmap && bitmap.bitmapData)
 				bitmap.bitmapData.dispose();

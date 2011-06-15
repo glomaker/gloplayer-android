@@ -3,6 +3,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	import eu.kiichigo.utils.log;
 	import eu.kiichigo.utils.path;
 	
+	import flash.events.Event;
+	
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.glo.events.PlayerEvent;
 	import net.dndigital.glo.mvcs.models.vo.Component;
@@ -192,7 +194,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * Handles component destruction.
 		 */
-		protected function destroy():void { }
+		protected function destroy(event:Event = null):void { }
 	}
 }
 import com.adobe.serialization.json.JSON;

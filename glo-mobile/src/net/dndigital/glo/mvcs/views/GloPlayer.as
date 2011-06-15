@@ -364,6 +364,7 @@ package net.dndigital.glo.mvcs.views
 			target.width  		= vo.width;
 			target.height 		= vo.height;
 			target.component   	= vo;
+			target.player		= this;
 			return target as DisplayObject;
 		}
 		

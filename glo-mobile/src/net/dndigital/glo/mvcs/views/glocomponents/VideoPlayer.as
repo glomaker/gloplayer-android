@@ -263,11 +263,14 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @inheritDoc
 		 */
-		override protected function destroy():void
+		override protected function destroy(event:Event = null):void
 		{
-			super.destroy();
+			super.destroy(event);
 			
-			netStream.close();
+			if (netStream)
+				netStream.close();
+			else
+				log("attempting to destroy netStream({0})", netStream);
 		}
 		
 		//--------------------------------------------------------------------------
