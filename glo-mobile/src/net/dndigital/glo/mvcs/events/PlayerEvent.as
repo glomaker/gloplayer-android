@@ -1,4 +1,4 @@
-package net.dndigital.glo.events
+package net.dndigital.glo.mvcs.events
 {
 	import flash.events.Event;
 
@@ -11,6 +11,9 @@ package net.dndigital.glo.events
 		//--------------------------------------------------------------------------
 		
 		public static const DESTROY_EVENT:PlayerEvent = new PlayerEvent(DESTROY);
+		public static const ENTER_FULL_SCREEN_EVENT:PlayerEvent = new PlayerEvent(ENTER_FULL_SCREEN);
+		public static const EXIT_FULL_SCREEN_EVENT:PlayerEvent = new PlayerEvent(EXIT_FULL_SCREEN);
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Event Constants
@@ -18,6 +21,8 @@ package net.dndigital.glo.events
 		//--------------------------------------------------------------------------
 		
 		public static const DESTROY:String = "destroy";
+		public static const ENTER_FULL_SCREEN:String = "enterFullScreen";
+		public static const EXIT_FULL_SCREEN:String = "exitFullScreen";
 
 		//--------------------------------------------------------------------------
 		//

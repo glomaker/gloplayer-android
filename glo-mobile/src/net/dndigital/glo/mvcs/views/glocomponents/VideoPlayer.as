@@ -6,12 +6,13 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TouchEvent;
+	import flash.events.TransformGestureEvent;
 	import flash.media.Video;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
 	
 	import net.dndigital.components.IGUIComponent;
-	import net.dndigital.glo.events.NetStreamEvent;
+	import net.dndigital.glo.mvcs.events.NetStreamEvent;
 	
 	import org.bytearray.display.ScaleBitmap;
 
@@ -225,6 +226,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			// Setup Event Listeners.
 			addEventListener(MouseEvent.CLICK, handleMouse);
 			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
+			addEventListener(TransformGestureEvent.GESTURE_ZOOM, handleZoom);
 			
 			return super.initialize();
 		}
@@ -310,17 +312,17 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * @private
 		 * Handles Mouse Events
 		 */
-		protected final function handleMouse(event:MouseEvent):void
+		protected function handleMouse(event:MouseEvent):void
 		{
 			if (event.type == MouseEvent.CLICK)
-				toggle();
+				toggle(), log("handleMouse(click)");
 		}
 		
 		/**
 		 * @private
 		 * Creates a snapshot of a video.
 		 */
-		protected final function createSnapshot(video:Video, netStream:NetStream):BitmapData
+		protected function createSnapshot(video:Video, netStream:NetStream):BitmapData
 		{
 			var time:Number = netStream.time;
 			
@@ -339,9 +341,21 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * @private
 		 * Handles Event.REMOVED_FROM_STAGE which is caught when current instance of <code>VideoPlayer</code> is removed from stage.
 		 */
-		protected final function removedFromStage(event:Event):void
+		protected function removedFromStage(event:Event):void
 		{
 			pause();
+		}
+		
+		/**
+		 * @private
+		 * Handles Gesture Zoom.
+		 */
+		protected function handleZoom(event:TransformGestureEvent):void
+		{
+			log("handleZoom() x={0} y={1}", event.offsetX, event.offsetY);
+			event.preventDefault();
+			event.stopImmediatePropagation();
+			event.stopPropagation();
 		}
 	}
 }

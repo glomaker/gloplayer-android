@@ -6,7 +6,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	import flash.events.Event;
 	
 	import net.dndigital.components.GUIComponent;
-	import net.dndigital.glo.events.PlayerEvent;
+	import net.dndigital.glo.mvcs.events.PlayerEvent;
 	import net.dndigital.glo.mvcs.models.vo.Component;
 	import net.dndigital.glo.mvcs.views.GloPlayer;
 	

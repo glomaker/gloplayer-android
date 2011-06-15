@@ -8,7 +8,7 @@ package net.dndigital.glo.mvcs.views
 	import flash.events.TransformGestureEvent;
 	
 	import net.dndigital.components.*;
-	import net.dndigital.glo.events.PlayerEvent;
+	import net.dndigital.glo.mvcs.events.PlayerEvent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.models.vo.*;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
@@ -46,7 +46,7 @@ package net.dndigital.glo.mvcs.views
 	 * @playerversion AIR 1.5
 	 * @productversion Flex 4.5
 	 */
-	[Event(name="destroy", type="net.dndigital.glo.events.PlayerEvent")]
+	[Event(name="destroy", type="net.dndigital.glo.mvcs.events.PlayerEvent")]
 	/**
 	 * 
 	 * @see		net.dndigital.glo.mvcs.views.GloPlayerMediator
