@@ -56,6 +56,7 @@ package net.dndigital.glo.mvcs.views
 			eventMap.mapListener(eventDispatcher, ProjectEvent.PAGE, changePage);
 			eventMap.mapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.PREV_PAGE, dispatch);
+			eventMap.mapListener(view, ProjectEvent.PAGE_CHANGED, dispatch);
 		}
 		
 		/**
@@ -66,6 +67,7 @@ package net.dndigital.glo.mvcs.views
 			eventMap.unmapListener(eventDispatcher, ProjectEvent.PAGE, changePage);
 			eventMap.unmapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.PREV_PAGE, dispatch);
+			eventMap.unmapListener(view, ProjectEvent.PAGE_CHANGED, dispatch);
 		}
 		
 		//--------------------------------------------------------------------------

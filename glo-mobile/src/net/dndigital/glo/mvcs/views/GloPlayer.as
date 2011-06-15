@@ -15,6 +15,17 @@ package net.dndigital.glo.mvcs.views
 	import net.dndigital.glo.mvcs.views.glocomponents.*;
 
 	/**
+	 * Dispatched when an instance of <code>GloPlayer</code> changed page.
+	 *
+	 * @eventType net.dndigital.glo.mvcs.events.ProjectEvent.PAGE_CHANGED
+	 * 
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 1.5
+	 * @productversion Flex 4.5
+	 */
+	[Event(name="pageChanged", type="net.dndigital.glo.mvcs.events.ProjectEvent")]
+	/**
 	 * Dispatched when instance of <code>GloPlayer</code> is about to switch to next page.
 	 *
 	 * @eventType net.dndigital.glo.mvcs.events.ProjectEvent.NEXT_PAGE
@@ -210,7 +221,7 @@ package net.dndigital.glo.mvcs.views
 				graphics.endFill();
 			}
 			
-			log("resized");
+			//log("resized");
 		}
 		
 		/**
@@ -220,10 +231,10 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.commited();
 			
-			if(project != built)
+			if (project != built)
 				build().invalidateDisplay();
 			
-			if(pages != null && pages.length > 0 && _index != -1 && pages[_index] != current) {
+			if (pages != null && pages.length > 0 && _index != -1 && pages[_index] != current) {
 				replace(index);
 				invalidateDisplay();
 			}
@@ -257,6 +268,8 @@ package net.dndigital.glo.mvcs.views
 			
 			if (_index != index)
 				_index = index;
+			
+			dispatchEvent(new ProjectEvent(ProjectEvent.PAGE_CHANGED, _project, _index));
 			return current;
 		}
 		

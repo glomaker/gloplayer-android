@@ -271,8 +271,6 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			
 			if (netStream)
 				netStream.close();
-			else
-				log("attempting to destroy netStream({0})", netStream);
 		}
 		
 		//--------------------------------------------------------------------------

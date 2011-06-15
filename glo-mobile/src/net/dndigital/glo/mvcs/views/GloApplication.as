@@ -4,6 +4,7 @@ package net.dndigital.glo.mvcs.views
 	
 	import net.dndigital.components.Application;
 	import net.dndigital.components.IGUIComponent;
+	import net.dndigital.components.Label;
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
 	
 	/**
