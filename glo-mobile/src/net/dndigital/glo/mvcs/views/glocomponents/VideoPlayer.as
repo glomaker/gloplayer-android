@@ -5,6 +5,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.NetStatusEvent;
 	import flash.events.TouchEvent;
 	import flash.events.TransformGestureEvent;
 	import flash.media.Video;
@@ -153,6 +154,32 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			loadVideo(value);
 		}
 		
+		/**
+		 * @private
+		 */
+		protected var _visible:Boolean;
+		/**
+		 * visible.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		override public function get visible():Boolean { return _visible; }
+		/**
+		 * @private
+		 */
+		override public function set visible(value:Boolean):void
+		{
+			if (_visible == value)
+				return;
+			_visible = value;
+			if (!paused && loaded && !value)
+				pause();
+		}
+		
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Methods
@@ -224,6 +251,25 @@ package net.dndigital.glo.mvcs.views.glocomponents
 				return pause();
 		}
 		
+		/**
+		 * Rewinds video to it's initial position and pauses it.
+		 *  
+		 * @return Current instance of <code>VideoPlayer</code>
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function rewind():VideoPlayer
+		{
+			if(!loaded)
+				return this;
+			
+			netStream.seek(0);
+			return pause();
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Overriden API
@@ -241,6 +287,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			// Prepare NetConnection and NetStream instances for video.
 			connection.connect(null);
 			netStream = new NetStream(connection);
+			netStream.addEventListener(NetStatusEvent.NET_STATUS, handleNetStatus);
 			netStream.client = client;
 			
 			client.addEventListener(NetStreamEvent.META_DATA, netStreamMetaData);
@@ -252,6 +299,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			
 			return super.initialize();
 		}
+		
 		
 		/**
 		 * @inheritDoc
@@ -299,8 +347,6 @@ package net.dndigital.glo.mvcs.views.glocomponents
 						playButton.width = playButton.height = desiredSize;
 						playButton.x = (width - playButton.width) / 2;
 						playButton.y = (height - playButton.height) / 2;
-						log("resized({0}, {1}", width, height);
-						log("playButton $width $height $x $y ", playButton);
 					}
 				}
 			}
@@ -314,9 +360,13 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		{
 			super.destroy();
 			
-			if (netStream)
+			if (netStream) {
 				netStream.close();
-			
+				if (netStream.client)
+					// FIXME It's impossible to set netStream to empty object with empty handler, find a better solution.
+					netStream.client = {onMetaData: function(info:Object):void {}};
+				netStream = null
+			}
 			video.clear();
 		}
 		
@@ -360,7 +410,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		protected function handleMouse(event:MouseEvent):void
 		{
 			if (event.type == MouseEvent.CLICK)
-				toggle(), log("handleMouse(click)");
+				toggle();
 		}
 		
 		/**
@@ -401,6 +451,28 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			event.preventDefault();
 			event.stopImmediatePropagation();
 			event.stopPropagation();
+		}
+		
+		/**
+		 * @private
+		 */
+		protected function handleNetStatus(event:NetStatusEvent):void
+		{
+			log("handleNetStatus({0*})", event.info);
+			switch (event.info.level) {
+				case "status":
+					switch (event.info.code) {
+						case "NetStream.Play.Stop":
+							rewind();
+							break;
+						case "NetStream.Play.Start":
+							invalidateDisplay();
+							break;
+					}
+					break;
+				default:;
+					log("handleNetStatus({0*})", event.info);
+			}
 		}
 	}
 }

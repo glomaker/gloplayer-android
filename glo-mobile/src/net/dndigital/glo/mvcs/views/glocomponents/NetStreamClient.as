@@ -32,7 +32,6 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		
 		public function onMetaData(infoObject:Object):void
 		{
-			log("onMetaData()");
 			dispatchEvent(new NetStreamEvent(NetStreamEvent.META_DATA, infoObject.width, infoObject.height, infoObject.duration));
 		}
 	}

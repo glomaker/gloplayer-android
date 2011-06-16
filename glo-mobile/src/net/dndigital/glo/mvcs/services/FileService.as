@@ -62,12 +62,13 @@ package net.dndigital.glo.mvcs.services
 			
 			var dir:Array = directory.getDirectoryListing();
 			
-			for (var i:int = 0; i < dir.length; i ++)
-				if((dir[i] as File).isDirectory)
-					scanDirectory(dir[i] as File, list, true);
-				else if(dir[i].extension == "glo")
-					list.push(dir[i] as File);
-			
+			for (var i:int = 0; i < dir.length; i ++) {
+				const current:File = dir[i] as File;
+				if (current.isDirectory)
+					scanDirectory(current, list, true);
+				else if (current.extension == "glo")
+					list.push(current);
+			}
 			if (!tailed)
 				list.fixed = true;
 			return list;

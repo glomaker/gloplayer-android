@@ -131,7 +131,6 @@ package net.dndigital.glo.mvcs.views.components
 					else
 						name = file.url.split("app:/assets/")[1];
 				}
-				log("commited name={0} file.url={1}", name, file.url);
 				
 				name = name.split("/").join("").
 							split("\"").join("").
