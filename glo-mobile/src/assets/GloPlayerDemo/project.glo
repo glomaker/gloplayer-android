@@ -62,7 +62,7 @@
         <source isPath="true">"content/Tiger.jpg"</source>
         <maintainRatio>true</maintainRatio>
       </component>
-      <component id="textarea" x="10" y="670" width="375" height="66">
+      <component id="textarea" x="10" y="689" width="375" height="66">
         <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Image maintainAspectRatio=true&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
         <borderStyle>true</borderStyle>
       </component>
@@ -106,5 +106,5 @@
       </component>
     </page>
   </nodes>
-  <filehash>ceaab2da085f7070b4a3c605e05dc7a8</filehash>
+  <filehash>d11fd3510addf5179ebf1acc1a364cae</filehash>
 </glo>

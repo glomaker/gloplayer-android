@@ -125,11 +125,17 @@ package net.dndigital.glo.mvcs.views.components
 			
 			if (fileChanged) {
 				var name:String = file.name.split(".glo").join("");
-				if (name.toUpperCase() == "PROJECT")
-					name = (file.url.split("Glos")[1] as String).
-						split("/").join("").
-						split("\"").join("").
-						split("project.glo").join("");
+				if (name.toUpperCase() == "PROJECT") {
+					if (file.url.indexOf("Glos") >= 0)
+						name = file.url.split("Glos")[1];
+					else
+						name = file.url.split("app:/assets/")[1];
+				}
+				log("commited name={0} file.url={1}", name, file.url);
+				
+				name = name.split("/").join("").
+							split("\"").join("").
+							split("project.glo").join("");
 				
 				textField.text = name;
 				
