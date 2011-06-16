@@ -9,16 +9,39 @@
   <nodes>
     <page>
       <node>
+        <id>n5</id>
+        <funcid>emi_f1</funcid>
+        <title>What Topic</title>
+        <description>Introduce the topic – briefly orient the learner to what is to come.</description>
+        <locx>649</locx>
+        <locy>168</locy>
+        <parentid>null</parentid>
+        <childid>n1</childid>
+        <layoutid>titleinfopage</layoutid>
+        <isroot>true</isroot>
+      </node>
+      <layout id="titleinfopage"/>
+      <component id="textarea" x="5" y="15" width="383" height="59">
+        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"CENTER\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"18\" COLOR=\"#666666\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Welcome to the GloMaker Mobile Player&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
+        <borderStyle>true</borderStyle>
+      </component>
+      <component id="textarea" x="7" y="94" width="379" height="110">
+        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;This is Demo-Development Glo that can be used to see main features and functionality of GloPlayer Mobile.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
+        <borderStyle>true</borderStyle>
+      </component>
+    </page>
+    <page>
+      <node>
         <id>n1</id>
         <funcid>emi_f1</funcid>
         <title>What Topic</title>
         <description>Introduce the topic – briefly orient the learner to what is to come.</description>
-        <locx>310</locx>
-        <locy>160</locy>
-        <parentid>null</parentid>
+        <locx>649</locx>
+        <locy>278</locy>
+        <parentid>n5</parentid>
         <childid>n3</childid>
         <layoutid>titleinfopage</layoutid>
-        <isroot>true</isroot>
+        <isroot>false</isroot>
       </node>
       <layout id="titleinfopage"/>
       <component id="textarea" x="5" y="12" width="196" height="207">
@@ -26,7 +49,7 @@
         <borderStyle>true</borderStyle>
       </component>
       <component id="videoplayer" x="207" y="14" width="183" height="331">
-        <source isPath="true">"content/TheBoondocksShort.flv"</source>
+        <source isPath="true">"content/TieYourShoes.flv"</source>
       </component>
       <component id="videoplayer" x="14" y="386" width="370" height="171">
         <source isPath="true">"content/TheBoondocksShort.flv"</source>
@@ -38,8 +61,8 @@
         <funcid>emi_f13</funcid>
         <title>Access Views</title>
         <description>Access the views of different commentators on a common theme.</description>
-        <locx>310</locx>
-        <locy>270</locy>
+        <locx>649</locx>
+        <locy>388</locy>
         <parentid>n1</parentid>
         <childid>n4</childid>
         <layoutid>accessviews</layoutid>
@@ -73,8 +96,8 @@
         <funcid>emi_f10</funcid>
         <title>Do Preparatory Task</title>
         <description>Do a preparatory task, before tackling the main task.</description>
-        <locx>306</locx>
-        <locy>385</locy>
+        <locx>649</locx>
+        <locy>498</locy>
         <parentid>n3</parentid>
         <childid>null</childid>
         <layoutid>mediacommentary</layoutid>
@@ -106,5 +129,5 @@
       </component>
     </page>
   </nodes>
-  <filehash>d11fd3510addf5179ebf1acc1a364cae</filehash>
+  <filehash>034cd388745e79668bec1a6960b10bef</filehash>
 </glo>
