@@ -57,6 +57,9 @@ package net.dndigital.glo.mvcs.services
 			if (list == null)
 				list = new Vector.<File>;
 			
+			if ( !directory.exists )
+				return list;
+			
 			var dir:Array = directory.getDirectoryListing();
 			
 			for (var i:int = 0; i < dir.length; i ++)
