@@ -1,5 +1,6 @@
 package net.dndigital.glo.mvcs.views
 {
+	import flash.events.Event;
 	import flash.events.StageOrientationEvent;
 	
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
@@ -56,7 +57,7 @@ package net.dndigital.glo.mvcs.views
 			
 			eventMap.mapListener(view, ApplicationEvent.INITIALIZED, showMenu);
 			
-			view.stage.addEventListener(StageOrientationEvent.ORIENTATION_CHANGE, orientationChange);
+			view.stage.addEventListener(Event.RESIZE, stageResized);
 		}
 		
 		//--------------------------------------------------------------------------
@@ -89,12 +90,13 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Handles orientation changing.
 		 */
-		protected function orientationChange(event:StageOrientationEvent):void
+		protected function stageResized(event:Event):void
 		{
+			log("stageResized() width={0} height={1}", contextView.stage.fullScreenWidth, contextView.stage.fullScreenHeight);
 			// FIXME: Find a way to use Application widht and height instead of full screen width/height.
 			view.width = contextView.stage.fullScreenWidth;
 			view.height = contextView.stage.fullScreenHeight;
-			log("orientationChange({0})", event);
+			//view.validate();
 		}
 	}
 }

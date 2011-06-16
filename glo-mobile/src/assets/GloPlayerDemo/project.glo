@@ -1,0 +1,110 @@
+<glo version="Version 2.0" hasFullFilePaths="false">
+  <props>
+    <w>400</w>
+    <h>800</h>
+    <rgb>16777215</rgb>
+    <pattern>emi</pattern>
+    <stageid>swirlstage</stageid>
+  </props>
+  <nodes>
+    <page>
+      <node>
+        <id>n1</id>
+        <funcid>emi_f1</funcid>
+        <title>What Topic</title>
+        <description>Introduce the topic – briefly orient the learner to what is to come.</description>
+        <locx>310</locx>
+        <locy>160</locy>
+        <parentid>null</parentid>
+        <childid>n3</childid>
+        <layoutid>titleinfopage</layoutid>
+        <isroot>true</isroot>
+      </node>
+      <layout id="titleinfopage"/>
+      <component id="textarea" x="5" y="12" width="196" height="207">
+        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;This slide presents short video clip (about two seconds). Borth players will play same, clip, but they are positioned in portrait and landscape views, to check orientation and scaling.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
+        <borderStyle>true</borderStyle>
+      </component>
+      <component id="videoplayer" x="207" y="14" width="183" height="331">
+        <source isPath="true">"content/TheBoondocksShort.flv"</source>
+      </component>
+      <component id="videoplayer" x="14" y="386" width="370" height="171">
+        <source isPath="true">"content/TheBoondocksShort.flv"</source>
+      </component>
+    </page>
+    <page>
+      <node>
+        <id>n3</id>
+        <funcid>emi_f13</funcid>
+        <title>Access Views</title>
+        <description>Access the views of different commentators on a common theme.</description>
+        <locx>310</locx>
+        <locy>270</locy>
+        <parentid>n1</parentid>
+        <childid>n4</childid>
+        <layoutid>accessviews</layoutid>
+        <isroot>false</isroot>
+      </node>
+      <layout id="accessviews"/>
+      <component id="textarea" x="13" y="3" width="374" height="177">
+        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Ed London is the type of private investigator that you call to clean up the mess when your mistress turns up dead. But after he dumps a body in Central Park, it appears this case is still alive and kicking.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
+        <borderStyle>true</borderStyle>
+      </component>
+      <component id="imageloader" x="17" y="195" width="365" height="232">
+        <source isPath="true">"content/Tiger.jpg"</source>
+        <maintainRatio>false</maintainRatio>
+      </component>
+      <component id="textarea" x="42" y="439" width="324" height="41">
+        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Image maintainAspectRatio=false&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
+        <borderStyle>true</borderStyle>
+      </component>
+      <component id="imageloader" x="4" y="501" width="378" height="154">
+        <source isPath="true">"content/Tiger.jpg"</source>
+        <maintainRatio>true</maintainRatio>
+      </component>
+      <component id="textarea" x="10" y="670" width="375" height="66">
+        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Image maintainAspectRatio=true&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
+        <borderStyle>true</borderStyle>
+      </component>
+    </page>
+    <page>
+      <node>
+        <id>n4</id>
+        <funcid>emi_f10</funcid>
+        <title>Do Preparatory Task</title>
+        <description>Do a preparatory task, before tackling the main task.</description>
+        <locx>306</locx>
+        <locy>385</locy>
+        <parentid>n3</parentid>
+        <childid>null</childid>
+        <layoutid>mediacommentary</layoutid>
+        <isroot>false</isroot>
+      </node>
+      <layout id="mediacommentary"/>
+      <component id="textarea" x="17" y="15" width="357" height="171">
+        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;This slide checks the depth of components.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Components arranged in following order&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Green Recrangle&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Yellow Rectangle&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Video Clip&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Red Rectangle&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Image&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
+        <borderStyle>true</borderStyle>
+      </component>
+      <component id="rectangle" x="19" y="209" width="173" height="137">
+        <cornerRadius>0</cornerRadius>
+        <bgcolour>3381504</bgcolour>
+      </component>
+      <component id="rectangle" x="59" y="246" width="160" height="145">
+        <cornerRadius>0</cornerRadius>
+        <bgcolour>16777011</bgcolour>
+      </component>
+      <component id="videoplayer" x="99" y="289" width="288" height="219">
+        <source isPath="true">"content/TheBoondocksShort.flv"</source>
+      </component>
+      <component id="rectangle" x="88" y="426" width="236" height="170">
+        <cornerRadius>0</cornerRadius>
+        <bgcolour>13395456</bgcolour>
+      </component>
+      <component id="imageloader" x="41" y="539" width="314" height="158">
+        <source isPath="true">"content/Tiger.jpg"</source>
+        <maintainRatio>true</maintainRatio>
+      </component>
+    </page>
+  </nodes>
+  <filehash>ceaab2da085f7070b4a3c605e05dc7a8</filehash>
+</glo>

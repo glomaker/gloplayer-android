@@ -90,7 +90,7 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.resized(width, height);
 			
-			if(current) {
+			if (current) {
 				current.width = width;
 				current.height = height;
 			}

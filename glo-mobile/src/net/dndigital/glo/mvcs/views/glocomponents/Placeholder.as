@@ -59,6 +59,9 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		override protected function resized(width:Number, height:Number):void
 		{
+			if (isNaN(width) || isNaN(height))
+				return;
+			
 			super.resized(width, height);
 			
 			graphics.clear();

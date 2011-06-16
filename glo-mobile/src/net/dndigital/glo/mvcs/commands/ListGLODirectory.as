@@ -50,6 +50,5 @@ package net.dndigital.glo.mvcs.commands
 
 			dispatch(new GloMenuEvent(GloMenuEvent.DIRECTORY_LISTED, null, fileService.files));
 		}
-		
 	}
 }

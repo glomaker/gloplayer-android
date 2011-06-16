@@ -183,23 +183,12 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		protected function mapProperty(from:String, to:String = null):void
+		protected function mapProperty(from:String, to:String = null, defaultProperty:* = null):void
 		{ 
 			if (to === null)
 				to = from;
 			mappers.push(new Mapper(from, to));
-			delay(lockMappers);
 		}
-		
-		/**
-		 * @private
-		 * Locks (Vector.fixed=true) collection of mappers.
-		 */
-		protected function lockMappers():void
-		{
-			mappers.fixed = true;
-		}
-		
 		
 		/**
 		 * Handles component destruction.
@@ -245,7 +234,7 @@ class Mapper {
 	public function apply(gloComponent:IGloComponent):void
 	{
 		var value:* = path(gloComponent.component.data, from);
-		if (value === null)
+		if ((value is Number && isNaN(value)) || value === null)
 			return;
 		
 		value = JSON.decode(value);

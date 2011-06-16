@@ -6,6 +6,7 @@ package
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.display.Stage;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
@@ -52,7 +53,6 @@ package
 			
 			// Multitouch Gestures
 			Multitouch.inputMode = MultitouchInputMode.GESTURE;
-			
 			log("Welcome to GloPlayer, Multitouch(supports:{0} gestures:{1})", Multitouch.supportsGestureEvents, Multitouch.supportedGestures);
 		}
 	}

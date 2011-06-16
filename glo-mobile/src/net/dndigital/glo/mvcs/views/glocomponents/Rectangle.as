@@ -40,7 +40,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @private
 		 */
-		protected var _cornerRadius:Number;
+		protected var _cornerRadius:Number = 0;
 		/**
 		 * Rectangle's corner radious in pixels.
 		 *
@@ -64,7 +64,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @private
 		 */
-		protected var _color:uint;
+		protected var _color:uint = 0xFFFFFF;
 		/**
 		 * Color in which rectangle should be filled.
 		 *
@@ -108,7 +108,6 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);
-			
 			graphics.clear();
 			graphics.beginFill(_color);
 			graphics.drawRoundRect(0, 0, width, height, _cornerRadius, _cornerRadius);

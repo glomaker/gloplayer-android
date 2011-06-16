@@ -315,7 +315,7 @@ package net.dndigital.components
 		/**
 		 * @private
 		 */
-		protected var _width:Number;
+		protected var _width:Number = 0;
 		/**
 		 * @copy		net.dndigital.glo.components.IGUIComponent#width
 		 * 
@@ -343,7 +343,7 @@ package net.dndigital.components
 		/**
 		 * @private
 		 */
-		protected var _height:Number;
+		protected var _height:Number = 0;
 		/**
 		 * @copy		net.dndigital.glo.components.IGUIComponent#height
 		 * 

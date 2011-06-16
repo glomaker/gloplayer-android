@@ -33,7 +33,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public final class VideoPlayer extends Placeholder
+	public final class VideoPlayer extends GloComponent
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -299,6 +299,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 						playButton.width = playButton.height = desiredSize;
 						playButton.x = (width - playButton.width) / 2;
 						playButton.y = (height - playButton.height) / 2;
+						log("resized({0}, {1}", width, height);
+						log("playButton $width $height $x $y ", playButton);
 					}
 				}
 			}
