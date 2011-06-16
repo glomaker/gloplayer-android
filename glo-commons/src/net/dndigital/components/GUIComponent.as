@@ -198,8 +198,14 @@ package net.dndigital.components
 		 */
 		public function delay(fun:Function, args:Array = null):void
 		{
+			var add:Boolean = true;
+			for (var i:int = 0; i < delayed.length; i ++)
+				if (delayed[i].fun == fun && args == null)
+					add = false, log("duplicated");
+			
 			// Storing funciton with arguments.
-			delayed.push(new Fun(fun, args));
+			if (add)
+				delayed.push(new Fun(fun, args));
 			
 			// Add handlers for next frame.
 			if(root) {
@@ -516,6 +522,7 @@ package net.dndigital.components
 		protected function invoke(fun:Fun):void
 		{
 			fun.fun.apply(null, fun.args);
+			fun.fun = null, fun.args = null;
 		}
 		
 		/**

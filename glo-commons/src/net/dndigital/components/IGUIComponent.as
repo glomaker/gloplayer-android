@@ -81,6 +81,20 @@ package net.dndigital.components
 		function set height(value:Number):void;
 		
 		/**
+		 * Indicates whether component is visible or not.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function get visible():Boolean;
+		/**
+		 * @private
+		 */
+		function set visible(value:Boolean):void;
+		
+		/**
 		 * Name of default state that component is initialized with.
 		 * 
 		 * 

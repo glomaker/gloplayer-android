@@ -123,6 +123,14 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 * @copy	net.dndigital.glo.mvcs.views.controls.IGloComponent#destroy
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */ 
 		public function destroy():void
 		{
 			if (_player)

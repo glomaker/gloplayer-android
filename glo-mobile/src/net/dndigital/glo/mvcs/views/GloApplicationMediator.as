@@ -1,7 +1,11 @@
 package net.dndigital.glo.mvcs.views
 {
+	import eu.kiichigo.utils.loggable;
+	
 	import flash.events.Event;
 	import flash.events.StageOrientationEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
@@ -72,7 +76,6 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected function showPlayer(event:ApplicationEvent):void
 		{
-			//log("startPlayer() event={0}", event);
 			view.showPlayer();
 		}
 		
@@ -92,7 +95,7 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected function stageResized(event:Event):void
 		{
-			log("stageResized() width={0} height={1}", contextView.stage.fullScreenWidth, contextView.stage.fullScreenHeight);
+			//log("stageResized() width={0} height={1}", contextView.stage.fullScreenWidth, contextView.stage.fullScreenHeight);
 			// FIXME: Find a way to use Application widht and height instead of full screen width/height.
 			view.width = contextView.stage.fullScreenWidth;
 			view.height = contextView.stage.fullScreenHeight;

@@ -6,17 +6,23 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.NetStatusEvent;
+	import flash.events.TimerEvent;
 	import flash.events.TouchEvent;
 	import flash.events.TransformGestureEvent;
+	import flash.geom.Point;
 	import flash.media.Video;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
+	import flash.system.Capabilities;
+	import flash.utils.Timer;
+	import flash.utils.setTimeout;
 	
 	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.glo.mvcs.events.NetStreamEvent;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
 	import net.dndigital.glo.mvcs.views.components.IconButton;
 	import net.dndigital.glo.mvcs.views.components.PlayButton;
+	import net.dndigital.glo.mvcs.views.glocomponents.helpers.PlaybackProgress;
 	
 	import org.bytearray.display.ScaleBitmap;
 
@@ -108,7 +114,29 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * Flag, indicates whether movie is loaded or not.
 		 */
 		protected var loaded:Boolean = false;
-
+		
+		/**
+		 * @private
+		 * Size of video.
+		 */
+		protected const videoSize:Point = new Point;
+		
+		/**
+		 * @private
+		 * Flag indicates whether video should be loaded.
+		 */
+		protected var loadVideo:Boolean = false;
+		
+		/**
+		 * @private
+		 * Progress component.
+		 */
+		protected const playbackProgress:PlaybackProgress = new PlaybackProgress;
+		/**
+		 * @private
+		 * Timer, handles progress changes.
+		 */
+		protected const progressTimer:Timer = new Timer(75);
 		
 		//--------------------------------------------------------------------------
 		//
@@ -151,7 +179,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			if (_source == value)
 				return;
 			_source = value;
-			loadVideo(value);
+			load(_source);
 		}
 		
 		/**
@@ -201,10 +229,13 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			if (!loaded)
 				return this;
 			
-			if (!paused)
+			if (!paused) {
 				netStream.pause();
+				progressTimer.stop();
+			}
 			paused = true;
 			invalidateDisplay();
+			updateProgress();
 			return this;
 		}
 		
@@ -223,10 +254,13 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			if (!loaded)
 				return this;
 			
-			if (paused)
+			if (paused) {
 				netStream.resume();
+				progressTimer.start();
+			}
 			paused = false;
 			invalidateDisplay();
+			updateProgress();
 			return this;
 		}
 		
@@ -284,6 +318,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			// Map Properties
 			mapProperty("source");
 			
+			// Prepare progress timer.
+			progressTimer.addEventListener(TimerEvent.TIMER, progressTick);
 			// Prepare NetConnection and NetStream instances for video.
 			connection.connect(null);
 			netStream = new NetStream(connection);
@@ -295,10 +331,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			// Setup Event Listeners.
 			addEventListener(MouseEvent.CLICK, handleMouse);
 			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
-			addEventListener(TransformGestureEvent.GESTURE_ZOOM, handleZoom);
 			
 			return super.initialize();
 		}
+
+		
 		
 		
 		/**
@@ -313,9 +350,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			video.smoothing = true;
 			addChild(video);
 			
+			// Setup progress
+			playbackProgress.height = Math.floor(Capabilities.screenDPI * (40 / 25.4)) / 100;
+			addChild(playbackProgress);
+			
 			// Setup button.
-			
-			
 			playButton.upSkin = new playButtonAsset().bitmapData;
 			playButton.width = playButton.height = 2;
 			playButton.visible = false;
@@ -327,13 +366,16 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		override protected function resized(width:Number, height:Number):void
 		{
-			if (video.videoWidth > 0 && video.videoWidth > 0) {
-				if (video.videoWidth != width || video.videoHeight != height) {
+			// [t:43](LG Bug). Take value which is not zero, attempt to use video.videoWidth, but use cached videoSize if first not available.
+			const vw:int = video.videoWidth || videoSize.x;
+			const vh:int = video.videoHeight || videoSize.y;
+			if (vw > 0 && vh > 0) {
+				if (vw != width || vh != height) {
 					// Calculate a cooficient.
-					var c:Number = Math.min(width / video.videoWidth, height / video.videoHeight);
+					var c:Number = Math.min(width / vw, height / vh);
 					// Apply size
-					video.width = video.videoWidth * c;
-					video.height = video.videoHeight * c;
+					video.width = vw * c;
+					video.height = vh * c;
 					
 					video.x = (width - video.width) / 2;
 					video.y = (height - video.height) / 2;
@@ -347,6 +389,14 @@ package net.dndigital.glo.mvcs.views.glocomponents
 						playButton.width = playButton.height = desiredSize;
 						playButton.x = (width - playButton.width) / 2;
 						playButton.y = (height - playButton.height) / 2;
+					}
+					
+					// Playback progress
+					playbackProgress.visible = !paused;
+					if (playbackProgress) {
+						playbackProgress.x = video.x;
+						playbackProgress.y = video.y + video.height - playbackProgress.height;
+						playbackProgress.width = video.width;
 					}
 				}
 			}
@@ -367,6 +417,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					netStream.client = {onMetaData: function(info:Object):void {}};
 				netStream = null
 			}
+			
+			progressTimer.removeEventListener(TimerEvent.TIMER, progressTick);
 			video.clear();
 		}
 		
@@ -377,11 +429,27 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		//--------------------------------------------------------------------------
 		
 		/**
-		 * 
+		 * @private
+		 * Handles timer update.
 		 */
-		protected function loadVideo(path:String):void
+		protected function progressTick(event:TimerEvent):void
 		{
-			netStream.play(component.directory.resolvePath(path).url);
+			if (netStream == null) {
+				progressTimer.removeEventListener(TimerEvent.TIMER, progressTick);
+				progressTimer.stop();
+			}
+			
+			updateProgress();
+			event.updateAfterEvent();
+		}
+		
+		/**
+		 * Loads source.
+		 */
+		protected function load(source:String):void
+		{
+			//log("load({0})", source);
+			netStream.play(component.directory.resolvePath(source).url);
 			paused = false;
 			loaded = true;
 			createSnapshot(video, netStream);
@@ -396,8 +464,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function netStreamMetaData(event:NetStreamEvent):void
 		{
-			video.width = event.width;
-			video.height = event.height;
+			videoSize.x = video.width = event.width;
+			videoSize.y = video.height = event.height;
 			_duration = event.duration;
 			
 			invalidateDisplay();
@@ -409,8 +477,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function handleMouse(event:MouseEvent):void
 		{
-			if (event.type == MouseEvent.CLICK)
-				toggle();
+			toggle();
 		}
 		
 		/**
@@ -443,22 +510,9 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		
 		/**
 		 * @private
-		 * Handles Gesture Zoom.
-		 */
-		protected function handleZoom(event:TransformGestureEvent):void
-		{
-			log("handleZoom() x={0} y={1}", event.offsetX, event.offsetY);
-			event.preventDefault();
-			event.stopImmediatePropagation();
-			event.stopPropagation();
-		}
-		
-		/**
-		 * @private
 		 */
 		protected function handleNetStatus(event:NetStatusEvent):void
 		{
-			log("handleNetStatus({0*})", event.info);
 			switch (event.info.level) {
 				case "status":
 					switch (event.info.code) {
@@ -466,6 +520,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 							rewind();
 							break;
 						case "NetStream.Play.Start":
+							player.invalidateDisplay();
 							invalidateDisplay();
 							break;
 					}
@@ -473,6 +528,14 @@ package net.dndigital.glo.mvcs.views.glocomponents
 				default:;
 					log("handleNetStatus({0*})", event.info);
 			}
+		}
+		
+		/**
+		 * @private
+		 */
+		protected function updateProgress():void
+		{
+			playbackProgress.percentage = netStream.time / duration;
 		}
 	}
 }

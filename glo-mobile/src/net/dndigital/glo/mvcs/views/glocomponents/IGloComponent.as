@@ -54,5 +54,15 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * @private
 		 */
 		function set player(value:GloPlayer):void;
+		
+		/**
+		 * Method begins destruction of an instance of <code>IGloComponent</code> and assets created by it.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		function destroy():void;
 	}
 }
