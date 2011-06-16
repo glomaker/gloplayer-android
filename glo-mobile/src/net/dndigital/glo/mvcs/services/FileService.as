@@ -3,6 +3,8 @@ package net.dndigital.glo.mvcs.services
 	import eu.kiichigo.utils.log;
 	
 	import flash.filesystem.File;
+	import flash.system.Capabilities;
+	import flash.system.System;
 	
 	import org.robotlegs.mvcs.Actor;
 	
@@ -20,8 +22,6 @@ package net.dndigital.glo.mvcs.services
 		protected static const log:Function = eu.kiichigo.utils.log(FileService);
 		
 		
-		protected static const DEFAULT:File = File.applicationDirectory;
-		
 		/**
 		 * @copy	net.dndigital.glo.mvcs.services.IFileService#files
 		 * 
@@ -34,7 +34,8 @@ package net.dndigital.glo.mvcs.services
 		 */
 		public function get files():Vector.<File>
 		{
-			return scanDirectory(DEFAULT);
+			return scanDirectory(File.documentsDirectory.resolvePath("GloPlayer/Glos")).concat(
+				   scanDirectory(File.applicationDirectory));
 		}
 		
 		/**

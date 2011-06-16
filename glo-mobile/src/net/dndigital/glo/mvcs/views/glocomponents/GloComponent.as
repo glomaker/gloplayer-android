@@ -1,18 +1,30 @@
-package net.dndigital.glo.mvcs.views.components
+package net.dndigital.glo.mvcs.views.glocomponents
 {
 	import eu.kiichigo.utils.log;
-	import eu.kiichigo.utils.loggable;
 	import eu.kiichigo.utils.path;
 	
 	import flash.events.Event;
-	import flash.utils.Dictionary;
 	
-	import net.dndigital.components.Application;
 	import net.dndigital.components.GUIComponent;
-	import net.dndigital.components.IContainer;
-	import net.dndigital.components.IGUIComponent;
+	import net.dndigital.glo.mvcs.events.PlayerEvent;
 	import net.dndigital.glo.mvcs.models.vo.Component;
+	import net.dndigital.glo.mvcs.views.GloPlayer;
 	
+	/**
+	 * Base class for GloComponents such as <code>TextArea</code> and <code>Image</code>. Class <code>GloComponent</code> defines basic structure for the component to be rendered in player.
+	 *  
+	 * @see		net.dndigital.components.IGUIComponent
+	 * @see		net.dndigital.components.GUIComponent
+	 * @see		net.dndigital.glo.mvcs.models.vo.Component
+	 * 
+	 * @author David "nirth" Sergey.
+	 * @author DN Digital Ltd.
+	 *
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 2.5
+	 * @productversion Flex 4.5
+	 */
 	public class GloComponent extends GUIComponent implements IGloComponent
 	{
 		//--------------------------------------------------------------------------
@@ -76,6 +88,46 @@ package net.dndigital.glo.mvcs.views.components
 			invalidateData();
 		}
 		
+		/**
+		 * @private
+		 */
+		protected var _player:GloPlayer;
+		/**
+		 * @copy	net.dndigital.glo.mvcs.views.controls.IGloComponent#player
+		 * 
+		 * @see		net.dndigital.glo.mvcs.views.GloPlayer
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get player():GloPlayer { return _player; }
+		/**
+		 * @private
+		 */
+		public function set player(value:GloPlayer):void
+		{
+			if (_player == value)
+				return;
+			if (_player)
+				_player.removeEventListener(PlayerEvent.DESTROY, handleDestroy);
+			_player = value;
+			if (_player)
+				_player.addEventListener(PlayerEvent.DESTROY, handleDestroy);
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		public function destroy():void
+		{
+			if (_player)
+				_player.removeEventListener(PlayerEvent.DESTROY, handleDestroy);
+		}
 		//--------------------------------------------------------------------------
 		//
 		//  Overrien API
@@ -131,21 +183,19 @@ package net.dndigital.glo.mvcs.views.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		protected function mapProperty(from:String, to:String = null):void
+		protected function mapProperty(from:String, to:String = null, defaultProperty:* = null):void
 		{ 
 			if (to === null)
 				to = from;
 			mappers.push(new Mapper(from, to));
-			delay(lockMappers);
 		}
 		
 		/**
-		 * @private
-		 * Locks (Vector.fixed=true) collection of mappers.
+		 * Handles component destruction.
 		 */
-		protected function lockMappers():void
+		protected function handleDestroy(event:Event):void
 		{
-			mappers.fixed = true;
+			destroy();
 		}
 	}
 }
@@ -153,7 +203,7 @@ import com.adobe.serialization.json.JSON;
 
 import eu.kiichigo.utils.path;
 
-import net.dndigital.glo.mvcs.views.components.IGloComponent;
+import net.dndigital.glo.mvcs.views.glocomponents.IGloComponent;
 
 class Mapper {
 	/**
@@ -184,7 +234,7 @@ class Mapper {
 	public function apply(gloComponent:IGloComponent):void
 	{
 		var value:* = path(gloComponent.component.data, from);
-		if (value === null)
+		if ((value is Number && isNaN(value)) || value === null)
 			return;
 		
 		value = JSON.decode(value);

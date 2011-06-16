@@ -1,4 +1,4 @@
-package net.dndigital.glo.mvcs.views.components
+package net.dndigital.glo.mvcs.views.glocomponents
 {
 	import eu.kiichigo.utils.log;
 	
@@ -16,6 +16,19 @@ package net.dndigital.glo.mvcs.views.components
 	
 	import org.bytearray.display.ScaleBitmap;
 
+	/**
+	 * Image component is capable of displaying non-animated bitmap images.
+	 * @see		net.dndigital.glo.mvcs.views.glocomponents.IGloComponent
+	 * @see		net.dndigital.glo.mvcs.views.glocomponents.GloComponent
+	 * 
+	 * @author David "nirth" Sergey.
+	 * @author DN Digital Ltd.
+	 *
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 2.5
+	 * @productversion Flex 4.5
+	 */
 	public final class Image extends GloComponent
 	{
 		//--------------------------------------------------------------------------
@@ -167,6 +180,17 @@ package net.dndigital.glo.mvcs.views.components
 			super.commited();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function destroy():void
+		{
+			super.destroy();
+			
+			if (bitmap && bitmap.bitmapData)
+				bitmap.bitmapData.dispose();
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Private Methods
@@ -187,6 +211,7 @@ package net.dndigital.glo.mvcs.views.components
 				//log("loadImage({0}) error={1} \n{2}", path, e.message, e.getStackTrace());
 				return;
 			}
+			
 			fileStream.position = 0;
 			
 			const bytes:ByteArray = new ByteArray;

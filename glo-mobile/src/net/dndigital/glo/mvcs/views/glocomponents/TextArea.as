@@ -1,4 +1,4 @@
-package net.dndigital.glo.mvcs.views.components
+package net.dndigital.glo.mvcs.views.glocomponents
 {
 	import com.adobe.serialization.json.JSON;
 	
@@ -11,6 +11,20 @@ package net.dndigital.glo.mvcs.views.components
 	
 	import net.dndigital.components.IGUIComponent;
 
+	/**
+	 * TextArea component renders formatted and not formatted text.
+	 * 
+	 * @see		net.dndigital.glo.mvcs.views.glocomponents.IGloComponent
+	 * @see		net.dndigital.glo.mvcs.views.glocomponents.GloComponent
+	 * 
+	 * @author David "nirth" Sergey.
+	 * @author DN Digital Ltd.
+	 *
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 2.5
+	 * @productversion Flex 4.5
+	 */
 	public final class TextArea extends GloComponent
 	{
 		//--------------------------------------------------------------------------
@@ -34,6 +48,12 @@ package net.dndigital.glo.mvcs.views.components
 		 * @private
 		 */
 		protected const textField:TextField = new TextField;
+		
+		/**
+		 * @private
+		 * Flag, indicates whether border should ber redrawn.
+		 */
+		protected var redrawBorder:Boolean = false;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -70,6 +90,10 @@ package net.dndigital.glo.mvcs.views.components
 		public function set text(value:String):void { textField.text = value || ""; }
 		
 		/**
+		 * @private
+		 */
+		protected var _border:Boolean;
+		/**
 		 * @copy	flash.display.TextField#border
 		 *
 		 * @langversion 3.0
@@ -77,11 +101,18 @@ package net.dndigital.glo.mvcs.views.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get border():Boolean { return textField.border; }
+		public function get border():Boolean { return border; }
 		/**
 		 * @private
 		 */
-		public function set border(value:Boolean):void { textField.border = value; }
+		public function set border(value:Boolean):void
+		{
+			if (_border == value)
+				return;
+			_border = value;
+			redrawBorder = true;
+			invalidateDisplay();
+		}
 		
 		
 		//--------------------------------------------------------------------------
@@ -111,6 +142,8 @@ package net.dndigital.glo.mvcs.views.components
 			
 			textField.multiline = true;
 			textField.defaultTextFormat = new TextFormat("Arial");
+			textField.wordWrap = true;
+			textField.border = true;
 			addChild(textField)
 		}
 		
@@ -121,8 +154,22 @@ package net.dndigital.glo.mvcs.views.components
 		{
 			super.resized(width, height);
 			
-			textField.width = width;
-			textField.height = height;
+			const cooficient:Number = Math.min(width / component.width, height / component.height);
+			
+			textField.width = component.width;
+			textField.height = component.height;
+			textField.scaleX = cooficient;
+			textField.scaleY = cooficient;
+			
+			if (redrawBorder) {
+				redrawBorder = false;
+				
+				graphics.clear();
+				if (_border) {
+					//graphics.lineStyle(1, 0x000000);
+					graphics.drawRect(0, 0, width, height);
+				}
+			}
 		}
 	}
 }

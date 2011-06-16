@@ -1,25 +1,64 @@
 package net.dndigital.glo.mvcs.views
 {
-	import eu.kiichigo.utils.filter;
 	import eu.kiichigo.utils.log;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.TransformGestureEvent;
+	import flash.geom.Point;
 	
-	import net.dndigital.components.Container;
-	import net.dndigital.components.GUIComponent;
-	import net.dndigital.components.IGUIComponent;
-	import net.dndigital.glo.mvcs.models.vo.Component;
-	import net.dndigital.glo.mvcs.models.vo.Page;
-	import net.dndigital.glo.mvcs.models.vo.Project;
+	import net.dndigital.components.*;
+	import net.dndigital.glo.mvcs.events.PlayerEvent;
+	import net.dndigital.glo.mvcs.events.ProjectEvent;
+	import net.dndigital.glo.mvcs.models.vo.*;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
-	import net.dndigital.glo.mvcs.views.components.IGloComponent;
-	import net.dndigital.glo.mvcs.views.components.Image;
-	import net.dndigital.glo.mvcs.views.components.Placeholder;
-	import net.dndigital.glo.mvcs.views.components.Rectangle;
-	import net.dndigital.glo.mvcs.views.components.TextArea;
-	import net.dndigital.glo.mvcs.views.components.VideoPlayer;
-	
+	import net.dndigital.glo.mvcs.views.glocomponents.*;
+
+	/**
+	 * Dispatched when an instance of <code>GloPlayer</code> changed page.
+	 *
+	 * @eventType net.dndigital.glo.mvcs.events.ProjectEvent.PAGE_CHANGED
+	 * 
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 1.5
+	 * @productversion Flex 4.5
+	 */
+	[Event(name="pageChanged", type="net.dndigital.glo.mvcs.events.ProjectEvent")]
+	/**
+	 * Dispatched when instance of <code>GloPlayer</code> is about to switch to next page.
+	 *
+	 * @eventType net.dndigital.glo.mvcs.events.ProjectEvent.NEXT_PAGE
+	 * 
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 1.5
+	 * @productversion Flex 4.5
+	 */
+	[Event(name="nextPage", type="net.dndigital.glo.mvcs.events.ProjectEvent")]
+	/**
+	 * Dispatched when instance of <code>GloPlayer</code> is about to switch to previous page.
+	 *
+	 * @eventType net.dndigital.glo.mvcs.events.ProjectEvent.PREV_PAGE
+	 * 
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 1.5
+	 * @productversion Flex 4.5
+	 */
+	[Event(name="prevPage", type="net.dndigital.glo.mvcs.events.ProjectEvent")]
+	/**
+	 * Dispatched when instance of <code>GloPlayer</code> is about to be destroyed.
+	 *
+	 * @eventType net.dndigital.glo.events.PlayerEvent.DESTROY
+	 * 
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 1.5
+	 * @productversion Flex 4.5
+	 */
+	[Event(name="destroy", type="net.dndigital.glo.mvcs.events.PlayerEvent")]
 	/**
 	 * 
 	 * @see		net.dndigital.glo.mvcs.views.GloPlayerMediator
@@ -83,6 +122,18 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected var current:IGUIComponent;
 		
+		/**
+		 * @private
+		 * Field holds a reference to an instance of <code>IGloComponent</code> that should be shown in fullscreen.
+		 */
+		protected var fullscreenComponent:IGloComponent = null;
+		
+		/**
+		 * @private
+		 * Flag, indicates whether background should be redrawn.
+		 */
+		protected var redrawBackground:Boolean = false;
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -134,7 +185,7 @@ package net.dndigital.glo.mvcs.views
 			if (_project == value)
 				return;
 			_project = value;
-			log("project({0})", value);
+			redrawBackground = true;
 			invalidateData();
 		}
 		
@@ -144,6 +195,17 @@ package net.dndigital.glo.mvcs.views
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function initialize():IGUIComponent
+		{
+			addEventListener(TransformGestureEvent.GESTURE_SWIPE, handleSwipe);
+			
+			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
+			
+			return super.initialize();
+		}
 		/**
 		 * @inheritDoc
 		 */
@@ -165,14 +227,29 @@ package net.dndigital.glo.mvcs.views
 			controls.width = width;
 			controls.y = height - controls.height;
 			
-			if(project) {
+			if (current) {
+				// FIXME 41 is a height of control bar in GloMaker v2. It seems that there is no data about this height in project file, so I had to hardcode it. It would be recommended to move this parameter to project.glo or xml config in future versions.
+				const h:int = height - controls.height + 41; // We need to calculate new height.
+				const cooficient:Number = Math.min(width / project.width, h / project.height);
+				const offset:Point = new Point((width - project.width * cooficient) / 2, (h - project.height * cooficient) / 2);
+				const container:Sprite = current as Sprite;
+				
+				for (var i:int = 0; i < container.numChildren; i ++)
+					if (container.getChildAt(0) is IGloComponent)
+						resize(container.getChildAt(i) as IGloComponent, cooficient, offset);
+			}
+			if (redrawBackground) {
+				redrawBackground = false;
+				
 				graphics.clear();
-				graphics.beginFill(project.background);
-				graphics.drawRect(0, 0, width, height - controls.height);
-				graphics.endFill();
+				if (project) {
+					graphics.beginFill(project.background);
+					graphics.drawRect(0, 0, width, height - controls.height);
+					graphics.endFill();
+				}
 			}
 			
-			log("resized");
+			//log("resized");
 		}
 		
 		/**
@@ -182,10 +259,10 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.commited();
 			
-			if(project != built)
+			if (project != built)
 				build().invalidateDisplay();
 			
-			if(pages != null && pages.length > 0 && _index != -1 && pages[_index] != current) {
+			if (pages != null && pages.length > 0 && _index != -1 && pages[_index] != current) {
 				replace(index);
 				invalidateDisplay();
 			}
@@ -219,6 +296,8 @@ package net.dndigital.glo.mvcs.views
 			
 			if (_index != index)
 				_index = index;
+			
+			dispatchEvent(new ProjectEvent(ProjectEvent.PAGE_CHANGED, _project, _index));
 			return current;
 		}
 		
@@ -296,11 +375,11 @@ package net.dndigital.glo.mvcs.views
 					case "imageloader":
 						container.addChild(component(new Image, page.components[i]));
 						break;
-					case "videoplayer":
-						container.addChild(component(new VideoPlayer, page.components[i]));
-						break;
 					case "rectangle":
 						container.addChild(component(new Rectangle, page.components[i]));
+						break;
+					case "videoplayer":
+						container.addChild(component(new VideoPlayer, page.components[i]));
 						break;
 					default:
 						container.addChild(component(new Placeholder, page.components[i]));
@@ -318,13 +397,56 @@ package net.dndigital.glo.mvcs.views
 		{
 			if (components.indexOf(target) == -1)
 				components.push(target);
-			//log("component()", vo.directory.nativePath);
-			target.x 	 		= vo.x;
-			target.y 	  		= vo.y;
-			target.width  		= vo.width;
-			target.height 		= vo.height;
 			target.component   	= vo;
+			target.player		= this;
 			return target as DisplayObject;
+		}
+		
+		/**
+		 * Function handles resizing of instances of <code>IGloComponent</code>.
+		 * 
+		 * @param component		<code>IGloComponent</code> instance to be resized.
+		 * @param cooficient	<code>Number</code>. Cooficient that's used for resizing. It should be calculated prior to resing.
+		 * @return 				<code>IGloCompomnent</code> that was just resized.
+		 * 
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		protected function resize(component:IGloComponent, cooficient:Number, offset:Point):IGloComponent
+		{
+			if (fullscreenComponent == null) {
+				const vo:Component = component.component;
+				component.x = vo.x * cooficient + offset.x;
+				component.y = vo.y * cooficient + offset.y;
+				component.width = vo.width * cooficient;
+				component.height = vo.height * cooficient;
+			} else {
+				
+			}
+			return component;
+		}
+		
+		/**
+		 * @private
+		 * Handles swipe events.
+		 */
+		protected final function handleSwipe(event:TransformGestureEvent):void
+		{
+			if(event.offsetX == -1)
+				dispatchEvent(ProjectEvent.NEXT_PAGE_EVENT);
+			else
+				dispatchEvent(ProjectEvent.PREV_PAGE_EVENT);
+		}
+		
+		/**
+		 * Handles REMOVED_FROM_STAGE event, and notifies sub children of it's impending destruction.
+		 */
+		protected function removedFromStage(event:Event):void
+		{
+			log("removedFromStage()");
+			dispatchEvent(PlayerEvent.DESTROY_EVENT);
 		}
 	}
 }

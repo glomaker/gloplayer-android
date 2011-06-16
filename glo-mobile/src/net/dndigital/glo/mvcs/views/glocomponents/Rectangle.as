@@ -1,9 +1,23 @@
-package net.dndigital.glo.mvcs.views.components
+package net.dndigital.glo.mvcs.views.glocomponents
 {
 	import eu.kiichigo.utils.log;
 	
 	import net.dndigital.components.IGUIComponent;
 
+	/**
+	 * Rectangle component draws rectangular shapes on Player's page.
+	 * 
+	 * @see		net.dndigital.glo.mvcs.views.glocomponents.IGloComponent
+	 * @see		net.dndigital.glo.mvcs.views.glocomponents.GloComponent
+	 * 
+	 * @author David "nirth" Sergey.
+	 * @author DN Digital Ltd.
+	 *
+	 * @langversion 3.0
+	 * @playerversion Flash 10
+	 * @playerversion AIR 2.5
+	 * @productversion Flex 4.5
+	 */
 	public final class Rectangle extends GloComponent
 	{
 		//--------------------------------------------------------------------------
@@ -26,9 +40,9 @@ package net.dndigital.glo.mvcs.views.components
 		/**
 		 * @private
 		 */
-		protected var _cornerRadius:Number;
+		protected var _cornerRadius:Number = 0;
 		/**
-		 * cornerRadius.
+		 * Rectangle's corner radious in pixels.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -50,9 +64,9 @@ package net.dndigital.glo.mvcs.views.components
 		/**
 		 * @private
 		 */
-		protected var _color:uint;
+		protected var _color:uint = 0xFFFFFF;
 		/**
-		 * color.
+		 * Color in which rectangle should be filled.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
@@ -94,7 +108,6 @@ package net.dndigital.glo.mvcs.views.components
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);
-			
 			graphics.clear();
 			graphics.beginFill(_color);
 			graphics.drawRoundRect(0, 0, width, height, _cornerRadius, _cornerRadius);

@@ -5,9 +5,13 @@ package net.dndigital.glo.mvcs.views
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
 	
 	import net.dndigital.components.Container;
 	import net.dndigital.components.GUIComponent;
+	import net.dndigital.components.IGUIComponent;
+	import net.dndigital.components.Label;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
 	import net.dndigital.glo.mvcs.views.components.NavButton;
@@ -60,9 +64,72 @@ package net.dndigital.glo.mvcs.views
 		
 		/**
 		 * @private
-		 * Background (Sprite so it remains interactive)
+		 * Text Field indicates slide progress.
 		 */
-		public const bg:GUIComponent = new GUIComponent();
+		protected const progress:Label = new Label;
+		
+		/**
+		 * @private
+		 * Flag, indicates whether <code>progress</code> text field should be redrawn or not.
+		 */
+		protected var progressChanged:Boolean = false;
+
+		//--------------------------------------------------------------------------
+		//
+		//  Properties
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected var _currentPage:int = -1;
+		/**
+		 * currentPage.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get currentPage():int { return _currentPage; }
+		/**
+		 * @private
+		 */
+		public function set currentPage(value:int):void
+		{
+			if (_currentPage == value)
+				return;
+			_currentPage = value;
+			progressChanged = true;
+			invalidateData();
+		}
+		
+		/**
+		 * @private
+		 */
+		protected var _totalPages:int = -1;
+		/**
+		 * totalPages.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get totalPages():int { return _totalPages; }
+		/**
+		 * @private
+		 */
+		public function set totalPages(value:int):void
+		{
+			if (_totalPages == value)
+				return;
+			_totalPages = value;
+			progressChanged = true;
+			invalidateData();
+		}
+		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -86,6 +153,7 @@ package net.dndigital.glo.mvcs.views
 			this.prev.enabled = !prev;
 			this.next.enabled = !next;
 		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Overriden API
@@ -95,11 +163,18 @@ package net.dndigital.glo.mvcs.views
 		/**
 		 * @inheritDoc
 		 */
+		override public function initialize():IGUIComponent
+		{
+			addEventListener(MouseEvent.CLICK, handleClick);
+			
+			return super.initialize();
+		}
+		/**
+		 * @inheritDoc
+		 */
 		override protected function createChildren():void
 		{
 			super.createChildren();
-
-			add(bg);
 			
 			[Embed(source="assets/next.up.png")]
 			const nextUpAsset:Class;
@@ -113,7 +188,6 @@ package net.dndigital.glo.mvcs.views
 			next.upSkin = new nextUpAsset().bitmapData;
 			next.downSkin = new nextDownAsset().bitmapData;
 			next.disabledSkin = new nextDisabledAsset().bitmapData;
-			next.addEventListener(MouseEvent.CLICK, handleClick);
 			
 			add(next);
 
@@ -129,23 +203,18 @@ package net.dndigital.glo.mvcs.views
 			prev.upSkin = new prevUpAsset().bitmapData;
 			prev.downSkin = new prevDownAsset().bitmapData;
 			prev.disabledSkin = new prevDisabledAsset().bitmapData;
-			prev.addEventListener(MouseEvent.CLICK, handleClick);
 			
 			add(prev);
 			
 			// Size component according to screen dpi
 			next.width = next.height = prev.width = prev.height = ScreenMaths.mmToPixels(9.5);
 			
+			progress.textFormat = new TextFormat("Verdana", 18, 0xBBBBBB);
+			add(progress);
+			
 			invalidateDisplay();
 		}
 
-		protected function handleClick(event:MouseEvent):void
-		{
-			if(event.target == next)
-				dispatchEvent(ProjectEvent.NEXT_PAGE_EVENT);
-			else
-				dispatchEvent(ProjectEvent.PREV_PAGE_EVENT);
-		}
 		
 		/**
 		 * @inheritDoc
@@ -155,13 +224,10 @@ package net.dndigital.glo.mvcs.views
 			super.resized(width, height);
 
 			if (!isNaN(width+height)) {
-				with (bg.graphics)
-				{
-					clear();
-					beginFill(0x494949);
-					drawRect(0, 0, width, height);
-					endFill();
-				}
+				graphics.clear();
+				graphics.beginFill(0x494949);
+				graphics.drawRect(0, 0, width, height);
+				graphics.endFill();
 			}
 			
 			next.x = width - next.width - 10;
@@ -169,6 +235,9 @@ package net.dndigital.glo.mvcs.views
 			
 			prev.x = 10;
 			prev.y = (height - prev.height) / 2;
+			
+			progress.x = (width - progress.width) / 2;
+			progress.y = (height - progress.height) / 2;
 		}
 		
 		/**
@@ -177,7 +246,41 @@ package net.dndigital.glo.mvcs.views
 		override protected function measure():void
 		{
 			super.measure();
-			invalidateDisplay()
+			invalidateDisplay();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function commited():void
+		{
+			super.commited();
+			
+			if (progressChanged) {
+				progress.visible = _currentPage != -1 && _totalPages != -1;
+				progress.text = "Slide " + ( _currentPage + 1).toString() + " of " + _totalPages.toString();
+				invalidateDisplay();
+				progressChanged = false;
+			}
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Private Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * Handles mouse events generated by <code>GloControl</code>
+		 */
+		protected function handleClick(event:MouseEvent):void
+		{
+			if (event.target == next)
+				dispatchEvent(ProjectEvent.NEXT_PAGE_EVENT);
+			else if(event.target == prev)
+				dispatchEvent(ProjectEvent.PREV_PAGE_EVENT);
+			else if(event.stageX > 100 && event.stageX < stage.stageWidth - 100)
+				dispatchEvent(ProjectEvent.MENU_EVENT);
 		}
 	}
 }

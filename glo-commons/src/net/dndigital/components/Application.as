@@ -1,6 +1,7 @@
 package net.dndigital.components
 {
 	import flash.events.Event;
+	import flash.text.TextFormat;
 
 	/**
 	 * Represents top level container used as main Application component.
