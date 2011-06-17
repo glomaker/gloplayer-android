@@ -23,11 +23,9 @@ package net.dndigital.glo.mvcs.utils
 		 * @param cm
 		 * @return 
 		 */		
-		public static function mmToPixels(mm:Number):uint
+		public static function mmToPixels(mm:int):uint
 		{
-			return Math.round(Capabilities.screenDPI * (mm / 25.4));
+			return Capabilities.screenDPI * (mm / 25.4);
 		}
-		
-		
 	}
 }

@@ -51,7 +51,7 @@
       <component id="videoplayer" x="190" y="14" width="200" height="331">
         <source isPath="true">"content/TieYourShoes.flv"</source>
       </component>
-      <component id="videoplayer" x="14" y="386" width="370" height="250">
+      <component id="videoplayer" x="15" y="367" width="370" height="250">
         <source isPath="true">"content/TheBoondocksShort.flv"</source>
       </component>
     </page>
@@ -120,22 +120,22 @@
         <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;This slide checks the depth of components.&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Components arranged in following order&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Green Recrangle&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Yellow Rectangle&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Video Clip&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Red Rectangle&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"14\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Image&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
         <borderStyle>true</borderStyle>
       </component>
-      <component id="rectangle" x="19" y="209" width="173" height="137">
+      <component id="rectangle" x="19" y="209" width="331" height="137">
         <cornerRadius>0</cornerRadius>
         <bgcolour>3381504</bgcolour>
       </component>
-      <component id="rectangle" x="59" y="246" width="160" height="145">
+      <component id="rectangle" x="59" y="246" width="251" height="145">
         <cornerRadius>0</cornerRadius>
         <bgcolour>16777011</bgcolour>
       </component>
       <component id="videoplayer" x="99" y="289" width="288" height="219">
         <source isPath="true">"content/TheBoondocksShort.flv"</source>
       </component>
-      <component id="rectangle" x="88" y="426" width="236" height="170">
+      <component id="rectangle" x="121" y="428" width="236" height="170">
         <cornerRadius>0</cornerRadius>
         <bgcolour>13395456</bgcolour>
       </component>
-      <component id="imageloader" x="41" y="539" width="314" height="158">
+      <component id="imageloader" x="41" y="539" width="311" height="208">
         <source isPath="true">"content/Tiger.jpg"</source>
         <maintainRatio>true</maintainRatio>
       </component>
@@ -154,7 +154,7 @@
         <isroot>false</isroot>
       </node>
       <layout id="titleinfopage"/>
-      <component id="swfloader" x="13" y="47" width="368" height="332">
+      <component id="swfloader" x="13" y="47" width="787" height="553">
         <filePath isPath="true">"content/d3qZ.swf"</filePath>
         <bgcolour>6710886</bgcolour>
         <playControlValue>false</playControlValue>
@@ -163,7 +163,7 @@
         <containerWidth>368</containerWidth>
         <containerHeight>332</containerHeight>
       </component>
-      <component id="swfloader" x="22" y="431" width="365" height="313">
+      <component id="swfloader" x="22" y="431" width="778" height="169">
         <filePath isPath="true">"content/coloring.swf"</filePath>
         <bgcolour>6710886</bgcolour>
         <playControlValue>false</playControlValue>
@@ -182,5 +182,5 @@
       </component>
     </page>
   </nodes>
-  <filehash>4170401a15d59369d81971dde8795052</filehash>
+  <filehash>7083d0bbec99de35b7dcd5e68c6740b9</filehash>
 </glo>

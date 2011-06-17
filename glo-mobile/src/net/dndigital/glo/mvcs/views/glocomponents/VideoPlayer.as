@@ -325,6 +325,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			netStream = new NetStream(connection);
 			netStream.addEventListener(NetStatusEvent.NET_STATUS, handleNetStatus);
 			netStream.client = client;
+			//netStream.bufferTime = 0;
 			
 			client.addEventListener(NetStreamEvent.META_DATA, netStreamMetaData);
 			
@@ -351,7 +352,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			addChild(video);
 			
 			// Setup progress
-			playbackProgress.height = Math.floor(Capabilities.screenDPI * (40 / 25.4)) / 100;
+			playbackProgress.height = ScreenMaths.mmToPixels(3) / 10;
 			addChild(playbackProgress);
 			
 			// Setup button.
@@ -518,14 +519,24 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					switch (event.info.code) {
 						case "NetStream.Play.Stop":
 							rewind();
+							invalidateDisplay();
 							break;
 						case "NetStream.Play.Start":
 							player.invalidateDisplay();
 							invalidateDisplay();
 							break;
+						default:
+							log("handleNetStatus({0*})", event.info);
 					}
 					break;
-				default:;
+				case "error":
+					switch (event.info.code) {
+						case "NetStream.Play.StreamNotFound":
+							loaded = false;
+							break;
+					}
+					break;
+				default:
 					log("handleNetStatus({0*})", event.info);
 			}
 		}
@@ -535,7 +546,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function updateProgress():void
 		{
-			playbackProgress.percentage = netStream.time / duration;
+			if (playbackProgress && netStream)
+				playbackProgress.percentage = netStream.time / duration;
 		}
 	}
 }

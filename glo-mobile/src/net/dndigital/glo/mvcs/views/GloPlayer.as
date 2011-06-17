@@ -1,5 +1,5 @@
 package net.dndigital.glo.mvcs.views
-{
+{	
 	import eu.kiichigo.utils.log;
 	
 	import flash.display.DisplayObject;
@@ -8,7 +8,10 @@ package net.dndigital.glo.mvcs.views
 	import flash.events.TransformGestureEvent;
 	import flash.geom.Point;
 	
+	import mx.utils.StringUtil;
+	
 	import net.dndigital.components.*;
+	import net.dndigital.glo.mvcs.events.NotificationEvent;
 	import net.dndigital.glo.mvcs.events.PlayerEvent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.models.vo.*;
@@ -128,6 +131,12 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected var redrawBackground:Boolean = false;
 		
+		/**
+		 * @private
+		 * Flag, indicates whether orientation warning should be shown or not.
+		 */
+		protected var showWarning:Boolean = false;
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -180,7 +189,9 @@ package net.dndigital.glo.mvcs.views
 				return;
 			_project = value;
 			redrawBackground = true;
+			showWarning = true;
 			invalidateData();
+			invalidateDisplay();
 		}
 		
 		/**
@@ -265,6 +276,17 @@ package net.dndigital.glo.mvcs.views
 				graphics.endFill();
 			}
 			
+			if (showWarning) {
+				
+				showWarning = false;
+				var recommendedLandscape:Boolean = (project.width / project.height) > 1;
+				var currentlyLandscape:Boolean = (width / height) > 1;
+				if (recommendedLandscape != currentlyLandscape)
+					dispatchEvent(new NotificationEvent(NotificationEvent.NOTIFICATION,
+														StringUtil.substitute("Rotate your device to {0} mode for best results",
+														  					   recommendedLandscape ? "Landscape" : "Portrait")));
+				
+			}
 			//log("resized");
 		}
 		

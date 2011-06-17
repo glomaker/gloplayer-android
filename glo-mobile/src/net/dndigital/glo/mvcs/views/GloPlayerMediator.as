@@ -2,6 +2,7 @@ package net.dndigital.glo.mvcs.views
 {
 	import flash.events.TransformGestureEvent;
 	
+	import net.dndigital.glo.mvcs.events.NotificationEvent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.models.vo.Project;
 	import net.dndigital.glo.mvcs.services.IProjectService;
@@ -57,6 +58,7 @@ package net.dndigital.glo.mvcs.views
 			eventMap.mapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.PAGE_CHANGED, dispatch);
+			eventMap.mapListener(view, NotificationEvent.NOTIFICATION, dispatch);
 		}
 		
 		/**
@@ -68,6 +70,7 @@ package net.dndigital.glo.mvcs.views
 			eventMap.unmapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.PAGE_CHANGED, dispatch);
+			eventMap.unmapListener(view, NotificationEvent.NOTIFICATION, dispatch);
 		}
 		
 		//--------------------------------------------------------------------------
