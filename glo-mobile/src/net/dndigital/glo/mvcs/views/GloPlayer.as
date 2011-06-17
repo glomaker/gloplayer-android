@@ -485,9 +485,9 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected final function handleSwipe(event:TransformGestureEvent):void
 		{
-			if(event.offsetX == -1)
+			if(event.offsetX < 0)
 				dispatchEvent(ProjectEvent.NEXT_PAGE_EVENT);
-			else
+			else if( event.offsetX > 0 )
 				dispatchEvent(ProjectEvent.PREV_PAGE_EVENT);
 		}
 		
