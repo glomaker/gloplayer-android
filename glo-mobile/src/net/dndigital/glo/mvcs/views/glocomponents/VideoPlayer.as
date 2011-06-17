@@ -367,6 +367,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		override protected function resized(width:Number, height:Number):void
 		{
+			graphics.clear();
+			graphics.beginFill(0x000000);
+			graphics.drawRect(0, 0, width, height);
+			graphics.endFill();
+			
 			// [t:43](LG Bug). Take value which is not zero, attempt to use video.videoWidth, but use cached videoSize if first not available.
 			const vw:int = video.videoWidth || videoSize.x;
 			const vh:int = video.videoHeight || videoSize.y;
