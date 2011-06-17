@@ -535,7 +535,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function updateProgress():void
 		{
-			playbackProgress.percentage = netStream.time / duration;
+			if (playbackProgress && netStream)
+				playbackProgress.percentage = netStream.time / duration;
 		}
 	}
 }
