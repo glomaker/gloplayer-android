@@ -41,7 +41,7 @@ package net.dndigital.glo.mvcs.services
 		 */
 		public function get files():Vector.<File>
 		{
-			return scanDirectory(File.documentsDirectory.resolvePath( DEFAULT_GLO_DIRECTORY )).concat(
+			return scanDirectory(gloDir).concat(
 				   scanDirectory(File.applicationDirectory));
 		}
 		
