@@ -9,6 +9,7 @@ package net.dndigital.glo.mvcs.views
 	
 	import net.dndigital.components.Container;
 	import net.dndigital.components.GUIComponent;
+	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.glo.mvcs.events.GloMenuEvent;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
 	import net.dndigital.glo.mvcs.views.components.MenuButton;
@@ -68,6 +69,14 @@ package net.dndigital.glo.mvcs.views
 		//--------------------------------------------------------------------------
 		
 		/**
+		 * @inheritDoc
+		 */
+		override protected function createChildren():void
+		{
+			super.createChildren();
+		}
+		
+		/**
 		 * @iheritDoc
 		 */
 		override protected function resized(width:Number, height:Number):void
@@ -99,9 +108,10 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Finilizes existance of a <code>MenuButton</code>.
 		 */
-		protected final function destroyButton(menuButton:MenuButton):void
+		protected final function destroyButton(component:IGUIComponent):void
 		{
-			menuButton.removeEventListener(MouseEvent.CLICK, handleButton);
+			//if (component is MenuButton)
+				component.removeEventListener(MouseEvent.CLICK, handleButton);
 		}
 		
 		/**

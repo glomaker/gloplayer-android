@@ -87,7 +87,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @private
 		 */
-		public function set text(value:String):void { textField.text = value || ""; }
+		public function set text(value:String):void { textField.text = enlarge(value) || ""; }
 		
 		/**
 		 * @private
@@ -141,7 +141,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			super.createChildren();
 			
 			textField.multiline = true;
-			textField.defaultTextFormat = new TextFormat("Arial");
+			textField.defaultTextFormat = new TextFormat("Verdana", 14, 0x0B333C);
 			textField.wordWrap = true;
 			textField.border = true;
 			addChild(textField)
@@ -156,10 +156,10 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			
 			const cooficient:Number = Math.min(width / component.width, height / component.height);
 			
-			textField.width = component.width;
-			textField.height = component.height;
-			textField.scaleX = cooficient;
-			textField.scaleY = cooficient;
+			textField.width = width;
+			textField.height = height;//component.height;
+			//textField.scaleX = cooficient;
+			//textField.scaleY = cooficient;
 			
 			if (redrawBorder) {
 				redrawBorder = false;
@@ -170,6 +170,27 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					graphics.drawRect(0, 0, width, height);
 				}
 			}
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Private Method
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * Processes the text, and enlarges it by parameter passed in <code>by</code>.
+		 * 
+		 * @param	text	HTML Formatted text to be enlarged.
+		 * @param	by		Number of points to be enlarged by.
+		 * 
+		 * @return	Enlarged text.
+		 */
+		protected function enlarge(text:String, by:uint = 2):String
+		{
+			log("enlarge({0})", text);
+			
+			return text;
 		}
 	}
 }

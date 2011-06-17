@@ -226,7 +226,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		public function pause():VideoPlayer
 		{
-			if (!loaded)
+			if (!loaded || netStream == null)
 				return this;
 			
 			if (!paused) {
@@ -526,7 +526,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 							invalidateDisplay();
 							break;
 						default:
-							log("handleNetStatus({0*})", event.info);
+							//log("handleNetStatus({0*})", event.info);
 					}
 					break;
 				case "error":
@@ -537,7 +537,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					}
 					break;
 				default:
-					log("handleNetStatus({0*})", event.info);
+					//log("handleNetStatus({0*})", event.info);
 			}
 		}
 		

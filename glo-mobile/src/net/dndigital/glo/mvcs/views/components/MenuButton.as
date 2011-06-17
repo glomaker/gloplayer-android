@@ -8,6 +8,7 @@ package net.dndigital.glo.mvcs.views.components
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
+	import net.dndigital.utils.drawRectangle;
 	
 	public final class MenuButton extends GUIComponent
 	{
@@ -84,7 +85,7 @@ package net.dndigital.glo.mvcs.views.components
 			mouseChildren = false;
 			useHandCursor = buttonMode = mouseEnabled = true;
 			
-			width = 120;
+			width = 150;
 			height = ScreenMaths.mmToPixels(7.5);
 			return super.initialize();
 		}
@@ -107,10 +108,7 @@ package net.dndigital.glo.mvcs.views.components
 		{
 			super.resized(width, height);
 			
-			graphics.clear();
-			graphics.beginFill(0xFF6600);
-			graphics.drawRect(0, 0, width, height);
-			graphics.endFill();
+			drawRectangle(this, 0x666666, width, height, .75, 5);
 			
 			textField.x = (width - textField.width) /2;
 			textField.y = (height - textField.height) / 2;

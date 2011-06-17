@@ -180,10 +180,12 @@ package net.dndigital.components
 		 */
 		public function remove(component:Object):IGUIComponent
 		{
+			log("{0}.remove({1})", this, component);
 			// Quit if component is not present.
-			if(_children.indexOf(component) < 0)
+			if ((component is IGUIComponent && _children.indexOf(component) < 0) ||
+				(component is Number && component >= _children.length))
 				return null;
-			
+			log("removed");
 			var result:IGUIComponent;
 			
 			if(component is IGUIComponent)		// if IComponent is provided use removeChild
@@ -220,11 +222,13 @@ package net.dndigital.components
 		 */
 		public function removeAll(destructor:Function = null):IContainer
 		{
-			for (var i:int = 0; i < _children.length; i ++)
+			while (numChildren)
 				if (destructor as Function)
-					destructor(remove(_children[i]));
+					destructor(remove(numChildren - 1));
 				else
-					remove(_children[i]);
+					remove(numChildren - 1);
+
+			log("{0}.removeAll() numChildren={1}", this, numChildren);
 			return this;
 		}
 		

@@ -3,6 +3,7 @@ package net.dndigital.glo.mvcs.views
 	import flash.display.Sprite;
 	
 	import net.dndigital.components.Application;
+	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.components.Label;
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
@@ -31,6 +32,18 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected static var log:Function = eu.kiichigo.utils.log(GloApplication);
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Instance Fields
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 * Background Asset
+		 */
+		protected const gloMakerLogo:GloMakerLogo = new GloMakerLogo;
+
 		/**
 		 * @private
 		 * Reference to an instance of GloPlayer. This is constant since we need to initialize it only once.
@@ -48,6 +61,12 @@ package net.dndigital.glo.mvcs.views
 		 * Indicates current view.
 		 */
 		protected var current:IGloView = null;
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
 		
 		/**
 		 * Activates <code>GloPlayer</code> as it's current view.
@@ -81,6 +100,15 @@ package net.dndigital.glo.mvcs.views
 			dispatchEvent(new ApplicationEvent(ApplicationEvent.INITIALIZED));
 			
 			return this;
+		}
+		
+		override protected function createChildren():void
+		{
+			super.createChildren();
+			
+			const gui:GUIComponent = new GUIComponent;
+				  gui.addChild(gloMakerLogo);
+			add(gui);
 		}
 		
 		/**
