@@ -209,6 +209,7 @@ package net.dndigital.glo.mvcs.views
 			// Size component according to screen dpi
 			next.width = next.height = prev.width = prev.height = ScreenMaths.mmToPixels(9.5);
 			
+			progress.selectable = false;
 			progress.textFormat = new TextFormat("Verdana", 18, 0xBBBBBB);
 			add(progress);
 			

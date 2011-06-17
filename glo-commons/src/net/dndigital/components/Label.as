@@ -97,6 +97,31 @@ package net.dndigital.components
 		/**
 		 * @private
 		 */
+		protected var _selectable:Boolean;
+		/**
+		 * Indicates whether text should be selectable or not.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get selectable():Boolean { return _selectable; }
+		/**
+		 * @private
+		 */
+		public function set selectable(value:Boolean):void
+		{
+			if (_selectable == value)
+				return;
+			_selectable = value;
+			textChanged = true;
+			invalidateData();
+		}
+		
+		/**
+		 * @private
+		 */
 		protected var _text:String = "";
 		/**
 		 * text.
@@ -146,6 +171,7 @@ package net.dndigital.components
 				textField.defaultTextFormat = _textFormat;
 				textField.autoSize 			= _autoSize;
 				textField.text 				= _text;
+				textField.selectable 		= _selectable;
 				width = textField.width;
 				height = textField.height;
 				textChanged = false;
