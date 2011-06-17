@@ -5,6 +5,7 @@ package net.dndigital.glo.mvcs.views
 	
 	import flash.events.MouseEvent;
 	import flash.filesystem.File;
+	import flash.geom.Point;
 	import flash.system.System;
 	
 	import net.dndigital.components.Container;
@@ -26,6 +27,18 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 */
 		protected static const log:Function = eu.kiichigo.utils.log(GloMenu);
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Instance Fields
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 * Container for buttons.
+		 */
+		protected const buttons:Container = new Container;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -73,6 +86,8 @@ package net.dndigital.glo.mvcs.views
 		 */
 		override protected function createChildren():void
 		{
+			buttons.fitToContent = true;
+			add(buttons);
 			super.createChildren();
 		}
 		
@@ -82,6 +97,11 @@ package net.dndigital.glo.mvcs.views
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);
+			
+			buttons.invalidateDisplay();
+			//buttons.validate();
+			buttons.x = (width - buttons.width) / 2;
+			buttons.y = (height - buttons.height) / 2;
 		}
 		
 		/**
@@ -92,13 +112,14 @@ package net.dndigital.glo.mvcs.views
 			super.commited();
 			
 			if (filesChanged) {
-				removeAll(destroyButton);
+				buttons.removeAll(destroyButton);
 				for (var i:int = 0; i < _files.length; i ++) {
 					var button:MenuButton = new MenuButton;
-						button.y = i * ScreenMaths.mmToPixels(7.7);
+						button.y = i * ScreenMaths.mmToPixels(8);
 						button.file = _files[i];
 						button.addEventListener(MouseEvent.CLICK, handleButton);
-					add(button);
+					buttons.add(button);
+					invalidateDisplay();
 				}
 				filesChanged = false;
 			}

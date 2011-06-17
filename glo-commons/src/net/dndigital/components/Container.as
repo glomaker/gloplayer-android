@@ -85,6 +85,31 @@ package net.dndigital.components
 		/**
 		 * @private
 		 */
+		protected var _fitToContent:Boolean = false;
+		/**
+		 * fitToContent.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get fitToContent():Boolean { return _fitToContent; }
+		/**
+		 * @private
+		 */
+		public function set fitToContent(value:Boolean):void
+		{
+			if (_fitToContent == value)
+				return;
+			_fitToContent = value;
+			invalidateChildren();
+		}
+		
+		
+		/**
+		 * @private
+		 */
 		protected const _children:Vector.<IGUIComponent> = new Vector.<IGUIComponent>;
 		/**
 		 * @copy 	net.dndigital.components.IContainer#children
@@ -354,6 +379,18 @@ package net.dndigital.components
 		/**
 		 * Method called when children added to component and it's resizing. Override this method to extend or change functionality. This method shouldn't be called manually, use invalidateDisplay to schedule instead.
 		 */
-		protected function measure():void {}
+		protected function measure():void
+		{
+			if (!fitToContent)
+				return;
+			
+			var w:int = 0;
+			var h:int = 0;
+			for (var i:int = 0; i < _children.length; i ++)
+				w = Math.max(w, _children[i].x + _children[i].width),
+				h = Math.max(h, _children[i].y + _children[i].height);
+			width = w;
+			height = h;
+		}
 	}
 }

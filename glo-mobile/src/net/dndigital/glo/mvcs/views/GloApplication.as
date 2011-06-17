@@ -122,6 +122,12 @@ package net.dndigital.glo.mvcs.views
 				current.width = width;
 				current.height = height;
 			}
+			
+			const padding:uint = 25;
+			gloMakerLogo.width = width - padding * 2;
+			gloMakerLogo.height = height - padding * 2;
+			gloMakerLogo.x = (width - gloMakerLogo.width) / 2;
+			gloMakerLogo.y = (height - gloMakerLogo.height) / 2;
 		}
 		
 		//--------------------------------------------------------------------------

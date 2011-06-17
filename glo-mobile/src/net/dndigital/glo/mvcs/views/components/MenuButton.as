@@ -97,7 +97,7 @@ package net.dndigital.glo.mvcs.views.components
 			super.createChildren();
 			
 			addChild(textField);
-			textField.defaultTextFormat = new TextFormat("Verdana", 16);
+			textField.defaultTextFormat = new TextFormat("Verdana", 16, 0xFAFAFA);
 			textField.selectable = false;
 			textField.autoSize = TextFieldAutoSize.LEFT;
 		}
@@ -108,7 +108,10 @@ package net.dndigital.glo.mvcs.views.components
 		{
 			super.resized(width, height);
 			
-			drawRectangle(this, 0x666666, width, height, .75, 5);
+			graphics.clear();
+			graphics.beginFill(0x000000, .75);
+			graphics.drawRoundRect(0, 0, width, height, 25, 25);
+			graphics.endFill();
 			
 			textField.x = (width - textField.width) /2;
 			textField.y = (height - textField.height) / 2;
