@@ -40,7 +40,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	 * @playerversion AIR 2.5
 	 * @productversion Flex 4.5
 	 */
-	public final class VideoPlayer extends GloComponent
+	public final class VideoPlayer extends GloComponent implements IFullscreenable
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -202,7 +202,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		{
 			if (_visible == value)
 				return;
-			_visible = value;
+			super.visible = _visible = value;
 			if (!paused && loaded && !value)
 				pause();
 		}
@@ -453,7 +453,6 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			netStream.play(component.directory.resolvePath(source).url);
 			paused = false;
 			loaded = true;
-			createSnapshot(video, netStream);
 			pause();
 				
 			video.attachNetStream(netStream);
@@ -478,26 +477,10 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function handleMouse(event:MouseEvent):void
 		{
-			toggle();
-		}
-		
-		/**
-		 * @private
-		 * Creates a snapshot of a video.
-		 */
-		protected function createSnapshot(video:Video, netStream:NetStream):BitmapData
-		{
-			var time:Number = netStream.time;
-			
-			if (_duration < 5 )
-				netStream.seek(_duration / 2);
+			if (mouseY < (_height / 2))
+				toggle();					// Play-pause
 			else
-				netStream.seek(5);
-			
-			var bitmapData:BitmapData = new BitmapData(video.width, video.height, true, 0x00000000);
-				bitmapData.draw(video);
-				
-			return bitmapData;
+				player.fullscreen(this);	// Fullscreen
 		}
 		
 		/**

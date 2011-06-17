@@ -158,7 +158,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 				if (original.x != width || original.y != height) {
 					if (maintainRatio) {
 						// Calculate a cooficient.
-						var c:Number = Math.min(width / original.x, height / original.y);
+						const c:Number = Math.min(width / original.x, height / original.y);
 						// Apply size
 						bitmap.setSize(original.x * c, original.y * c);
 					} else {

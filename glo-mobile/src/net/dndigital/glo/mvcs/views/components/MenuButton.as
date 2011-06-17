@@ -1,5 +1,7 @@
 package net.dndigital.glo.mvcs.views.components
 {
+	import flash.display.BlendMode;
+	import flash.display.Shape;
 	import flash.filesystem.File;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -34,6 +36,11 @@ package net.dndigital.glo.mvcs.views.components
 		 * @private
 		 */
 		protected const textField:TextField = new TextField;
+		
+		/**
+		 * @private
+		 */
+		protected const background:Shape = new Shape;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -96,6 +103,9 @@ package net.dndigital.glo.mvcs.views.components
 		{
 			super.createChildren();
 			
+			//background.blendMode = BlendMode.SUBTRACT;
+			addChild(background);
+			
 			addChild(textField);
 			textField.defaultTextFormat = new TextFormat("Verdana", 16, 0xFAFAFA);
 			textField.selectable = false;
@@ -108,10 +118,10 @@ package net.dndigital.glo.mvcs.views.components
 		{
 			super.resized(width, height);
 			
-			graphics.clear();
-			graphics.beginFill(0x000000, .75);
-			graphics.drawRoundRect(0, 0, width, height, 25, 25);
-			graphics.endFill();
+			background.graphics.clear();
+			background.graphics.beginFill(0x000000, .75);
+			background.graphics.drawRoundRect(0, 0, width, height, 25, 25);
+			background.graphics.endFill();
 			
 			textField.x = (width - textField.width) /2;
 			textField.y = (height - textField.height) / 2;

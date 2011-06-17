@@ -1,6 +1,7 @@
 package net.dndigital.glo.mvcs.views
 {
 	import flash.display.Sprite;
+	import flash.geom.Point;
 	
 	import net.dndigital.components.Application;
 	import net.dndigital.components.GUIComponent;
@@ -43,6 +44,12 @@ package net.dndigital.glo.mvcs.views
 		 * Background Asset
 		 */
 		protected const gloMakerLogo:GloMakerLogo = new GloMakerLogo;
+		
+		/**
+		 * @private
+		 * Point, stores original size of gloMakerLogo.
+		 */
+		protected var originalLogoSize:Point;
 
 		/**
 		 * @private
@@ -74,6 +81,7 @@ package net.dndigital.glo.mvcs.views
 		public function showPlayer():void
 		{
 			replace(player);
+			gloMakerLogo.visible = false;
 		}
 		
 		/**
@@ -82,6 +90,7 @@ package net.dndigital.glo.mvcs.views
 		public function showMenu():void
 		{
 			replace(menu);
+			gloMakerLogo.visible = true;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -108,6 +117,7 @@ package net.dndigital.glo.mvcs.views
 			
 			const gui:GUIComponent = new GUIComponent;
 				  gui.addChild(gloMakerLogo);
+			originalLogoSize = new Point(gloMakerLogo.width, gloMakerLogo.height);
 			add(gui);
 		}
 		
@@ -124,8 +134,9 @@ package net.dndigital.glo.mvcs.views
 			}
 			
 			const padding:uint = 25;
-			gloMakerLogo.width = width - padding * 2;
-			gloMakerLogo.height = height - padding * 2;
+			const c:Number = Math.min((width - padding * 2) / originalLogoSize.x, (height - padding * 2)  / originalLogoSize.y);
+			gloMakerLogo.width = originalLogoSize.x * c;
+			gloMakerLogo.height = originalLogoSize.y * c;
 			gloMakerLogo.x = (width - gloMakerLogo.width) / 2;
 			gloMakerLogo.y = (height - gloMakerLogo.height) / 2;
 		}

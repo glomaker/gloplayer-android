@@ -137,6 +137,11 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected var showWarning:Boolean = false;
 		
+		/**
+		 * @private
+		 */
+		protected var fullscreened:IFullscreenable;
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -194,30 +199,25 @@ package net.dndigital.glo.mvcs.views
 			invalidateDisplay();
 		}
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Methods
+		//
+		//--------------------------------------------------------------------------
+		
 		/**
-		 * @private
-		 */
-		protected var _fullscreened:IFullscreenable;
-		/**
-		 * fullscreened.
+		 * Attempts to show component in fullscreen.
 		 *
-		 * @langversion 3.0
-		 * @playerversion Flash 10
-		 * @playerversion AIR 2.5
-		 * @productversion Flex 4.5
+		 * @param	target	<code>IFullscreenable</code> instance, that should be toggled between fullscreen and normal.
 		 */
-		public function get fullscreened():IFullscreenable { return _fullscreened; }
-		/**
-		 * @private
-		 */
-		public function set fullscreened(value:IFullscreenable):void
+		public function fullscreen(target:IFullscreenable):void
 		{
-			if (_fullscreened == value)
-				return;
-			_fullscreened = value;
+			if (fullscreened == target)
+				fullscreened = null;
+			else
+				fullscreened = target;
 			invalidateDisplay();
 		}
-		
 		
 		//--------------------------------------------------------------------------
 		//
@@ -268,6 +268,8 @@ package net.dndigital.glo.mvcs.views
 					if (container.getChildAt(0) is IGloComponent)
 						resize(container.getChildAt(i) as IGloComponent, cooficient, offset);
 			}
+			
+			controls.visible = fullscreened == null;
 
 			graphics.clear();
 			if (project) {
@@ -465,7 +467,7 @@ package net.dndigital.glo.mvcs.views
 				component.height = vo.height * cooficient;
 				component.visible = true;
 			} else {
-				if (component is IFullscreenable && component == _fullscreened) {
+				if (component is IFullscreenable && component == fullscreened) {
 					component.x = component.y = 0;
 					component.width = stage.fullScreenWidth;
 					component.height = stage.fullScreenHeight;
