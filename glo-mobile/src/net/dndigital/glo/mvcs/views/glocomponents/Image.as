@@ -92,7 +92,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 				return;
 			_source = value;
 			
-			loadImage(value);
+			load(value);
 		}
 		
 		/**
@@ -154,20 +154,17 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		{
 			super.resized(width, height);
 			
-			if (redraw) {
-				if (bitmap && bitmap.bitmapData) {
-					if (original.x != width || original.y != height) {
-						if (maintainRatio) {
-							// Calculate a cooficient.
-							var c:Number = Math.min(width / original.x, height / original.y);
-							// Apply size
-							bitmap.setSize(original.x * c, original.y * c);
-						} else {
-							bitmap.setSize(width, height);
-						}
+			if (bitmap && bitmap.bitmapData) {
+				if (original.x != width || original.y != height) {
+					if (maintainRatio) {
+						// Calculate a cooficient.
+						var c:Number = Math.min(width / original.x, height / original.y);
+						// Apply size
+						bitmap.setSize(original.x * c, original.y * c);
+					} else {
+						bitmap.setSize(width, height);
 					}
 				}
-				redraw = false;
 			}
 			
 		}
@@ -201,12 +198,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * @private
 		 * Handles image loading.
 		 */
-		protected function loadImage(path:String):void
+		protected function load(source:String):void
 		{
 			const fileStream:FileStream = new FileStream();
-			log("loading({0})", component.directory.resolvePath(path).nativePath);
 			try {
-				fileStream.open(component.directory.resolvePath(path), FileMode.READ);
+				fileStream.open(component.directory.resolvePath(source), FileMode.READ);
 			} catch (e:Error) {
 				//log("loadImage({0}) error={1} \n{2}", path, e.message, e.getStackTrace());
 				return;

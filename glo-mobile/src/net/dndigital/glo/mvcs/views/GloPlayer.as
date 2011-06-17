@@ -124,12 +124,6 @@ package net.dndigital.glo.mvcs.views
 		
 		/**
 		 * @private
-		 * Field holds a reference to an instance of <code>IGloComponent</code> that should be shown in fullscreen.
-		 */
-		protected var fullscreenComponent:IGloComponent = null;
-		
-		/**
-		 * @private
 		 * Flag, indicates whether background should be redrawn.
 		 */
 		protected var redrawBackground:Boolean = false;
@@ -189,6 +183,31 @@ package net.dndigital.glo.mvcs.views
 			invalidateData();
 		}
 		
+		/**
+		 * @private
+		 */
+		protected var _fullscreened:IFullscreenable;
+		/**
+		 * fullscreened.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get fullscreened():IFullscreenable { return _fullscreened; }
+		/**
+		 * @private
+		 */
+		public function set fullscreened(value:IFullscreenable):void
+		{
+			if (_fullscreened == value)
+				return;
+			_fullscreened = value;
+			invalidateDisplay();
+		}
+		
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Overridden API
@@ -238,15 +257,12 @@ package net.dndigital.glo.mvcs.views
 					if (container.getChildAt(0) is IGloComponent)
 						resize(container.getChildAt(i) as IGloComponent, cooficient, offset);
 			}
-			if (redrawBackground) {
-				redrawBackground = false;
-				
-				graphics.clear();
-				if (project) {
-					graphics.beginFill(project.background);
-					graphics.drawRect(0, 0, width, height - controls.height);
-					graphics.endFill();
-				}
+
+			graphics.clear();
+			if (project) {
+				graphics.beginFill(project.background);
+				graphics.drawRect(0, 0, width, height - controls.height);
+				graphics.endFill();
 			}
 			
 			//log("resized");
@@ -381,6 +397,9 @@ package net.dndigital.glo.mvcs.views
 					case "videoplayer":
 						container.addChild(component(new VideoPlayer, page.components[i]));
 						break;
+					case "swfloader":
+						container.addChild(component(new FlashAnimation, page.components[i]));
+						break;
 					default:
 						container.addChild(component(new Placeholder, page.components[i]));
 						break;
@@ -416,14 +435,22 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected function resize(component:IGloComponent, cooficient:Number, offset:Point):IGloComponent
 		{
-			if (fullscreenComponent == null) {
+			if (fullscreened == null) {
 				const vo:Component = component.component;
 				component.x = vo.x * cooficient + offset.x;
 				component.y = vo.y * cooficient + offset.y;
 				component.width = vo.width * cooficient;
 				component.height = vo.height * cooficient;
+				component.visible = true;
 			} else {
-				
+				if (component is IFullscreenable && component == _fullscreened) {
+					component.x = component.y = 0;
+					component.width = stage.fullScreenWidth;
+					component.height = stage.fullScreenHeight;
+					component.visible = true;
+				} else {
+					component.visible = false;
+				}
 			}
 			return component;
 		}

@@ -31,7 +31,7 @@ package
 		/**
 		 * @private
 		 */
-		protected static var log:Function = eu.kiichigo.utils.log(Main);
+		protected static const log:Function = eu.kiichigo.utils.log(Main);
 		
 		
 		/**
@@ -53,7 +53,6 @@ package
 			
 			// Multitouch Gestures
 			Multitouch.inputMode = MultitouchInputMode.GESTURE;
-			log("Welcome to GloPlayer, Multitouch(supports:{0} gestures:{1})", Multitouch.supportsGestureEvents, Multitouch.supportedGestures);
 		}
 	}
 }

@@ -32,18 +32,5 @@ package net.dndigital.utils
 		 * Function closure's arguments.
 		 */
 		public var args:Array;
-		
-		/**
-		 * Executes <code>Fun.fun</code> with arguments passed in <code>Fun.args</code>. Calling this method is equivalent to <code>Fun.fun.apply(null, Fun.args)</code>.
-		 * 
-		 * @return		Returns result of <code>Fun.fun</code>.
-		 * 
-		 * @see		Function
-		 * @see		Function#apply
-		 */
-		public function invoke():*
-		{
-			return fun.apply(null, args);
-		}
 	}
 }
