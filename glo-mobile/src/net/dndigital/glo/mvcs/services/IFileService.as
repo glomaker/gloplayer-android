@@ -15,5 +15,11 @@ package net.dndigital.glo.mvcs.services
 		 * @productversion Flex 4.5
 		 */
 		function get files():Vector.<File>;
+		
+		/**
+		 * Retrieves the documents directory that the service scans for installed GLOs. 
+		 * @return 
+		 */		
+		function get gloDir():File;
 	}
 }

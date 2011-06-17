@@ -48,6 +48,15 @@ package net.dndigital.glo.mvcs.commands
 		{
 			super.execute();
 
+			// create GLO directory in device documents folder if it doesn't already exist
+			// this will allow users to transfer GLO projects directly via cable/file-manager
+			var f:File = fileService.gloDir;
+			if( !f.exists )
+			{
+				f.createDirectory();
+			}
+			
+			// scan + retrieve + send to application
 			dispatch(new GloMenuEvent(GloMenuEvent.DIRECTORY_LISTED, null, fileService.files));
 		}
 	}
