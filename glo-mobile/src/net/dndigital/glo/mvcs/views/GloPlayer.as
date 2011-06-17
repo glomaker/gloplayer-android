@@ -485,6 +485,9 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected final function handleSwipe(event:TransformGestureEvent):void
 		{
+			if (fullscreened != null)
+				return;
+			
 			if(event.offsetX < 0)
 				dispatchEvent(ProjectEvent.NEXT_PAGE_EVENT);
 			else if( event.offsetX > 0 )
