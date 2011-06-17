@@ -105,14 +105,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @private
 		 */
-		public function set border(value:Boolean):void
-		{
-			if (_border == value)
-				return;
-			_border = value;
-			redrawBorder = true;
-			invalidateDisplay();
-		}
+		public function set border(value:Boolean):void { textField.border = value }
 		
 		
 		//--------------------------------------------------------------------------

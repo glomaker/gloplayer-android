@@ -145,7 +145,6 @@
 			<!-- The icon to display for the file type. Optional. -->
 			<icon>
 				<image48x48>icons/icon.48.png</image48x48>
-				<image64x64>icons/icon.64.png</image64x64>
 				<image128x128>icons/icon.128.png</image128x128>
 			</icon>
 			
