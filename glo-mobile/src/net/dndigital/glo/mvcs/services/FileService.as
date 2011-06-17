@@ -23,6 +23,13 @@ package net.dndigital.glo.mvcs.services
 		
 		
 		/**
+		 * Default GLO directory subpath inside File.documentsDirectory.
+		 * This directory will be scanned for GLO project files. 
+		 */		
+		protected static const DEFAULT_GLO_DIRECTORY:String = "GloPlayer/Glos";
+		
+		
+		/**
 		 * @copy	net.dndigital.glo.mvcs.services.IFileService#files
 		 * 
 		 * @see		flash.filesystem.File
@@ -34,8 +41,17 @@ package net.dndigital.glo.mvcs.services
 		 */
 		public function get files():Vector.<File>
 		{
-			return scanDirectory(File.documentsDirectory.resolvePath("GloPlayer/Glos")).concat(
+			return scanDirectory(File.documentsDirectory.resolvePath( DEFAULT_GLO_DIRECTORY )).concat(
 				   scanDirectory(File.applicationDirectory));
+		}
+		
+		/**
+		 * @copy	net.dndigital.glo.mvcs.services.IFileService#gloDir 
+		 * @return 
+		 */		
+		public function get gloDir():File
+		{
+			return File.documentsDirectory.resolvePath( DEFAULT_GLO_DIRECTORY );
 		}
 		
 		/**
