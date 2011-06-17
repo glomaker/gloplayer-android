@@ -55,6 +55,14 @@ package org.bytearray.display {
 		 * setter bitmapData
 		 */
 		override public function set bitmapData(bmpData : BitmapData) : void {
+			if (bmpData === null) {
+				if (_originalBitmap)
+					_originalBitmap.dispose();
+				if (super.bitmapData)
+					super.bitmapData.dispose();
+				return;
+			}
+			
 			_originalBitmap = bmpData.clone();
 			if (_scale9Grid != null) {
 				if (!validGrid(_scale9Grid)) {

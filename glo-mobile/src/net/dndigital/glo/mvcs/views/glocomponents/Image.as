@@ -184,8 +184,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		{
 			super.destroy();
 			
-			if (bitmap && bitmap.bitmapData)
+			if (bitmap && bitmap.bitmapData) {
+				log("destroying image");
 				bitmap.bitmapData.dispose();
+				bitmap.bitmapData = null;
+			}
 		}
 		
 		//--------------------------------------------------------------------------

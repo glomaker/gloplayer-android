@@ -325,6 +325,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			netStream = new NetStream(connection);
 			netStream.addEventListener(NetStatusEvent.NET_STATUS, handleNetStatus);
 			netStream.client = client;
+		
 			//netStream.bufferTime = 0;
 			
 			client.addEventListener(NetStreamEvent.META_DATA, netStreamMetaData);
