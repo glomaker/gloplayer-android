@@ -496,7 +496,7 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected function removedFromStage(event:Event):void
 		{
-			log("removedFromStage()");
+			//log("removedFromStage()");
 			dispatchEvent(PlayerEvent.DESTROY_EVENT);
 		}
 	}

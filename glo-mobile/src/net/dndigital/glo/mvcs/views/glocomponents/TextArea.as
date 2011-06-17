@@ -73,7 +73,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @private
 		 */
-		public function set htmlText(value:String):void { textField.htmlText = value || ""; }
+		public function set htmlText(value:String):void { textField.htmlText = enlarge(value) || ""; }
 		
 		/**
 		 * @copy	flash.display.TextField#text
@@ -87,7 +87,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @private
 		 */
-		public function set text(value:String):void { textField.text = enlarge(value) || ""; }
+		public function set text(value:String):void { textField.text = value || ""; }
 		
 		/**
 		 * @private
@@ -186,10 +186,27 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * 
 		 * @return	Enlarged text.
 		 */
-		protected function enlarge(text:String, by:uint = 2):String
+		protected function enlarge(text:String, by:uint = 10):String
 		{
-			log("enlarge({0})", text);
+			// Clean up string from special characters and break it into array using spaces.
+			const items:Array = text.split("</").join(" ").
+									 split("/>").join(" ").
+									 split("<").join(" ").
+									 split(">").join(" ").
+									 split(" ");
 			
+			// Iterate array, and ignore all item that has no "SIZE=".
+			// In future version other properrties can be modified to.
+			for (var i:int = 0; i < items.length; i ++) {
+				var string:String = items[i] as String;
+				if (string.toUpperCase().indexOf("SIZE=") >= 0) {
+					string = "SIZE=\"" + (int(string.toUpperCase().split("SIZE=").join("").
+																split("\"").join("")) + by).toString() + "\"";
+					text = text.split(items[i]).join(string);
+					//log("replacing {0} with {1}", items[i], string);
+				}
+			}
+			//log("enlarge={0}", text);
 			return text;
 		}
 	}

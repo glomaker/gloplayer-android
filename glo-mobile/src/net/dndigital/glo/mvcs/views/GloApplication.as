@@ -2,6 +2,7 @@ package net.dndigital.glo.mvcs.views
 {
 	import flash.display.Sprite;
 	import flash.geom.Point;
+	import flash.system.Capabilities;
 	
 	import net.dndigital.components.Application;
 	import net.dndigital.components.GUIComponent;
@@ -104,6 +105,7 @@ package net.dndigital.glo.mvcs.views
 		 */
 		override public function initialize():IGUIComponent
 		{
+			log("Welcome to GloPlayer. {0}", Capabilities.version);
 			super.initialize();
 			
 			dispatchEvent(new ApplicationEvent(ApplicationEvent.INITIALIZED));
