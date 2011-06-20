@@ -73,7 +73,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @private
 		 */
-		public function set htmlText(value:String):void { textField.htmlText = enlarge(value) || ""; }
+		public function set htmlText(value:String):void { textField.htmlText = value; } // enlarge(value) || ""; }
 		
 		/**
 		 * @copy	flash.display.TextField#text
