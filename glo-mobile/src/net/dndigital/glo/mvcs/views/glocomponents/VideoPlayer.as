@@ -368,7 +368,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			// Setup fullscreen button
 			fullscreenButton.upSkin = new fullscreenButtonAsset().bitmapData;
 			fullscreenButton.width = fullscreenButton.height = ScreenMaths.mmToPixels(10);
-			fullscreenButton.visible = false;
+			fullscreenButton.visible = true;
+			fullscreenButton.alpha = 0.4;
 			addChild(fullscreenButton);
 		}
 		
@@ -408,7 +409,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					}
 					
 					// Fullscreen Button
-					fullscreenButton.visible = !paused
+					// DISABLED: fullscreenButton.visible = !paused;
 					fullscreenButton.x = width - fullscreenButton.width;
 					fullscreenButton.y = height - fullscreenButton.height;
 					
