@@ -2,26 +2,16 @@ package net.dndigital.glo.mvcs.views.glocomponents
 {
 	import eu.kiichigo.utils.log;
 	
-	import flash.display.BitmapData;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.NetStatusEvent;
-	import flash.events.TimerEvent;
-	import flash.events.TouchEvent;
-	import flash.events.TransformGestureEvent;
+	import flash.events.*;
 	import flash.geom.Point;
 	import flash.media.Video;
-	import flash.net.NetConnection;
-	import flash.net.NetStream;
-	import flash.system.Capabilities;
+	import flash.net.*;
 	import flash.utils.Timer;
-	import flash.utils.setTimeout;
 	
 	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.glo.mvcs.events.NetStreamEvent;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
-	import net.dndigital.glo.mvcs.views.components.IconButton;
-	import net.dndigital.glo.mvcs.views.components.PlayButton;
+	import net.dndigital.glo.mvcs.views.components.AnimatedButton;
 	import net.dndigital.glo.mvcs.views.glocomponents.helpers.PlaybackProgress;
 	
 	import org.bytearray.display.ScaleBitmap;
@@ -66,6 +56,13 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected static const playButtonAsset:Class;
 		
+		[Embed(source="assets/video.player.fullscreen.button.png")]
+		/**
+		 * @private
+		 * Fullscreen Button asset.
+		 */
+		protected static const fullscreenButtonAsset:Class;
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Instance Fields
@@ -101,7 +98,12 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @private
 		 */
-		protected const playButton:PlayButton = new PlayButton;
+		protected const playButton:AnimatedButton = new AnimatedButton;
+		
+		/**
+		 * @private
+		 */
+		protected const fullscreenButton:AnimatedButton = new AnimatedButton;
 		
 		/**
 		 * @private
@@ -180,6 +182,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 				return;
 			_source = value;
 			load(_source);
+			invalidateDisplay();
 		}
 		
 		/**
@@ -356,11 +359,17 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			playbackProgress.height = ScreenMaths.mmToPixels(3) / 10;
 			addChild(playbackProgress);
 			
-			// Setup button.
+			// Setup play button.
 			playButton.upSkin = new playButtonAsset().bitmapData;
 			playButton.width = playButton.height = 2;
 			playButton.visible = false;
 			addChild(playButton);
+			
+			// Setup fullscreen button
+			fullscreenButton.upSkin = new fullscreenButtonAsset().bitmapData;
+			fullscreenButton.width = fullscreenButton.height = ScreenMaths.mmToPixels(10);
+			fullscreenButton.visible = false;
+			addChild(fullscreenButton);
 		}
 		
 		/**
@@ -397,6 +406,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 						playButton.x = (width - playButton.width) / 2;
 						playButton.y = (height - playButton.height) / 2;
 					}
+					
+					// Fullscreen Button
+					fullscreenButton.visible = !paused
+					fullscreenButton.x = width - fullscreenButton.width;
+					fullscreenButton.y = height - fullscreenButton.height;
 					
 					// Playback progress
 					playbackProgress.visible = !paused;
@@ -483,10 +497,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function handleMouse(event:MouseEvent):void
 		{
-			if (mouseY < (_height / 2))
-				toggle();					// Play-pause
+			log("handleMouse() target={0}", event.target);
+			if (event.target == fullscreenButton)
+				player.fullscreen(this);			// Fullscreen
 			else
-				player.fullscreen(this);	// Fullscreen
+				toggle();							// Play-pause
 		}
 		
 		/**
