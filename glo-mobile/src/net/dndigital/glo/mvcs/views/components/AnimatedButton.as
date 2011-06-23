@@ -4,7 +4,7 @@ package net.dndigital.glo.mvcs.views.components
 	
 	import eu.kiichigo.utils.log;
 
-	public class PlayButton extends IconButton
+	public class AnimatedButton extends IconButton
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -15,7 +15,7 @@ package net.dndigital.glo.mvcs.views.components
 		/**
 		 * @private
 		 */
-		protected static const log:Function = eu.kiichigo.utils.log(PlayButton);
+		protected static const log:Function = eu.kiichigo.utils.log(AnimatedButton);
 		
 		//--------------------------------------------------------------------------
 		//
