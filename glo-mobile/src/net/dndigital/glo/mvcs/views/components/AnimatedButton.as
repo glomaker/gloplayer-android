@@ -30,7 +30,7 @@ package net.dndigital.glo.mvcs.views.components
 		/**
 		 * @private
 		 */
-		protected var _visible:Boolean;
+		protected var _visible:Boolean = true;
 		/**
 		 * @copy	flash.display.DisplayObject#visible
 		 *

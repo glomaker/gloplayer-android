@@ -408,7 +408,9 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					}
 					
 					// Fullscreen Button
-					fullscreenButton.visible = !paused;
+					fullscreenButton.visible = !paused
+					fullscreenButton.x = width - fullscreenButton.width;
+					fullscreenButton.y = height - fullscreenButton.height;
 					
 					// Playback progress
 					playbackProgress.visible = !paused;
