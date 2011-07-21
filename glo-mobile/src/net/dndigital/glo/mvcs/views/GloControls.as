@@ -2,19 +2,18 @@ package net.dndigital.glo.mvcs.views
 {
 	import eu.kiichigo.utils.log;
 	
-	import flash.display.Shape;
-	import flash.display.Sprite;
+	import flash.display.GradientType;
 	import flash.events.MouseEvent;
-	import flash.text.TextField;
+	import flash.geom.Matrix;
 	import flash.text.TextFormat;
 	
 	import net.dndigital.components.Container;
-	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.components.Label;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
 	import net.dndigital.glo.mvcs.views.components.NavButton;
+	import net.dndigital.glo.mvcs.views.components.ProgressBar;
 	
 	/**
 	 * View controls flow and playback of the <code>GloPlayer</code> view, and handles page swaping.
@@ -64,9 +63,21 @@ package net.dndigital.glo.mvcs.views
 		
 		/**
 		 * @private
-		 * Text Field indicates slide progress.
+		 * Indicates slide progress.
 		 */
-		protected const progress:Label = new Label;
+		protected const progress:ProgressBar = new ProgressBar;
+		
+		/**
+		 * @private
+		 * Text field for menu link.  
+		 */		
+		protected const menuLink:Label = new Label;
+		
+		/**
+		 * @private
+		 * Matrix used for background gradient fill 
+		 */		
+		protected const fillGradientMatrix:Matrix = new Matrix;
 		
 		/**
 		 * @private
@@ -175,44 +186,30 @@ package net.dndigital.glo.mvcs.views
 		override protected function createChildren():void
 		{
 			super.createChildren();
-			
-			[Embed(source="assets/next.up.png")]
-			const nextUpAsset:Class;
-			
-			[Embed(source="assets/next.down.png")]
-			const nextDownAsset:Class;
-			
-			[Embed(source="assets/next.disabled.png")]
-			const nextDisabledAsset:Class;
-			
-			next.upSkin = new nextUpAsset().bitmapData;
-			next.downSkin = new nextDownAsset().bitmapData;
-			next.disabledSkin = new nextDisabledAsset().bitmapData;
-			
+	
+			next.direction = NavButton.RIGHT;
+			next.buttonMode = true;
 			add(next);
 
-			[Embed(source="assets/prev.up.png")]
-			const prevUpAsset:Class;
-			
-			[Embed(source="assets/prev.down.png")]
-			const prevDownAsset:Class;
-			
-			[Embed(source="assets/prev.disabled.png")]
-			const prevDisabledAsset:Class;
-			
-			prev.upSkin = new prevUpAsset().bitmapData;
-			prev.downSkin = new prevDownAsset().bitmapData;
-			prev.disabledSkin = new prevDisabledAsset().bitmapData;
-			
+			prev.direction = NavButton.LEFT;
+			prev.buttonMode = true;
 			add(prev);
 			
 			// Size component according to screen dpi
-			next.width = next.height = prev.width = prev.height = ScreenMaths.mmToPixels(9.5);
-			
-			progress.selectable = false;
-			progress.textFormat = new TextFormat("Verdana", 18, 0xBBBBBB);
+			progress.height = ScreenMaths.mmToPixels(1);
+			progress.y = -progress.height;
+			progress.alpha = 0.5;
+			progress.barColour = 0xffffff;
+			progress.bgColour = 0x5a6678;
 			add(progress);
 			
+			// menu link
+			menuLink.text = "MENU";
+			menuLink.selectable = false;
+			menuLink.textFormat = new TextFormat("Verdana", 24, 0xFFFFFF);
+			add(menuLink);
+			
+			// force redraw
 			invalidateDisplay();
 		}
 
@@ -226,19 +223,32 @@ package net.dndigital.glo.mvcs.views
 
 			if (!isNaN(width+height)) {
 				graphics.clear();
-				graphics.beginFill(0x494949);
+				
+				// gradient background
+				fillGradientMatrix.createGradientBox(width, height, Math.PI/2);
+				graphics.beginGradientFill( GradientType.LINEAR, [ 0x424449, 0x0b0c0d ], [1, 1], [0, 255], fillGradientMatrix );
 				graphics.drawRect(0, 0, width, height);
+				graphics.endFill();
+				
+				// two black strips
+				var sw:Number = ScreenMaths.mmToPixels( 2 );
+				graphics.beginFill( 0, 1 );
+				graphics.drawRect( height, 0, sw, height );
+				graphics.drawRect( width - height - sw, 0, sw, height );
 				graphics.endFill();
 			}
 			
-			next.x = width - next.width - 10;
-			next.y = (height - next.height) / 2;
+			prev.width = prev.height = height;
+			next.width = next.height = height;
+
+			next.x = width - next.width;
+			next.y = 0;
 			
-			prev.x = 10;
-			prev.y = (height - prev.height) / 2;
+			menuLink.x = ( width - menuLink.width ) / 2;
+			menuLink.y = ( height - menuLink.height )/2;    
 			
-			progress.x = (width - progress.width) / 2;
-			progress.y = (height - progress.height) / 2;
+			progress.width = width;
+			// 0b0c0d, 242528
 		}
 		
 		/**
@@ -258,9 +268,13 @@ package net.dndigital.glo.mvcs.views
 			super.commited();
 			
 			if (progressChanged) {
-				progress.visible = _currentPage != -1 && _totalPages != -1;
-				progress.text = "Slide " + ( _currentPage + 1).toString() + " of " + _totalPages.toString();
-				invalidateDisplay();
+
+				if( _totalPages > 0 )
+				{
+					progress.percent = ( _currentPage + 1 ) / _totalPages;
+				}else{
+					progress.percent = 0;
+				}
 				progressChanged = false;
 			}
 		}
@@ -280,7 +294,9 @@ package net.dndigital.glo.mvcs.views
 				dispatchEvent(ProjectEvent.NEXT_PAGE_EVENT);
 			else if(event.target == prev)
 				dispatchEvent(ProjectEvent.PREV_PAGE_EVENT);
-			else if(event.stageX > 100 && event.stageX < stage.stageWidth - 100)
+			else if( event.target == progress )
+			{}
+			else
 				dispatchEvent(ProjectEvent.MENU_EVENT);
 		}
 	}

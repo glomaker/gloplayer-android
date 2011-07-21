@@ -4,6 +4,9 @@ package net.dndigital.glo.mvcs.views.components
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.Shape;
+	import flash.display.Sprite;
+	import flash.geom.ColorTransform;
 	import flash.utils.describeType;
 	
 	import net.dndigital.components.Button;
@@ -44,6 +47,9 @@ package net.dndigital.glo.mvcs.views.components
 		 */
 		public static const DISABLED:String = "disabled";
 		
+		public static const LEFT:String = "pointLeft";
+		public static const RIGHT:String = "pointRight";
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Instance Fields
@@ -52,9 +58,17 @@ package net.dndigital.glo.mvcs.views.components
 		
 		/**
 		 * @private
-		 * An instance of Bitmap that will hold current graphical asset.
+		 * Arrow shape
 		 */
-		protected const bitmap:ScaleBitmap = new ScaleBitmap;
+		protected const arrow:Shape = new Shape;
+		protected const hit:Sprite = new Sprite;
+		
+		protected var _direction:String = RIGHT;
+		
+		protected var _arrowUpColour:uint = 0xffffff;
+		protected var _arrowDownColour:uint = 0x5a6678;
+		protected var _arrowDisabledColour:uint = 0x5a6678;
+		protected var _colourChanged:Boolean = false;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -62,20 +76,44 @@ package net.dndigital.glo.mvcs.views.components
 		//
 		//--------------------------------------------------------------------------
 		
-		/**
-		 * Up Skin for <code>NavButton</code>
-		 */
-		public var upSkin:BitmapData;
+		public function set direction( value:String ):void
+		{
+			if( value != _direction )
+			{
+				_direction = value;
+				invalidateDisplay();
+			}
+		}
 		
-		/**
-		 * Down Skin for <code>NavButton</code>
-		 */
-		public var downSkin:BitmapData;
+		public function set arrowUpColour( value:uint ):void
+		{
+			if( value != _arrowUpColour )
+			{
+				_arrowUpColour = value;
+				_colourChanged = true;
+				invalidateData();
+			}
+		}
 		
-		/**
-		 * Disabled Skin for <code>NavButton</code>
-		 */
-		public var disabledSkin:BitmapData;
+		public function set arrowDownColour( value:uint ):void
+		{
+			if( value != _arrowDownColour )
+			{
+				_arrowDownColour = value;
+				_colourChanged = true;
+				invalidateData();
+			}
+		}
+		
+		public function set arrowDisabledColour( value:uint ):void
+		{
+			if( value != _arrowDisabledColour )
+			{
+				_arrowDisabledColour = value;
+				_colourChanged = true;
+				invalidateData();
+			}
+		}
 		
 		//--------------------------------------------------------------------------
 		//
@@ -90,22 +128,38 @@ package net.dndigital.glo.mvcs.views.components
 		{
 			super.createChildren();
 			
-			addChild(bitmap);
+			// hit area
+			addChild( hit );
+			hitArea = hit;
+			hit.visible = false;
+
+			// arrow shape - always the same size, centred around origin
+			arrow.graphics.clear();
+			arrow.graphics.beginFill( 0xffffff, 1 );
+			arrow.graphics.moveTo( -15, -10 );
+			arrow.graphics.lineTo( 15, 0 );
+			arrow.graphics.lineTo( -15, 10 );
+			arrow.graphics.lineTo( -15, -10 );
+			arrow.graphics.endFill();
+			addChild(arrow);
 		}
 		
 		/**
 		 * @inheritDoc
 		 */
-		override protected function stateChanged(state:String):void
+		override protected function stateChanged(newState:String):void
 		{
-			super.stateChanged(state);
-			
-			bitmap.bitmapData = this[state + "Skin"];
-			
-			//width = bitmap.width;
-			//height = bitmap.height;
-			//log("stateChanged({0}) width={1} height={2}", state, width, height);
-			invalidateDisplay();
+			super.stateChanged(newState);
+			setArrowColour();
+		}
+		
+		/**
+		 * @inheritDoc 
+		 */		
+		override protected function commited():void
+		{
+			super.commited();
+			setArrowColour();
 		}
 		
 		/**
@@ -114,10 +168,45 @@ package net.dndigital.glo.mvcs.views.components
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);
-			bitmap.setSize(width, height);
-			// FIXME make it proper within component framework.
-			if(owner)
-			   owner.invalidateDisplay();
+			
+			// hit area
+			hit.graphics.clear();
+			hit.graphics.beginFill( 0xff0000, 1 );
+			hit.graphics.drawRect( 0, 0, width, height );
+			
+			// rotate arrow
+			_direction == LEFT ? arrow.scaleX = -1 : arrow.scaleX = 1;
+			
+			// centre arrow
+			arrow.x = width / 2;
+			arrow.y = height / 2;
+		}
+		
+		
+		/**
+		 * Changes arrow colour. 
+		 */		
+		protected function setArrowColour():void
+		{
+			var t:ColorTransform = new ColorTransform();
+			
+			switch( state )
+			{
+				case DOWN:
+					t.color = _arrowDownColour;
+					break;
+				
+				case DISABLED:
+					t.color = _arrowDisabledColour;
+					break;
+				
+				default:
+					t.color = _arrowUpColour;
+					break;
+			}
+
+			// apply
+			arrow.transform.colorTransform = t;
 		}
 	}
 }

@@ -497,7 +497,7 @@ package net.dndigital.components
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		protected function stateChanged(state:String):void {}
+		protected function stateChanged(newState:String):void {}
 		
 		/**
 		 * @private
