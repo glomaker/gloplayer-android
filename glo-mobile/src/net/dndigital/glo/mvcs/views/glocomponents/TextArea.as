@@ -1,9 +1,11 @@
 package net.dndigital.glo.mvcs.views.glocomponents
 {
 	import com.adobe.serialization.json.JSON;
+	import com.greensock.layout.ScaleMode;
 	
 	import eu.kiichigo.utils.log;
 	
+	import flash.display.LineScaleMode;
 	import flash.geom.Rectangle;
 	import flash.html.HTMLSWFCapability;
 	import flash.text.TextField;
@@ -77,20 +79,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		public function set htmlText(value:String):void { 
 			textField.htmlText = value; 
-			var lm:TextLineMetrics = textField.getLineMetrics(0);
-			
-			// log("html text {1} {0}", value, lm.width);
-			
-			var lt:String = textField.getLineText(0);
-			log("line 0: {0}", lt);
-			for(var i:uint = 0;i<lt.length;i++)
-			{
-				var cb:flash.geom.Rectangle = textField.getCharBoundaries(i);
-				if( cb )
-					log("{0} {1} {2}", i, cb.x, cb.width);
-			}
-		
-		} // enlarge(value) || ""; }
+		}
 		
 		/**
 		 * @copy	flash.display.TextField#text
@@ -114,7 +103,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @private
 		 */
-		protected var _border:Boolean;
+		protected var _border:Boolean = false;
 		/**
 		 * @copy	flash.display.TextField#border
 		 *
@@ -123,11 +112,18 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get border():Boolean { return border; }
+		public function get border():Boolean { return _border; }
 		/**
 		 * @private
 		 */
-		public function set border(value:Boolean):void { textField.border = value }
+		public function set border(value:Boolean):void
+		{
+			if( value != _border )
+			{
+				_border = value;
+				invalidateDisplay();
+			}
+		}
 		
 		
 		//--------------------------------------------------------------------------
@@ -158,8 +154,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			textField.multiline = true;
 			textField.defaultTextFormat = new TextFormat("Verdana", 14, 0x0B333C);
 			textField.wordWrap = true;
-			textField.border = true;
-			addChild(textField)
+			textField.border = false;
+			addChild(textField);
 		}
 		
 		/**
@@ -168,22 +164,20 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);
-			log( "resized {0}, {1}, {2}, {3}", width, height, component.width, component.height );
-			const cooficient:Number = Math.min(width / component.width, height / component.height);
 			
-			textField.width = width;
-			textField.height = height;//component.height;
-			//textField.scaleX = cooficient;
-			//textField.scaleY = cooficient;
-				
-			if (redrawBorder) {
-				redrawBorder = false;
-				
-				graphics.clear();
-				if (_border) {
-					//graphics.lineStyle(1, 0x000000);
-					graphics.drawRect(0, 0, width, height);
-				}
+			// size textfield proportionally
+			const coefficient:Number = Math.min(width / component.width, height / component.height);
+			
+			textField.width = component.width;
+			textField.height = component.height;
+			textField.scaleX = coefficient;
+			textField.scaleY = coefficient;
+			
+			// draw border
+			graphics.clear();
+			if (_border) {
+				graphics.lineStyle(1, 0xb7babc, 1, true, LineScaleMode.NONE);
+				graphics.drawRect(0, 0, width, height);
 			}
 		}
 		
@@ -195,6 +189,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		
 		/**
 		 * Processes the text, and enlarges it by parameter passed in <code>by</code>.
+		 * Functionality now shelved but method kept for potential future development.
 		 * 
 		 * @param	text	HTML Formatted text to be enlarged.
 		 * @param	by		Number of points to be enlarged by.
@@ -211,17 +206,15 @@ package net.dndigital.glo.mvcs.views.glocomponents
 									 split(" ");
 			
 			// Iterate array, and ignore all item that has no "SIZE=".
-			// In future version other properrties can be modified to.
+			// In future version other properties can be modified to.
 			for (var i:int = 0; i < items.length; i ++) {
 				var string:String = items[i] as String;
 				if (string.toUpperCase().indexOf("SIZE=") >= 0) {
 					string = "SIZE=\"" + (int(string.toUpperCase().split("SIZE=").join("").
 																split("\"").join("")) + by).toString() + "\"";
 					text = text.split(items[i]).join(string);
-					//log("replacing {0} with {1}", items[i], string);
 				}
 			}
-			//log("enlarge={0}", text);
 			return text;
 		}
 	}
