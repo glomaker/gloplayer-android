@@ -4,9 +4,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	
 	import eu.kiichigo.utils.log;
 	
+	import flash.geom.Rectangle;
 	import flash.html.HTMLSWFCapability;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
+	import flash.text.TextLineMetrics;
 	import flash.utils.Dictionary;
 	
 	import net.dndigital.components.IGUIComponent;
@@ -73,7 +75,22 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @private
 		 */
-		public function set htmlText(value:String):void { textField.htmlText = value; } // enlarge(value) || ""; }
+		public function set htmlText(value:String):void { 
+			textField.htmlText = value; 
+			var lm:TextLineMetrics = textField.getLineMetrics(0);
+			
+			// log("html text {1} {0}", value, lm.width);
+			
+			var lt:String = textField.getLineText(0);
+			log("line 0: {0}", lt);
+			for(var i:uint = 0;i<lt.length;i++)
+			{
+				var cb:flash.geom.Rectangle = textField.getCharBoundaries(i);
+				if( cb )
+					log("{0} {1} {2}", i, cb.x, cb.width);
+			}
+		
+		} // enlarge(value) || ""; }
 		
 		/**
 		 * @copy	flash.display.TextField#text
@@ -87,7 +104,12 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @private
 		 */
-		public function set text(value:String):void { textField.text = value || ""; }
+		public function set text(value:String):void {
+			textField.text = value || "";
+			var lm:TextLineMetrics = textField.getLineMetrics(0);
+			var cb:flash.geom.Rectangle = textField.getCharBoundaries(0);
+		
+		}
 		
 		/**
 		 * @private
@@ -146,14 +168,14 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);
-			
+			log( "resized {0}, {1}, {2}, {3}", width, height, component.width, component.height );
 			const cooficient:Number = Math.min(width / component.width, height / component.height);
 			
 			textField.width = width;
 			textField.height = height;//component.height;
 			//textField.scaleX = cooficient;
 			//textField.scaleY = cooficient;
-			
+				
 			if (redrawBorder) {
 				redrawBorder = false;
 				

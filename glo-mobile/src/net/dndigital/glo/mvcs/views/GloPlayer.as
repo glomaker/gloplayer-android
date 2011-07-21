@@ -264,6 +264,8 @@ package net.dndigital.glo.mvcs.views
 				const offset:Point = new Point((width - project.width * cooficient) / 2, (h - project.height * cooficient) / 2);
 				const container:Sprite = current as Sprite;
 				
+				log( "scale coefficient {0}", cooficient );
+				
 				for (var i:int = 0; i < container.numChildren; i ++)
 					if (container.getChildAt(0) is IGloComponent)
 						resize(container.getChildAt(i) as IGloComponent, cooficient, offset);
