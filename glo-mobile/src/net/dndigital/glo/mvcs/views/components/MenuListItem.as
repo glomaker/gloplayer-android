@@ -6,12 +6,14 @@ package net.dndigital.glo.mvcs.views.components
 	import flash.filters.DropShadowFilter;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
+	import flash.text.TextLineMetrics;
 	
 	import thanksmister.touchlist.events.ListItemEvent;
 	import thanksmister.touchlist.renderers.ITouchListItemRenderer;
 
 	/**
-	 * List item for the menu list 
+	 * List item for the menu list.
+	 * This is a copy of the TouchListItemRenderer from thanksmister with some tweaks.
 	 * @author nilsmillahn
 	 */	
 	public class MenuListItem extends Sprite implements ITouchListItemRenderer
@@ -117,10 +119,9 @@ package net.dndigital.glo.mvcs.views.components
 				var textFormat:TextFormat = new TextFormat();
 				textFormat.color = 0xEAEAEA;
 				textFormat.size = 24;
-				textFormat.font = "Arial"; 
+				textFormat.font = "Arial";
 				
 				textField = new TextField();
-				textField.height = 22;
 				textField.mouseEnabled = false;
 				textField.defaultTextFormat = textFormat;
 				
@@ -138,11 +139,14 @@ package net.dndigital.glo.mvcs.views.components
 		{
 			if(!initialized) return 
 				
-				textField.x = 5;
+			textField.x = 5;
 			textField.text = String(data);
-			textField.height = textField.textHeight;
+			
+			var lm:TextLineMetrics = textField.getLineMetrics(0);
+			textField.height = lm.height + lm.descent;
+			
 			textField.width = itemWidth - 10;
-			textField.y = itemHeight/2 - textField.textHeight/2;
+			textField.y = ( itemHeight - textField.height )/2;
 			
 			this.graphics.clear();
 			
