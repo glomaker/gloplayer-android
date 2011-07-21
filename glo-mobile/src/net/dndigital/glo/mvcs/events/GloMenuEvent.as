@@ -2,6 +2,8 @@ package net.dndigital.glo.mvcs.events
 {
 	import flash.events.Event;
 	import flash.filesystem.File;
+	
+	import net.dndigital.glo.mvcs.models.vo.Glo;
 
 	public class GloMenuEvent extends Event
 	{
@@ -29,7 +31,7 @@ package net.dndigital.glo.mvcs.events
 		//
 		//--------------------------------------------------------------------------
 
-		public function GloMenuEvent(type:String, file:File = null, files:Vector.<File> = null)
+		public function GloMenuEvent(type:String, file:File = null, files:Vector.<Glo> = null)
 		{
 			super(type);
 
@@ -57,7 +59,7 @@ package net.dndigital.glo.mvcs.events
 		/**
 		 * @private
 		 */
-		protected var _files:Vector.<File>;
+		protected var _files:Vector.<Glo>;
 		/**
 		 * Collection of files.
 		 *
@@ -66,7 +68,7 @@ package net.dndigital.glo.mvcs.events
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get files():Vector.<File> { return _files; }
+		public function get files():Vector.<Glo> { return _files; }
 		
 		//--------------------------------------------------------------------------
 		//

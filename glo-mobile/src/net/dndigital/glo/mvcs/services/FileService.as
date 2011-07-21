@@ -6,6 +6,8 @@ package net.dndigital.glo.mvcs.services
 	import flash.system.Capabilities;
 	import flash.system.System;
 	
+	import net.dndigital.glo.mvcs.models.vo.Glo;
+	
 	import org.robotlegs.mvcs.Actor;
 	
 	public final class FileService extends Actor implements IFileService
@@ -45,7 +47,7 @@ package net.dndigital.glo.mvcs.services
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get files():Vector.<File>
+		public function get files():Vector.<Glo>
 		{
 			return scanDirectory(gloDir).concat(
 				   scanDirectory(File.applicationDirectory));
@@ -74,10 +76,10 @@ package net.dndigital.glo.mvcs.services
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		protected function scanDirectory(directory:File, list:Vector.<File> = null, tailed:Boolean = false):Vector.<File>
+		protected function scanDirectory(directory:File, list:Vector.<Glo> = null, tailed:Boolean = false):Vector.<Glo>
 		{
 			if (list == null)
-				list = new Vector.<File>;
+				list = new Vector.<Glo>;
 			
 			if ( !directory.exists )
 				return list;
@@ -89,11 +91,35 @@ package net.dndigital.glo.mvcs.services
 				if (current.isDirectory)
 					scanDirectory(current, list, true);
 				else if (current.extension == GLO_FILE_EXTENSION )
-					list.push(current);
+					list.push( new Glo( current, getDisplayName( current ) ) );
 			}
 			if (!tailed)
 				list.fixed = true;
 			return list;
 		}
+		
+		
+		/**
+		 * Creates a display name from a given GLO file. 
+		 * @param file
+		 * @return 
+		 */		
+		private function getDisplayName( file:File ):String
+		{
+			// we use the name of the .glo file
+			// unless it's the generic 'project.glo', in which case we use the parent folder instead
+			var lowerName:String = file.name.toLowerCase();
+			
+			if( lowerName != "project.glo" || !file.parent )
+			{
+				// strip off the '.glo' extension
+				return file.name.substr( 0, lowerName.lastIndexOf(".") );
+			}
+						
+			// generic filename
+			// use parent folder name instead
+			return file.parent.name;
+		}
+		
 	}
 }
