@@ -48,9 +48,21 @@ package net.dndigital.glo.mvcs.commands
 		{
 			super.execute();
 
+			// GLO directory
+			var f:File = fileService.gloDir;
+			
+			// transition older demo GLO directory to proper folder
+			// @TODO: This code can be removed in production version
+			const OLD_GLO_DIRECTORY:String = "GloPlayer/Glos";
+			var old:File = File.documentsDirectory.resolvePath( OLD_GLO_DIRECTORY );
+			if( old.exists && !f.exists )
+			{
+				old.moveTo( f );
+				old.parent.deleteDirectory( true );
+			}
+			
 			// create GLO directory in device documents folder if it doesn't already exist
 			// this will allow users to transfer GLO projects directly via cable/file-manager
-			var f:File = fileService.gloDir;
 			if( !f.exists )
 			{
 				f.createDirectory();

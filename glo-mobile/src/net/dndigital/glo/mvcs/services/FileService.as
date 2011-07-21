@@ -26,7 +26,13 @@ package net.dndigital.glo.mvcs.services
 		 * Default GLO directory subpath inside File.documentsDirectory.
 		 * This directory will be scanned for GLO project files. 
 		 */		
-		protected static const DEFAULT_GLO_DIRECTORY:String = "GloPlayer/Glos";
+		protected static const DEFAULT_GLO_DIRECTORY:String = "GLO_Maker/GLOs";
+
+		
+		/**
+		 * File extension for GLO Maker files. 
+		 */		
+		protected static const GLO_FILE_EXTENSION:String = "glo";
 		
 		
 		/**
@@ -82,7 +88,7 @@ package net.dndigital.glo.mvcs.services
 				const current:File = dir[i] as File;
 				if (current.isDirectory)
 					scanDirectory(current, list, true);
-				else if (current.extension == "glo")
+				else if (current.extension == GLO_FILE_EXTENSION )
 					list.push(current);
 			}
 			if (!tailed)

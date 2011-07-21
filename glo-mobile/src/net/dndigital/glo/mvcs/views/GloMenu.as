@@ -157,7 +157,25 @@ package net.dndigital.glo.mvcs.views
 		
 		private function getButtonName( file:File ):String
 		{
-			var name:String = file.name.split(".glo").join("");
+			// we use the name of the .glo file
+			// unless it's the generic 'project.glo', in which case we use the parent folder instead
+			var lowerName:String = file.name.toLowerCase();
+			
+			if( lowerName != "project.glo" )
+			{
+				// strip off the '.glo' extension
+				return file.name.substr( 0, lowerName.lastIndexOf(".") );
+			}
+			
+			// generic filename
+			// use parent folder name instead
+			return file.parent.name;
+			
+			/*
+			var name:String = file.  .name.split(".glo").join("");
+			
+			
+			
 			if (name.toUpperCase() == "PROJECT") {
 				if (file.url.indexOf("Glos") >= 0)
 					name = file.url.split("Glos")[1];
@@ -170,6 +188,7 @@ package net.dndigital.glo.mvcs.views
 				split("project.glo").join("");
 			
 			return name;
+			*/
 		}
 		
 		/**
