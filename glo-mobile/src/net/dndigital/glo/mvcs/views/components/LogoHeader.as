@@ -6,6 +6,7 @@ package net.dndigital.glo.mvcs.views.components
 	
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.glo.mvcs.models.enum.ColourPalette;
+	import net.dndigital.glo.mvcs.utils.DrawingUtils;
 	
 	/**
 	 * View component to display the GLOMaker logo. 
@@ -53,14 +54,7 @@ package net.dndigital.glo.mvcs.views.components
 			swoosh.x = width - swoosh.width + 10;
 			
 			// gradient background
-			graphics.clear();
-	
-			var m:Matrix = new Matrix();
-			m.createGradientBox(width, height, Math.PI/2);
-			
-			graphics.beginGradientFill( GradientType.LINEAR, [ ColourPalette.GRADIENT_START, ColourPalette.GRADIENT_END ], [1, 1], [0, 255], m );
-			graphics.drawRect(0, 0, width, height);
-			graphics.endFill();
+			DrawingUtils.drawStandardGradient( graphics, width, height );
 		}
 		
 	}

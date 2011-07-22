@@ -1,5 +1,7 @@
 package net.dndigital.glo.mvcs.models.enum
 {
+	import flash.geom.Matrix;
+
 	/**
 	 * Defines colours used by the application. 
 	 * @author nilsmillahn

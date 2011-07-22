@@ -4,13 +4,16 @@ package net.dndigital.glo.mvcs.views.components
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.GradientType;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.geom.ColorTransform;
+	import flash.geom.Matrix;
 	import flash.utils.describeType;
 	
 	import net.dndigital.components.Button;
 	import net.dndigital.glo.mvcs.models.enum.ColourPalette;
+	import net.dndigital.glo.mvcs.utils.DrawingUtils;
 	
 	import org.bytearray.display.ScaleBitmap;
 	
@@ -175,6 +178,9 @@ package net.dndigital.glo.mvcs.views.components
 			hit.graphics.beginFill( 0xff0000, 1 );
 			hit.graphics.drawRect( 0, 0, width, height );
 			
+			// gradient background
+			DrawingUtils.drawStandardGradient( graphics, width, height );
+
 			// rotate arrow
 			_direction == LEFT ? arrow.scaleX = -1 : arrow.scaleX = 1;
 			

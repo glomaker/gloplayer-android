@@ -13,6 +13,7 @@ package net.dndigital.glo.mvcs.views
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.models.enum.ColourPalette;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
+	import net.dndigital.glo.mvcs.views.components.BackToMenuButton;
 	import net.dndigital.glo.mvcs.views.components.NavButton;
 	
 	/**
@@ -65,13 +66,7 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Text field for menu link.  
 		 */		
-		protected const menuLink:Label = new Label;
-		
-		/**
-		 * @private
-		 * Matrix used for background gradient fill 
-		 */		
-		protected const fillGradientMatrix:Matrix = new Matrix;
+		protected const menuLink:BackToMenuButton = new BackToMenuButton;
 		
 
 		//--------------------------------------------------------------------------
@@ -126,20 +121,14 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.createChildren();
 	
+			add( menuLink );
+			
 			next.direction = NavButton.RIGHT;
-			next.buttonMode = true;
 			add(next);
 
 			prev.direction = NavButton.LEFT;
-			prev.buttonMode = true;
 			add(prev);
 
-			// menu link
-			menuLink.text = "MENU";
-			menuLink.selectable = false;
-			menuLink.textFormat = new TextFormat("Verdana", 24, 0xFFFFFF);
-			add(menuLink);
-			
 			// force redraw
 			invalidateDisplay();
 		}
@@ -155,28 +144,26 @@ package net.dndigital.glo.mvcs.views
 			if (!isNaN(width+height)) {
 				graphics.clear();
 				
-				// gradient background
-				fillGradientMatrix.createGradientBox(width, height, Math.PI/2);
-				graphics.beginGradientFill( GradientType.LINEAR, [ ColourPalette.GRADIENT_START, ColourPalette.GRADIENT_END ], [1, 1], [0, 255], fillGradientMatrix );
-				graphics.drawRect(0, 0, width, height);
-				graphics.endFill();
-				
-				// two black strips
-				var sw:Number = ScreenMaths.mmToPixels( 2 );
-				graphics.beginFill( 0, 1 );
-				graphics.drawRect( height, 0, sw, height );
-				graphics.drawRect( width - height - sw, 0, sw, height );
+				// background
+				graphics.beginFill( 0x000000, 1 );
+				graphics.drawRect( 0, 0, width, height );
 				graphics.endFill();
 			}
-			
-			prev.width = prev.height = height;
-			next.width = next.height = height;
 
-			next.x = width - next.width;
-			next.y = 0;
+			// square nav buttons with menu button and two gaps in between
+			var gap:Number = ScreenMaths.mmToPixels( 2 );
+
+			prev.height = height;
+			next.height = height;
+			menuLink.height = height;
 			
+			prev.width = height;
+			next.width = height;
+			menuLink.width = width - 2*height - 2*gap;
+
+			// positioning
+			next.x = width - next.width;
 			menuLink.x = ( width - menuLink.width ) / 2;
-			menuLink.y = ( height - menuLink.height )/2;    
 		}
 		
 		/**
@@ -203,7 +190,7 @@ package net.dndigital.glo.mvcs.views
 				dispatchEvent(ProjectEvent.NEXT_PAGE_EVENT);
 			else if(event.target == prev)
 				dispatchEvent(ProjectEvent.PREV_PAGE_EVENT);
-			else
+			else if(event.target == menuLink)
 				dispatchEvent(ProjectEvent.MENU_EVENT);
 		}
 	}
