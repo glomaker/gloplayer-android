@@ -1,14 +1,12 @@
 package net.dndigital.glo.mvcs.views
 {
-	import flash.display.Sprite;
-	import flash.geom.Point;
 	import flash.system.Capabilities;
 	
 	import net.dndigital.components.Application;
-	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
-	import net.dndigital.components.Label;
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
+	import net.dndigital.glo.mvcs.utils.ScreenMaths;
+	import net.dndigital.glo.mvcs.views.components.LogoHeader;
 	
 	/**
 	 * Main and First view of GloMaker Player Application. All views and popups are hosted in <code>Application</code>.
@@ -42,18 +40,6 @@ package net.dndigital.glo.mvcs.views
 		
 		/**
 		 * @private
-		 * Background Asset
-		 */
-		protected const gloMakerLogo:GloMakerLogo = new GloMakerLogo;
-		
-		/**
-		 * @private
-		 * Point, stores original size of gloMakerLogo.
-		 */
-		protected var originalLogoSize:Point;
-
-		/**
-		 * @private
 		 * Reference to an instance of GloPlayer. This is constant since we need to initialize it only once.
 		 */
 		protected const player:GloPlayer = new GloPlayer;
@@ -63,6 +49,14 @@ package net.dndigital.glo.mvcs.views
 		 * Reference to an instance of GloMenu. This is constant since we need to initialize it only once.
 		 */
 		protected const menu:GloMenu = new GloMenu;
+		
+		
+		/**
+		 * @private
+		 * Reference to logo header. 
+		 */		
+		protected const logo:LogoHeader = new LogoHeader;
+		
 		
 		/**
 		 * @private
@@ -82,7 +76,7 @@ package net.dndigital.glo.mvcs.views
 		public function showPlayer():void
 		{
 			replace(player);
-			gloMakerLogo.visible = false;
+			logo.visible = false;
 		}
 		
 		/**
@@ -91,7 +85,7 @@ package net.dndigital.glo.mvcs.views
 		public function showMenu():void
 		{
 			replace(menu);
-			gloMakerLogo.visible = true;
+			logo.visible = true;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -117,10 +111,12 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.createChildren();
 			
-			const gui:GUIComponent = new GUIComponent;
-				  gui.addChild(gloMakerLogo);
-			originalLogoSize = new Point(gloMakerLogo.width, gloMakerLogo.height);
-			add(gui);
+			// the logo is the only item always on screen
+			// the other elements will be swapped out via the 'replace' function
+			add( logo );
+			
+			// initialise menu subview
+			menu.padding = ScreenMaths.mmToPixels( 3 );
 		}
 		
 		/**
@@ -135,12 +131,17 @@ package net.dndigital.glo.mvcs.views
 				current.height = height;
 			}
 			
-			const padding:uint = 25;
-			const c:Number = Math.min((width - padding * 2) / originalLogoSize.x, (height - padding * 2)  / originalLogoSize.y);
-			gloMakerLogo.width = originalLogoSize.x * c;
-			gloMakerLogo.height = originalLogoSize.y * c;
-			gloMakerLogo.x = (width - gloMakerLogo.width) / 2;
-			gloMakerLogo.y = (height - gloMakerLogo.height) / 2;
+			logo.width = width;
+			logo.height = Math.max( 100, ScreenMaths.mmToPixels( 15 ) ); // max because we need a bit of space for the logo which is about 60px high
+
+			menu.y = logo.height;
+			menu.width = width;
+			menu.height = height - menu.y;
+			
+			// black background
+			graphics.clear();
+			graphics.beginFill( 0x000000, 1 );
+			graphics.drawRect( 0, 0, width, height );
 		}
 		
 		//--------------------------------------------------------------------------

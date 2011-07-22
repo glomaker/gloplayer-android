@@ -196,9 +196,9 @@ package net.dndigital.glo.mvcs.views
 			add(prev);
 			
 			// Size component according to screen dpi
-			progress.height = ScreenMaths.mmToPixels(1);
+			progress.height = Math.ceil( ScreenMaths.mmToPixels(1.5) );
 			progress.y = -progress.height;
-			progress.alpha = 0.5;
+			progress.alpha = 0.7;
 			progress.barColour = 0xffffff;
 			progress.bgColour = 0x5a6678;
 			add(progress);

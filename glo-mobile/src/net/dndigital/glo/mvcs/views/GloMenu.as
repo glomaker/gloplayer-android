@@ -84,6 +84,26 @@ package net.dndigital.glo.mvcs.views
 			invalidateData();
 		}
 		
+		/**
+		 * Padding to use around the menu list.
+		 * The space will be left blank. 
+		 */		
+		protected var _padding:Number = 10;
+		
+		public function get padding():Number
+		{
+			return _padding;
+		}
+		
+		public function set padding(value:Number):void
+		{
+			if( value != _padding )
+			{
+				_padding = value;
+				invalidateDisplay();
+			}
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Overriden API
@@ -107,13 +127,10 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.resized(width, height);
 			
-			var listPadding:uint = 15;
-			var topPadding:uint = ScreenMaths.mmToPixels(20);
-			
-			list.x = listPadding;
-			list.y = topPadding;
-			list.width = width - 2*listPadding;
-			list.height = height - topPadding - listPadding;
+			list.x = padding;
+			list.y = padding;
+			list.width = width - 2*padding;
+			list.height = height - 2*padding;
 		}
 		
 		/**
