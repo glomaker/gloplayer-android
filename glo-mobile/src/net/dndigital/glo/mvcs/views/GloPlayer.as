@@ -16,6 +16,8 @@ package net.dndigital.glo.mvcs.views
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.models.vo.*;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
+	import net.dndigital.glo.mvcs.views.components.PageNumberDisplay;
+	import net.dndigital.glo.mvcs.views.components.ProgressBar;
 	import net.dndigital.glo.mvcs.views.glocomponents.*;
 
 	/**
@@ -101,11 +103,25 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected const components:Vector.<IGloComponent> = new Vector.<IGloComponent>;
 		
+		
 		/**
 		 * @private
 		 * Reference to Controls that manipulate next/previous slides and other aspects of player.
 		 */
 		protected const controls:GloControls = new GloControls;
+
+		
+		/**
+		 * @private
+		 * Page number view component 
+		 */		
+		protected const pageNumber:PageNumberDisplay = new PageNumberDisplay;
+		
+		/**
+		 * @private
+		 * View component to indicate slide progress.
+		 */
+		protected const progress:ProgressBar = new ProgressBar;
 		
 		/**
 		 * @private
@@ -242,9 +258,19 @@ package net.dndigital.glo.mvcs.views
 		override protected function createChildren():void
 		{
 			super.createChildren();
+
+			// sizing and other initialisation
+			controls.height = Math.ceil( ScreenMaths.mmToPixels(10) );
+			pageNumber.height = Math.ceil( ScreenMaths.mmToPixels( 8 ) );
+
+			progress.height = Math.ceil( ScreenMaths.mmToPixels(1.5) );
+			progress.alpha = 0.7;
+			progress.barColour = 0xffffff;
+			progress.bgColour = 0x5a6678;
 			
-			controls.width = _width;
-			controls.height = ScreenMaths.mmToPixels(10);
+			// add to screen - order is important!
+			add(pageNumber);
+			add(progress);
 			add(controls);
 		}
 		/**
@@ -256,6 +282,18 @@ package net.dndigital.glo.mvcs.views
 			
 			controls.width = width;
 			controls.y = height - controls.height;
+
+			progress.width = width;
+			progress.y = controls.y - progress.height;
+			
+			// repositioning pageNumber will cause it to stop animating
+			// so we have to be careful
+			if( pageNumber.width != width )
+			{
+				pageNumber.width = width;
+				pageNumber.y = progress.y - pageNumber.height;
+				pageNumber.baseY = pageNumber.y;
+			}
 			
 			if (current) {
 				// FIXME 41 is a height of control bar in GloMaker v2. It seems that there is no data about this height in project file, so I had to hardcode it. It would be recommended to move this parameter to project.glo or xml config in future versions.
@@ -264,15 +302,17 @@ package net.dndigital.glo.mvcs.views
 				const offset:Point = new Point((width - project.width * cooficient) / 2, (h - project.height * cooficient) / 2);
 				const container:Sprite = current as Sprite;
 				
-				log( "scale coefficient {0}", cooficient );
-				
 				for (var i:int = 0; i < container.numChildren; i ++)
 					if (container.getChildAt(0) is IGloComponent)
 						resize(container.getChildAt(i) as IGloComponent, cooficient, offset);
 			}
 			
+			// UI not visible in full-screen mode
 			controls.visible = fullscreened == null;
+			pageNumber.visible = fullscreened == null;
+			progress.visible = fullscreened == null;
 
+			// draw background
 			graphics.clear();
 			if (project) {
 				graphics.beginFill(project.background);
@@ -280,6 +320,7 @@ package net.dndigital.glo.mvcs.views
 				graphics.endFill();
 			}
 			
+			// trigger orientation warning
 			if (showWarning) {
 				
 				showWarning = false;
@@ -291,7 +332,6 @@ package net.dndigital.glo.mvcs.views
 														  					   recommendedLandscape ? "Landscape" : "Portrait")));
 				
 			}
-			//log("resized");
 		}
 		
 		/**
@@ -309,7 +349,7 @@ package net.dndigital.glo.mvcs.views
 				invalidateDisplay();
 			}
 			
-			// Decide whether Navigation Buttons needs to be locked or not.			
+			// Decide whether Navigation Buttons needs to be locked or not
 			controls.lock(_index == 0,
 						  _index == _project.length - 1);
 		}
@@ -334,6 +374,9 @@ package net.dndigital.glo.mvcs.views
 			else
 				current = null;
 			
+			// raise UI above content (order is important!)
+			bringToFront(pageNumber);
+			bringToFront(progress);
 			bringToFront(controls);
 			
 			if (_index != index)
@@ -501,7 +544,6 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected function removedFromStage(event:Event):void
 		{
-			//log("removedFromStage()");
 			dispatchEvent(PlayerEvent.DESTROY_EVENT);
 		}
 	}

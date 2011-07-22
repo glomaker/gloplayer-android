@@ -43,7 +43,6 @@ package net.dndigital.glo.mvcs.views
 			eventMap.mapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.MENU, handleMenuClick);
-			eventMap.mapListener(eventDispatcher, ProjectEvent.PAGE_CHANGED, pageChanged);
 		}
 
 		/**
@@ -54,7 +53,6 @@ package net.dndigital.glo.mvcs.views
 			eventMap.unmapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.MENU, handleMenuClick);
-			eventMap.unmapListener(eventDispatcher, ProjectEvent.PAGE_CHANGED, pageChanged);
 		}
 		
 		/**
@@ -66,13 +64,5 @@ package net.dndigital.glo.mvcs.views
 			dispatch(ApplicationEvent.SHOW_MENU_EVENT);
 		}
 		
-		/**
-		 * @private
-		 */
-		protected function pageChanged(event:ProjectEvent):void
-		{
-			view.currentPage = event.index;
-			view.totalPages = event.project.length;
-		}
 	}
 }

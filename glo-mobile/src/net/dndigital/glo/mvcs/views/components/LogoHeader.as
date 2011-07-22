@@ -5,6 +5,7 @@ package net.dndigital.glo.mvcs.views.components
 	import flash.geom.Matrix;
 	
 	import net.dndigital.components.GUIComponent;
+	import net.dndigital.glo.mvcs.models.enum.ColourPalette;
 	
 	/**
 	 * View component to display the GLOMaker logo. 
@@ -57,7 +58,7 @@ package net.dndigital.glo.mvcs.views.components
 			var m:Matrix = new Matrix();
 			m.createGradientBox(width, height, Math.PI/2);
 			
-			graphics.beginGradientFill( GradientType.LINEAR, [ 0x424449, 0x0b0c0d ], [1, 1], [0, 255], m );
+			graphics.beginGradientFill( GradientType.LINEAR, [ ColourPalette.GRADIENT_START, ColourPalette.GRADIENT_END ], [1, 1], [0, 255], m );
 			graphics.drawRect(0, 0, width, height);
 			graphics.endFill();
 		}

@@ -10,6 +10,7 @@ package net.dndigital.glo.mvcs.views.components
 	import flash.utils.describeType;
 	
 	import net.dndigital.components.Button;
+	import net.dndigital.glo.mvcs.models.enum.ColourPalette;
 	
 	import org.bytearray.display.ScaleBitmap;
 	
@@ -66,8 +67,8 @@ package net.dndigital.glo.mvcs.views.components
 		protected var _direction:String = RIGHT;
 		
 		protected var _arrowUpColour:uint = 0xffffff;
-		protected var _arrowDownColour:uint = 0x5a6678;
-		protected var _arrowDisabledColour:uint = 0x5a6678;
+		protected var _arrowDownColour:uint = ColourPalette.HIGHLIGHT_BLUE;
+		protected var _arrowDisabledColour:uint = ColourPalette.DISABLED_BLUE;
 		protected var _colourChanged:Boolean = false;
 		
 		//--------------------------------------------------------------------------

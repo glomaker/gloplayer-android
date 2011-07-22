@@ -7,6 +7,8 @@ package net.dndigital.glo.mvcs
 	import net.dndigital.glo.mvcs.models.GloModel;
 	import net.dndigital.glo.mvcs.services.*;
 	import net.dndigital.glo.mvcs.views.*;
+	import net.dndigital.glo.mvcs.views.components.PageNumberDisplay;
+	import net.dndigital.glo.mvcs.views.components.ProgressBar;
 	
 	import org.robotlegs.base.ContextEvent;
 	import org.robotlegs.mvcs.Context;
@@ -53,6 +55,8 @@ package net.dndigital.glo.mvcs
 			mediatorMap.mapView(GloPlayer, GloPlayerMediator);
 			mediatorMap.mapView(GloMenu, GloMenuMediator);
 			mediatorMap.mapView(GloControls, GloControlsMediator);
+			mediatorMap.mapView(PageNumberDisplay, PageNumberDisplayMediator);
+			mediatorMap.mapView(ProgressBar, ProgressBarMediator);
 			
 			super.startup();
 		}

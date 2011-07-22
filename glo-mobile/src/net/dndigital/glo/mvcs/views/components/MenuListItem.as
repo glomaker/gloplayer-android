@@ -8,6 +8,8 @@ package net.dndigital.glo.mvcs.views.components
 	import flash.text.TextFormat;
 	import flash.text.TextLineMetrics;
 	
+	import net.dndigital.glo.mvcs.models.enum.ColourPalette;
+	
 	import thanksmister.touchlist.events.ListItemEvent;
 	import thanksmister.touchlist.renderers.ITouchListItemRenderer;
 
@@ -96,7 +98,7 @@ package net.dndigital.glo.mvcs.views.components
 			
 			this.graphics.clear();
 			
-			this.graphics.beginFill(0xCC6600, .9);
+			this.graphics.beginFill( ColourPalette.HIGHLIGHT_BLUE, .9);
 			this.graphics.drawRect(0, 0, itemWidth, itemHeight);
 			this.graphics.endFill();
 			
