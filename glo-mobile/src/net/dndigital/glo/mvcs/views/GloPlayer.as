@@ -466,12 +466,18 @@ package net.dndigital.glo.mvcs.views
 					case "videoplayer":
 						container.addChild(component(new VideoPlayer, page.components[i]));
 						break;
+					
+					/* DISABLED in this release
 					case "swfloader":
 						container.addChild(component(new FlashAnimation, page.components[i]));
 						break;
+					*/
+					
+					/* DISABLED in this release
 					default:
 						container.addChild(component(new Placeholder, page.components[i]));
 						break;
+					*/
 				}
 		
 			return container;
