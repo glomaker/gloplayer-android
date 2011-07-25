@@ -61,7 +61,7 @@ package thanksmister.touchlist.controls
 		
 		private var isTouching:Boolean = false;
 		private var tapDelayTime:Number = 0;
-		private var maxTapDelayTime:Number = 1; // change this to increase or descrease tap sensitivity
+		private var maxTapDelayTime:Number = 3; // change this to increase or descrease tap sensitivity
 		private var tapItem:ITouchListItemRenderer;
 		private var tapEnabled:Boolean = false;
 
