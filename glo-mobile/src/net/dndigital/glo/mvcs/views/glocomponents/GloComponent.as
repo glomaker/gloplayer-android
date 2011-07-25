@@ -124,6 +124,22 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		//--------------------------------------------------------------------------
 		
 		/**
+		 * @copy	net.dndigital.glo.mvcs.views.controls.IGloComponent#activate 
+		 */		
+		public function activate():void
+		{
+			// override in component implementation
+		}
+
+		/**
+		 * @copy	net.dndigital.glo.mvcs.views.controls.IGloComponent#deactivate 
+		 */		
+		public function deactivate():void
+		{
+			// override in component implementation
+		}
+		
+		/**
 		 * @copy	net.dndigital.glo.mvcs.views.controls.IGloComponent#destroy
 		 * 
 		 * @langversion 3.0

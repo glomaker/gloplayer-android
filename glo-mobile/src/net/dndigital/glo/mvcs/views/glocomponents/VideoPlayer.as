@@ -140,6 +140,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected const progressTimer:Timer = new Timer(75);
 		
+		/**
+		 * Stores state when video component is deactivated.
+		 */
+		protected var playOnActivate:Boolean = false;
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -262,6 +267,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 				progressTimer.start();
 			}
 			paused = false;
+			playOnActivate = false;
 			invalidateDisplay();
 			updateProgress();
 			return this;
@@ -424,6 +430,35 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			}
 			super.resized(width, height);
 		}
+		
+		
+		/**
+		 * @inheritDoc 
+		 */		
+		override public function activate():void
+		{
+			if( playOnActivate )
+			{
+				playOnActivate = false;
+				play();
+			}
+		}
+
+		
+		/**
+		 * @inheritDoc 
+		 */		
+		override public function deactivate():void
+		{
+			if( !paused )
+			{
+				playOnActivate = true;
+				pause();
+			}else{
+				playOnActivate = false;
+			}
+		}
+		
 		
 		/**
 		 * @inheritDoc

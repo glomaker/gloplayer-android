@@ -50,10 +50,33 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * @productversion Flex 4.5
 		 */
 		function get player():GloPlayer;
+		
 		/**
 		 * @private
 		 */
 		function set player(value:GloPlayer):void;
+		
+
+		/**
+		 * Notifies the component that the application has been activated again.
+		 * Components should continue playing animations / video / sound that was paused when 'deactivate()' occurred.
+		 * 
+		 * @see deactivate()
+		 *   
+		 */		
+		function activate():void;
+		
+		
+		/**
+		 * Notifies the component that the application has been de-activated.
+		 * That usually means the user has pressed a mobile hotkey to navigate away from the app.
+		 * Components should stop animations / video / sound from playing.
+		 * 
+		 * @see activate() 
+		 * 
+		 */		
+		function deactivate():void;
+		
 		
 		/**
 		 * Method begins destruction of an instance of <code>IGloComponent</code> and assets created by it.

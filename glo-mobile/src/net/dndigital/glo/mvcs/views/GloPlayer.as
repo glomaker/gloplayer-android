@@ -235,6 +235,30 @@ package net.dndigital.glo.mvcs.views
 			invalidateDisplay();
 		}
 		
+		/**
+		 * Calls the 'activate' method on all components.
+		 * Used when the mobile app is brought back by the user from the background thread.
+		 */		
+		public function activateAllComponents():void
+		{
+			for each( var comp:IGloComponent in components )
+			{
+				comp.activate();
+			}
+		}
+		
+		/**
+		 * Calls the 'deactivate' method on all components.
+		 * Used when the mobile app is sent to background by user.
+		 */		
+		public function deactivateAllComponents():void
+		{
+			for each( var comp:IGloComponent in components )
+			{
+				comp.deactivate();
+			}
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Overridden API

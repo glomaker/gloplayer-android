@@ -2,6 +2,7 @@ package net.dndigital.glo.mvcs.views
 {
 	import flash.events.TransformGestureEvent;
 	
+	import net.dndigital.glo.mvcs.events.ApplicationEvent;
 	import net.dndigital.glo.mvcs.events.NotificationEvent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.models.vo.Project;
@@ -55,6 +56,8 @@ package net.dndigital.glo.mvcs.views
 			view.project = service.project;
 			
 			eventMap.mapListener(eventDispatcher, ProjectEvent.PAGE, changePage);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.ACTIVATE, handleActivate);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.DEACTIVATE, handleDeactivate);
 			eventMap.mapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.PAGE_CHANGED, dispatch);
@@ -67,6 +70,8 @@ package net.dndigital.glo.mvcs.views
 		override public function onRemove():void
 		{
 			eventMap.unmapListener(eventDispatcher, ProjectEvent.PAGE, changePage);
+			eventMap.unmapListener(eventDispatcher, ApplicationEvent.ACTIVATE, handleActivate);
+			eventMap.unmapListener(eventDispatcher, ApplicationEvent.DEACTIVATE, handleDeactivate);
 			eventMap.unmapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.PAGE_CHANGED, dispatch);
@@ -95,6 +100,24 @@ package net.dndigital.glo.mvcs.views
 		protected final function changePage(event:ProjectEvent):void
 		{
 			view.index = event.index;
+		}
+		
+		/**
+		 * Event handler - ApplicationEvent.ACTIVATE 
+		 * @param event
+		 */		
+		protected final function handleActivate(event:ApplicationEvent):void
+		{
+			view.activateAllComponents();
+		}
+		
+		/**
+		 * Event handler - ApplicationEvent.DEACTIVATE 
+		 * @param event
+		 */		
+		protected final function handleDeactivate(event:ApplicationEvent):void
+		{
+			view.deactivateAllComponents();
 		}
 	}
 }
