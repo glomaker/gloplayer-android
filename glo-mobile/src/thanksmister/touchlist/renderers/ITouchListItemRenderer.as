@@ -20,5 +20,6 @@ package thanksmister.touchlist.renderers
 		function get itemHeight():Number;
 		function selectItem():void;
 		function unselectItem():void;
+		function destroy():void;
 	}
 }

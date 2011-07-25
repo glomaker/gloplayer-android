@@ -26,7 +26,9 @@ package thanksmister.touchlist.controls
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
+	import flash.geom.Point;
 	import flash.utils.Timer;
+	import flash.utils.getTimer;
 	
 	import thanksmister.touchlist.events.ListItemEvent;
 	import thanksmister.touchlist.renderers.ITouchListItemRenderer;
@@ -34,15 +36,22 @@ package thanksmister.touchlist.controls
 
 	public class TouchList extends Sprite
 	{
+		/**
+		 * Maximum number of pixels of mouse movement before a tap becomes a drag. 
+		 */		
+		protected static const MOVE_THRESHOLD:Number = 3;
+		
+		
 		//------- List --------
 
 		private var listHitArea:Shape;
-		private var list:Sprite;
+		private const list:Sprite = new Sprite();
 		private var listHeight:Number = 100;
 		private var listWidth:Number = 100;
 		private var scrollListHeight:Number;
 		private var scrollAreaHeight:Number;
-		private var listTimer:Timer; // timer for all events
+		
+		private const listTimer:Timer = new Timer( 33 ); // timer for all events
 		
 		//------ Scrolling ---------------
 		
@@ -69,35 +78,59 @@ package thanksmister.touchlist.controls
 		
 		public function TouchList(w:Number, h:Number)
 		{
+			init( w, h );
+		}
+		
+		protected function init( w:Number, h:Number ):void
+		{
 			listWidth = w; 
 			listHeight = h;
 			scrollAreaHeight = listHeight;
 
-			listTimer = new Timer( 33 );			
-
-			addEventListener(Event.ADDED_TO_STAGE, init);
-			// addEventListener(Event.REMOVED, destroy);
-		}
-		
-		private function init(e:Event):void
-		{
-			removeEventListener(Event.ADDED_TO_STAGE, init);
-			
-			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown );
-		
-			listTimer.addEventListener( TimerEvent.TIMER, onListTimer);
-			listTimer.start();
-			
 			scrollListHeight = 0;
 			
-			creatList();
+			createList();
 			createScrollBar();
+			
+			addEventListener(Event.ADDED_TO_STAGE, onAdded);
+			addEventListener(Event.REMOVED_FROM_STAGE, onRemoved);
+		}
+		
+		private function onAdded( e:Event ):void
+		{
+			addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
+		}
+		
+		private function onRemoved( e:Event ):void
+		{
+			removeEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
+			stage.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+			stage.removeEventListener( MouseEvent.MOUSE_UP, onMouseUp );
+			
+			stopAnimation( true );
+		}
+		
+		protected function stopAnimation( complete:Boolean = false ):void
+		{
+			removeEventListener( Event.ENTER_FRAME, toTarget );
+			removeEventListener( Event.ENTER_FRAME, toInertia );
+			
+			if( complete )
+			{
+				if( !isNaN( frameTargetY ) )
+				{
+					list.y = frameTargetY;
+				}
+			}
+			
+			frameTargetY = NaN;
+			animSpeed = NaN;
 		}
 		
 		/**
 		 * Create an empty list an the list hit area, which is also its mask.
 		 * */
-		private function creatList():void
+		private function createList():void
 		{
 			if(!listHitArea){
 				listHitArea = new Shape();
@@ -109,10 +142,7 @@ package thanksmister.touchlist.controls
 			listHitArea.graphics.drawRect(0, 0, listWidth, listHeight)
 			listHitArea.graphics.endFill();
 			
-			if(!list){
-				list = new Sprite();
-				addChild(list);
-			}
+			addChild(list);
 			
 			list.graphics.clear();
 			list.graphics.beginFill(0x000000, 1);
@@ -155,7 +185,7 @@ package thanksmister.touchlist.controls
 			
 			scrollAreaHeight = listHeight;
 			
-			creatList(); // redraw list
+			createList(); // redraw list
 			createScrollBar(); // resize scrollbar
 			
 			// resize each list item
@@ -174,8 +204,6 @@ package thanksmister.touchlist.controls
 		{
 			var listItem:DisplayObject = item as DisplayObject;
 				listItem.y = scrollListHeight;
-				listItem.addEventListener(ListItemEvent.ITEM_SELECTED, handleItemSelected);
-				listItem.addEventListener(ListItemEvent.ITEM_PRESS, handleItemPress);
 				
 			ITouchListItemRenderer(listItem).itemWidth = listWidth;
 			
@@ -196,8 +224,6 @@ package thanksmister.touchlist.controls
 		public function removeListItem(index:Number):void
 		{
 			var item:DisplayObject = list.removeChildAt(index);
-				item.removeEventListener(ListItemEvent.ITEM_SELECTED, handleItemSelected);
-				item.removeEventListener(ListItemEvent.ITEM_PRESS, handleItemPress);
 
 			// height has changed
 			scrollListHeight -= ITouchListItemRenderer(item).itemHeight;
@@ -225,28 +251,68 @@ package thanksmister.touchlist.controls
 			
 			while(list.numChildren > 0) {
 				var item:DisplayObject = list.removeChildAt(0);
-				item.removeEventListener(ListItemEvent.ITEM_SELECTED, handleItemSelected);
-				item.removeEventListener(ListItemEvent.ITEM_PRESS, handleItemPress);
 				try{ Object(item).destroy(); }catch(e:Error){}
 			}
 		}
 		
 		// ------ private methods -------
 		
+		protected var firstT:Number;
+		protected var ty:Number;
+		protected var tt:Number;
+		protected var touchPoint:Point = new Point(0,0);
+		
+		protected var lastMoveDY:Number;
+		protected var lastMoveDT:Number;
+		
 		/**
-		 * Detects frist mouse or touch down position.
+		 * Detects first mouse or touch down position.
 		 * */
-		protected function onMouseDown( e:Event ):void 
+		protected function onMouseDown( e:MouseEvent ):void 
 		{
-			addEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
-			addEventListener( MouseEvent.MOUSE_UP, onMouseUp );
-			removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			// stop any kind of animation
+			stopAnimation( false );
+			
+			//
+			firstY = ty = e.stageY;
+			firstT = tt = getTimer();
+			
+			// handle further mouse events on stage for better response
+			stage.addEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+			stage.addEventListener( MouseEvent.MOUSE_UP, onMouseUp );
+			
+			// list boundaries
+			minY = -list.height + listHeight;
+			maxY = 0;
+			
+			// tap delay to stop item highlighting when being dragged
+			tapDelayTime = maxTapDelayTime;
+			
+			// item that was under the finger when tapped
+			// can this be optimised?
+			touchPoint.y = e.stageY;
+			touchPoint = list.globalToLocal( touchPoint );
+			
+			// loop
+			var i:uint = 0;
+			var child:DisplayObject = list.getChildAt( i );
+			var last:uint = list.numChildren - 1;
 
-			inertiaY = 0;
-			firstY = mouseY;
-			listY = list.y;
-			minY = Math.min(-list.y, -scrollListHeight + listHeight - list.y);
-			maxY = -list.y;
+			while( i < last && child.y < touchPoint.y )
+			{
+				child = list.getChildAt( ++i );
+			}
+			
+			// finished the loop
+			if( i == 0 )
+			{
+				// not clicked on anything
+				tapItem = null;
+			}else{
+				// i is the index of the first child further down than the tap coordinate
+				// so i-1 is the index of the element under the finger
+				tapItem = ITouchListItemRenderer( list.getChildAt( i - 1 ) );
+			}
 		}
 		
 		/**
@@ -256,26 +322,42 @@ package thanksmister.touchlist.controls
 		 * */
 		protected function onMouseMove( e:MouseEvent ):void 
 		{
-			totalY = mouseY - firstY;
-	
-			if(Math.abs(totalY) > scrollRatio) isTouching = true;
-
-			if(isTouching) {
+			if( tapItem )
+			{
+				// once the tap delay has expired, we highlight the item
+				// this prevents items initially flashing as selected when dragging the list
+				if( tapDelayTime == 0 )
+				{
+					tapItem.selectItem();
+				}else{
+					tapDelayTime--;
+				}
 				
-				diffY = mouseY - lastY;	
-				lastY = mouseY;
-
-				if(totalY < minY)
-					totalY = minY - Math.sqrt(minY - totalY);
+				// if the user moves even a little bit, this won't be treated as a tap anymore
+				if( Math.abs( e.stageY - firstY ) > MOVE_THRESHOLD )
+				{
+					tapItem.unselectItem();
+					tapItem = null;
+				}
+			}
 			
-				if(totalY > maxY)
-					totalY = maxY + Math.sqrt(totalY - maxY);
+			lastMoveDY = e.stageY - ty;
+			lastMoveDT = getTimer() - tt;
 			
-				list.y = listY + totalY;
-				
-				onTapDisabled();
+			ty = e.stageY;
+			tt = getTimer();
+			
+			// should get harder if we're dragging past the boundaries
+			if( list.y < minY || list.y > maxY )
+			{
+				list.y += lastMoveDY/2;
+			}else{
+				list.y += lastMoveDY;
 			}
 		}
+		
+		protected var frameTargetY:Number;
+		protected var animSpeed:Number;
 		
 		/**
 		 * Handles mouse up and begins animation. This also deslects
@@ -283,17 +365,70 @@ package thanksmister.touchlist.controls
 		 * */
 		protected function onMouseUp( e:MouseEvent ):void 
 		{
-			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown );
-			removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
-			removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-				
-			if(isTouching) {
-				isTouching = false;
-				inertiaY = diffY;
+			// no need to handle mouse events anymore
+			stage.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+			stage.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseUp );
+
+			// if something was tapped, we are finished
+			if( tapItem )
+			{
+				tapItem.unselectItem();
+				dispatchEvent( new ListItemEvent( ListItemEvent.ITEM_SELECTED, tapItem, true ) );
+				return;
 			}
-		
-			onTapDisabled();
+			
+			// nothing was tapped
+			// that means we are dragging the list and need to switch to animation now that the user has let go
+			if( list.y < minY )
+			{
+				// list was dragged down past the minimum point
+				frameTargetY = minY;
+				addEventListener( Event.ENTER_FRAME, toTarget );
+			}else if( list.y > maxY ){
+				// list was dragged up past the maximum point
+				frameTargetY = maxY;
+				addEventListener( Event.ENTER_FRAME, toTarget );
+			}else{
+				// still within normal bounds
+				if( lastMoveDT != 0 && lastMoveDY != 0 )
+				{
+					animSpeed = lastMoveDY / lastMoveDT;
+					addEventListener( Event.ENTER_FRAME, toInertia );
+				}
+			}
 		}
+		
+		
+		/**
+		 * Event handler - animate to a specific target Y. 
+		 * @param e
+		 * 
+		 */		
+		protected function toTarget( e:Event ):void
+		{
+			list.y += ( frameTargetY - list.y ) / 4;
+		}
+		
+		protected function toInertia( e:Event ):void
+		{
+			list.y += 50 * animSpeed;
+			animSpeed *= 0.8;
+			
+			const bumper:Number = 100;
+			if( list.y > maxY + bumper )
+			{
+				list.y = maxY + bumper;
+				stopAnimation(false);
+				frameTargetY = maxY;
+				addEventListener( Event.ENTER_FRAME, toTarget );
+			}else if( list.y < minY - bumper ){
+				list.y = minY - bumper;
+				stopAnimation(false);
+				frameTargetY = minY;
+				addEventListener( Event.ENTER_FRAME, toTarget );
+			}
+		}
+		
 		
 		/**
 		 * Timer event handler.  This is always running keeping track
@@ -392,40 +527,6 @@ package thanksmister.touchlist.controls
 		}
 		
 		/**
-		 * On item press we clear any previously selected item. We only
-		 * allow an item to be pressed if the list is not scrolling.
-		 * */
-		protected function handleItemPress(e:ListItemEvent):void
-		{
-			if(tapItem) tapItem.unselectItem();
-			
-			e.stopPropagation();
-			tapItem = e.renderer;
-			
-			if(scrollBar.alpha == 0) {
-				tapDelayTime = 0;
-				tapEnabled = true;
-			}
-		}
-		
-		/**
-		 * Item selection event fired from a item press.  This event does
-		 * not fire if list is scrolling or scrolled after press.
-		 * */
-		protected function handleItemSelected(e:ListItemEvent):void
-		{
-			e.stopPropagation();
-			tapItem = e.renderer;
-			
-			if(scrollBar.alpha == 0) {
-				tapDelayTime = 0;
-				tapEnabled = false;
-				tapItem.unselectItem();
-				this.dispatchEvent(new ListItemEvent(ListItemEvent.ITEM_SELECTED, e.renderer, true) );
-			}
-		}
-		
-		/**
 		 * Destroy, destroy, must destroy.
 		 * */
 		protected function destroy(e:Event = null):void
@@ -434,7 +535,7 @@ package thanksmister.touchlist.controls
 			removeListItems();
 			tapDelayTime = 0;
 			tapEnabled = false;
-			listTimer = null;
+			listTimer.stop();
 			listTimer.removeEventListener( TimerEvent.TIMER, onListTimer);
 			removeChild(scrollBar);
 			removeChild(list);

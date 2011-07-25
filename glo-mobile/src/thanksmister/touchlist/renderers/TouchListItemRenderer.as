@@ -71,9 +71,9 @@ package thanksmister.touchlist.renderers
 		
 		public function TouchListItemRenderer()
 		{
-			addEventListener(Event.REMOVED, destroy);
+			// addEventListener(Event.REMOVED, destroy);
 			
-			addEventListener(MouseEvent.MOUSE_DOWN, pressHandler);
+			// addEventListener(MouseEvent.MOUSE_DOWN, pressHandler);
 			
 			createChildren();
 		}
@@ -94,7 +94,7 @@ package thanksmister.touchlist.renderers
 		 * */
 		public function selectItem():void
 		{
-			addEventListener(MouseEvent.MOUSE_UP, selectHandler);
+			// addEventListener(MouseEvent.MOUSE_UP, selectHandler);
 			
 			this.graphics.clear();
 			

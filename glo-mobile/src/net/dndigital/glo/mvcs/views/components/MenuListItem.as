@@ -72,9 +72,6 @@ package net.dndigital.glo.mvcs.views.components
 		
 		public function MenuListItem()
 		{
-			addEventListener(Event.REMOVED, destroy);
-			addEventListener(MouseEvent.MOUSE_DOWN, pressHandler);
-			
 			createChildren();
 		}
 		
@@ -85,7 +82,6 @@ package net.dndigital.glo.mvcs.views.components
 		 * */
 		public function unselectItem():void
 		{
-			removeEventListener(MouseEvent.MOUSE_UP, selectHandler);
 			draw();
 		}
 		
@@ -94,8 +90,6 @@ package net.dndigital.glo.mvcs.views.components
 		 * */
 		public function selectItem():void
 		{
-			addEventListener(MouseEvent.MOUSE_UP, selectHandler);
-			
 			this.graphics.clear();
 			
 			this.graphics.beginFill( ColourPalette.HIGHLIGHT_BLUE, .9);
@@ -109,6 +103,20 @@ package net.dndigital.glo.mvcs.views.components
 			this.filters = [shadowFilter];
 		}
 		
+		public function destroy():void
+		{
+			this.removeChild(textField);
+			
+			this.graphics.clear();
+			this.filters = [];
+			
+			textField = null;
+			shadowFilter = null;
+			_data = null;
+			
+			initialized = false;
+		}
+		
 		//-------- protected methods -----------
 		
 		/**
@@ -120,7 +128,7 @@ package net.dndigital.glo.mvcs.views.components
 			if(!textField) {
 				var textFormat:TextFormat = new TextFormat();
 				textFormat.color = 0xEAEAEA;
-				textFormat.size = 24;
+				textFormat.size = 34;
 				textFormat.font = "Arial";
 				
 				textField = new TextField();
@@ -163,42 +171,8 @@ package net.dndigital.glo.mvcs.views.components
 			this.filters = [];
 		}
 		
-		/**
-		 * Clean up item when removed from stage.
-		 * */
-		protected function destroy(e:Event):void
-		{
-			removeEventListener(Event.REMOVED, destroy);
-			removeEventListener(MouseEvent.MOUSE_UP, selectHandler);
-			
-			this.removeChild(textField);
-			
-			this.graphics.clear();
-			this.filters = [];
-			
-			textField = null;
-			shadowFilter = null;
-			_data = null;
-			
-			initialized = false;
-		}
 		
 		// ----- event handlers --------
 		
-		/**
-		 * Dispatched when item is first pressed on tap or mouse down.
-		 * */
-		protected function pressHandler(e:Event):void
-		{
-			this.dispatchEvent( new ListItemEvent(ListItemEvent.ITEM_PRESS, this, true) );
-		}
-		
-		/**
-		 * Dispatched when item is selected, usually on touch end or mouse up.
-		 * */
-		protected function selectHandler(e:Event):void
-		{
-			this.dispatchEvent( new ListItemEvent(ListItemEvent.ITEM_SELECTED, this, true) );
-		}
 	}
 }

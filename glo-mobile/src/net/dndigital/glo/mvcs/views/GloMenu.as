@@ -2,18 +2,16 @@ package net.dndigital.glo.mvcs.views
 {
 	import eu.kiichigo.utils.log;
 	
-	import flash.events.MouseEvent;
-	import flash.filesystem.File;
 	import flash.utils.Dictionary;
 	
 	import net.dndigital.components.Container;
-	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.glo.mvcs.events.GloMenuEvent;
 	import net.dndigital.glo.mvcs.models.vo.Glo;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
 	import net.dndigital.glo.mvcs.views.components.GTouchList;
 	import net.dndigital.glo.mvcs.views.components.MenuListItem;
 	
+	import thanksmister.touchlist.events.ListItemEvent;
 	import thanksmister.touchlist.renderers.ITouchListItemRenderer;
 	
 	public class GloMenu extends Container implements IGloView
@@ -117,7 +115,7 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.createChildren();
 			add(list);
-			list.addEventListener( MouseEvent.CLICK, handleButton );
+			list.addEventListener( ListItemEvent.ITEM_SELECTED, handleButton );
 		}
 		
 		/**
@@ -149,7 +147,7 @@ package net.dndigital.glo.mvcs.views
 				{
 					var ir:ITouchListItemRenderer = new MenuListItem();
 					ir.data = _files[i % _files.length].displayName;
-					ir.itemHeight = ScreenMaths.mmToPixels(10);
+					ir.itemHeight = ScreenMaths.mmToPixels(15);
 					list.touchList.addListItem( ir );
 					
 					fileDict[ ir ] = _files[ i % _files.length ];
@@ -164,9 +162,9 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Handles menu buttons clicks.
 		 */
-		protected function handleButton(event:MouseEvent):void
+		protected function handleButton(event:ListItemEvent):void
 		{
-			var glo:Glo = fileDict[ event.target ];
+			var glo:Glo = fileDict[ event.renderer ];
 			if( glo )
 				dispatchEvent(new GloMenuEvent(GloMenuEvent.LOAD_FILE, glo.file));
 		}
