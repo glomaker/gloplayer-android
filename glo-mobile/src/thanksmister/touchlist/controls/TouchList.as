@@ -41,6 +41,34 @@ package thanksmister.touchlist.controls
 		 */		
 		protected static const MOVE_THRESHOLD:Number = 3;
 		
+		/**
+		 * Absolute value (ie. +) of maximum speed for inertia scrolling. 
+		 */		
+		protected static const ABS_MAX_SPEED:Number = 30;
+		
+		/**
+		 * Absolute value (in pixels) of distance to frameTargetY within which the eased animation is seen to have finished. 
+		 */		
+		protected static const ABS_TARGET_ANIM_MARGIN:Number = 2;
+		
+		/**
+		 * Factor by which to multiply speed at each frame of inertia scrolling.
+		 * Should be < 1, otherwise speed won't decrease!
+		 */		
+		protected static const SPEED_MULTIPLIER:Number = 0.95;
+		
+		/**
+		 * Amount by which animSpeed is multiplied to produce actual list movement during inertia scrolling. 
+		 */		
+		protected static const MOVEMENT_MULTIPLIER:Number = 50;
+		
+		/**
+		 * Amount (in positive pixels) by which the inertia animation will overshoot the list min/max position.
+		 * Once it's done so, the inertia animation will revert to the eased animation back to min/max. 
+		 */		
+		protected static const INERTIA_OVERSHOOT:Number = 100;
+		
+		
 		
 		//------- List --------
 
@@ -393,6 +421,15 @@ package thanksmister.touchlist.controls
 				if( lastMoveDT != 0 && lastMoveDY != 0 )
 				{
 					animSpeed = lastMoveDY / lastMoveDT;
+					
+					if( animSpeed < -ABS_MAX_SPEED )
+					{
+						animSpeed = -ABS_MAX_SPEED;
+					}else if( animSpeed > ABS_MAX_SPEED ){
+						animSpeed = ABS_MAX_SPEED;
+					}
+					
+					trace("anim speed:", animSpeed);
 					addEventListener( Event.ENTER_FRAME, toInertia );
 				}
 			}
@@ -400,29 +437,39 @@ package thanksmister.touchlist.controls
 		
 		
 		/**
-		 * Event handler - animate to a specific target Y. 
+		 * Event handler - enter frame loop for eased animation to a specific target Y.
+		 * Uses the 'frameTargetY' property. 
 		 * @param e
-		 * 
 		 */		
 		protected function toTarget( e:Event ):void
 		{
 			list.y += ( frameTargetY - list.y ) / 4;
+			
+			if( Math.abs( list.y - frameTargetY ) < ABS_TARGET_ANIM_MARGIN )
+			{
+				list.y = frameTargetY;
+				stopAnimation();
+			}
 		}
 		
+		/**
+		 * Event handler - enter frame loop for inertia animation.
+		 * Uses the 'animSpeed' property. 
+		 * @param e
+		 */		
 		protected function toInertia( e:Event ):void
 		{
-			list.y += 50 * animSpeed;
-			animSpeed *= 0.8;
+			list.y += MOVEMENT_MULTIPLIER * animSpeed;
+			animSpeed *= SPEED_MULTIPLIER;
 			
-			const bumper:Number = 100;
-			if( list.y > maxY + bumper )
+			if( list.y > maxY + INERTIA_OVERSHOOT )
 			{
-				list.y = maxY + bumper;
+				list.y = maxY + INERTIA_OVERSHOOT;
 				stopAnimation(false);
 				frameTargetY = maxY;
 				addEventListener( Event.ENTER_FRAME, toTarget );
-			}else if( list.y < minY - bumper ){
-				list.y = minY - bumper;
+			}else if( list.y < minY - INERTIA_OVERSHOOT ){
+				list.y = minY - INERTIA_OVERSHOOT;
 				stopAnimation(false);
 				frameTargetY = minY;
 				addEventListener( Event.ENTER_FRAME, toTarget );
