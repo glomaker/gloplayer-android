@@ -343,7 +343,6 @@
 
 			selectDelayCount = 0;
 
-			scrollAreaHeight = 0;
 			scrollListHeight = 0;
 			
 			recalcScrollBounds();
