@@ -2,6 +2,7 @@ package net.dndigital.glo.mvcs.views.components
 {
 	import flash.display.Bitmap;
 	import flash.display.GradientType;
+	import flash.filters.DropShadowFilter;
 	import flash.geom.Matrix;
 	
 	import net.dndigital.components.GUIComponent;
