@@ -116,7 +116,7 @@ package net.dndigital.glo.mvcs.views
 			add( logo );
 			
 			// initialise menu subview
-			menu.padding = ScreenMaths.mmToPixels( 3 );
+			menu.padding = 0; // ScreenMaths.mmToPixels( 3 );
 		}
 		
 		/**
@@ -134,7 +134,7 @@ package net.dndigital.glo.mvcs.views
 			logo.width = width;
 			logo.height = Math.max( 100, ScreenMaths.mmToPixels( 15 ) ); // max because we need a bit of space for the logo which is about 60px high
 
-			menu.y = logo.height;
+			menu.y = logo.height + 1;
 			menu.width = width;
 			menu.height = height - menu.y;
 			

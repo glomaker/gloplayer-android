@@ -22,7 +22,7 @@ package net.dndigital.glo.mvcs.views.components
 		/**
 		 * Delay before view component autohides, in milliseconds. 
 		 */		
-		protected static const AUTOHIDE_DELAY:uint = 2000;
+		protected static const AUTOHIDE_DELAY:uint = 1000;
 		
 		/**
 		 * Duration for the 'show()' animation, in seconds. 

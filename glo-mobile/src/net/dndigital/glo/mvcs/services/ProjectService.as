@@ -1,13 +1,11 @@
 package net.dndigital.glo.mvcs.services
 {
-	import flash.events.Event;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	import flash.net.FileFilter;
 	import flash.system.System;
 	
-	import net.dndigital.glo.GloError;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.models.vo.Project;
 	import net.dndigital.glo.mvcs.utils.validateGlo;
@@ -106,10 +104,8 @@ package net.dndigital.glo.mvcs.services
 		
 		/**
 		 * Loads GLO project XML from a file reference.
-		 * 
 		 * @param file
-		 * 
-		 * @throws GLOError.INVALID_GLO_FILE if the XML doesn't validate.
+		 * @returns The file object if load completed successfully, null otherwise.
 		 */		
 		protected function loadFile(file:File):File
 		{
@@ -124,7 +120,10 @@ package net.dndigital.glo.mvcs.services
 			
 			// Validate projects integrity.
 			if(!validateGlo(xml))
-				throw GloError.INVALID_GLO_FILE;
+			{
+				dispatch( new ProjectEvent( ProjectEvent.GLO_VALIDATE_ERROR ) );
+				return file;
+			}
 			
 			// Parse project
 			const project:Project = net.dndigital.glo.mvcs.services.parse(xml, file.parent);

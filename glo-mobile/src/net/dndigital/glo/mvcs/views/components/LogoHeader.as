@@ -55,6 +55,12 @@ package net.dndigital.glo.mvcs.views.components
 			
 			// gradient background
 			DrawingUtils.drawStandardGradient( graphics, width, height );
+			
+			// white line for bottom border
+			graphics.lineStyle( 1, 0xffffff, 1, true );
+			graphics.moveTo( 0, height );
+			graphics.lineTo(width, height);
+			
 		}
 		
 	}

@@ -163,7 +163,7 @@ package net.dndigital.glo.mvcs.views.components
 			this.graphics.drawRect(0, 0, itemWidth, itemHeight);
 			this.graphics.endFill();
 			
-			this.graphics.beginFill(0xEAEAEA, .5);
+			this.graphics.beginFill(0xEAEAEA, 1);
 			this.graphics.drawRect(0, itemHeight - 1, itemWidth, .5);
 			this.graphics.endFill();
 			
