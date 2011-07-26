@@ -34,7 +34,14 @@ package net.dndigital.glo.mvcs.views
 		{
 			if( e.project && e.project.length > 0 )
 			{
-				view.percent = ( e.index + 1 )/ e.project.length;
+				if( e.project.length == 1)
+				{
+					// single page only - always viewing at 100%
+					view.percent = 1;	
+				}else{
+					// more than one page, calculate percentage
+					view.percent = e.index / (e.project.length - 1);
+				}
 			}else{
 				view.percent = 0;
 			}
