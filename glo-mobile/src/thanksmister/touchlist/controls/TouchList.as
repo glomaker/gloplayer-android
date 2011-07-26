@@ -10,6 +10,8 @@
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
 	
+	import flashx.textLayout.formats.IListMarkerFormat;
+	
 	import thanksmister.touchlist.events.ListItemEvent;
 	import thanksmister.touchlist.renderers.ITouchListItemRenderer;
 	
@@ -48,6 +50,11 @@
 		 */		
 		protected static const INERTIA_OVERSHOOT:Number = 125;
 		
+		/**
+		 * Amount (in percent) to change alpha of scrollbar during fade animation. 
+		 */		
+		protected static const SCROLL_FADE_STEP:Number = 0.1;
+		
 		
 		
 		//------- List --------
@@ -74,11 +81,10 @@
 		
 		//------- Touch Events --------
 		
-		private var isTouching:Boolean = false;
 		private var selectDelayCount:Number = 0;
 		private var maxSelectDelayCount:Number = 3; // change this to increase or descrease tap sensitivity
-		private var tapItem:ITouchListItemRenderer;
-		private var tapEnabled:Boolean = false;
+		private var selectedItem:ITouchListItemRenderer;
+		private var isAnimating:Boolean = false;
 
 		// ------ Constructor --------
 		
@@ -133,6 +139,8 @@
 		 */		
 		protected function stopAnimation( complete:Boolean = false ):void
 		{
+			isAnimating = false;
+			
 			removeEventListener( Event.ENTER_FRAME, toTarget );
 			removeEventListener( Event.ENTER_FRAME, toInertia );
 			
@@ -149,8 +157,8 @@
 		}
 		
 		/**
-		 * Create an empty list an the list hit area, which is also its mask.
-		 * */
+		 * Creates / recreates the list container, it's hit area and mask
+		 **/
 		private function createList():void
 		{
 			if(!listHitArea){
@@ -170,12 +178,18 @@
 			list.graphics.drawRect(0, 0, listWidth, listHeight)
 			list.graphics.endFill();
 			list.mask = listHitArea;
+			
+			// scrollbar must be on top
+			if( scrollBar )
+			{
+				addChild( scrollBar );
+			}
 		}
 		
 		/**
-		 * Create our scroll bar based on the height of the scrollable list.
-		 * */
-		private function createScrollBar():void
+		 * Creates / recreates the scrollbar.
+		 **/
+		protected function createScrollBar():void
 		{
 			if(!scrollBar) {
 				scrollBar = new Sprite();
@@ -183,15 +197,86 @@
 			}
 			
 			scrollBar.x = listWidth - 5;
+			scrollBar.y = 0;
 			scrollBar.graphics.clear();
 			
 			if(scrollAreaHeight < scrollListHeight) {
-				scrollBar.graphics.beginFill(0xffffff, .8);
-				scrollBar.graphics.lineStyle(1, 0x5C5C5C, .8);
+				scrollBar.graphics.beginFill(0xffffff, .5);
+				scrollBar.graphics.lineStyle(1, 0x5C5C5C, .5);
 				scrollBar.graphics.drawRoundRect(0, 0, 4, (scrollAreaHeight/scrollListHeight*scrollAreaHeight), 6, 6);
 				scrollBar.graphics.endFill();
 				scrollBar.alpha = 0;
 			}
+		}
+		
+		/**
+		 * Starts animation to fade in the scrollbar. 
+		 */		
+		protected function showScrollbar():void
+		{
+			removeEventListener( Event.ENTER_FRAME, scrollFadeOut );
+			addEventListener( Event.ENTER_FRAME, scrollFadeIn );
+		}
+		
+		/**
+		 * Starts animation to fade out the scrollbar. 
+		 */		
+		protected function hideScrollbar():void
+		{
+			removeEventListener( Event.ENTER_FRAME, scrollFadeIn );
+			addEventListener( Event.ENTER_FRAME, scrollFadeOut );
+		}
+		
+		/**
+		 * Start an easing animation to a particular target value. 
+		 * @param targetValue
+		 */		
+		protected function easeToTarget( targetValue:Number ):void
+		{
+			frameTargetY = targetValue;
+			isAnimating = true;
+			
+			removeEventListener( Event.ENTER_FRAME, toInertia );
+			addEventListener( Event.ENTER_FRAME, toTarget );
+		}
+
+		/**
+		 * Start an easing animation to a particular target value. 
+		 * @param targetValue
+		 */		
+		protected function startInertiaAnim():void
+		{
+			isAnimating = true;
+			tt = getTimer();
+			
+			removeEventListener( Event.ENTER_FRAME, toTarget );
+			addEventListener( Event.ENTER_FRAME, toInertia );
+		}
+
+		/**
+		 * Calculate current scroll percentage. 
+		 */		
+		protected function calcScrollPercent():Number
+		{
+			// need to bound to 0 <= p <= 1 because of overshoot animation
+			return Math.min( 1, Math.max( 0, ( maxY - list.y )/(maxY - minY) ) ); 
+		}
+			
+		/**
+		 * Recalculate minY, maxY list position values based on list height and scroll area. 
+		 */		
+		protected function recalcScrollBounds():void
+		{
+			minY = -scrollListHeight + scrollAreaHeight;
+			maxY = 0;
+		}
+
+		/**
+		 * Updates scrollbar position based on current list position. 
+		 */		
+		protected function updateScrollbarPosition():void
+		{
+			scrollBar.y = calcScrollPercent() * ( scrollAreaHeight - scrollBar.height );
 		}
 		
 		// ------ public methods --------
@@ -201,15 +286,23 @@
 		 * */
 		public function resize(w:Number, h:Number):void
 		{
+			// no animation
 			stopAnimation( true );
 			
 			listWidth = w; 
 			listHeight = h;
 			
-			scrollAreaHeight = listHeight;
+			scrollAreaHeight = h;
 			
 			createList(); // redraw list
-			createScrollBar(); // resize scrollbar
+			createScrollBar(); // redraw scrollbar
+
+			// reset list to top
+			// TODO: maintain scroll percentage
+			recalcScrollBounds();
+			list.y = maxY;
+			
+			updateScrollbarPosition();
 			
 			// resize each list item
 			var children:Number = list.numChildren;
@@ -220,9 +313,9 @@
 		}
 		
 		/**
-		 * Add single item renderer to the list. Renderes added to the list
-		 * must implement ITouchListItemRenderer. 
-		 * */
+		 * Add item to the end of the list. 
+		 * @param item
+		 */		
 		public function addListItem(item:ITouchListItemRenderer):void
 		{
 			stopAnimation( true );
@@ -237,39 +330,28 @@
 			
 			// height has changed
 			scrollListHeight = scrollListHeight + listItem.height;
+			recalcScrollBounds();
 			createScrollBar();
 		}
 		
 		/**
-		 * Remove item from list and listeners.
-		 * */
-		public function removeListItem(index:Number):void
-		{
-			stopAnimation( true );
-			
-			var item:DisplayObject = list.removeChildAt(index);
-
-			// height has changed
-			scrollListHeight -= ITouchListItemRenderer(item).itemHeight;
-			createScrollBar();
-		}
-		
-		/**
-		 * Clear the list of all item renderers.
-		 * */
+		 * Remove all items from the list.
+		 **/
 		public function removeListItems():void
 		{
 			stopAnimation( true );
-			
+
 			selectDelayCount = 0;
 
-			isTouching = false;
 			scrollAreaHeight = 0;
 			scrollListHeight = 0;
 			
+			recalcScrollBounds();
+			list.y = maxY;
+			
 			while(list.numChildren > 0) {
 				var item:DisplayObject = list.removeChildAt(0);
-				try{ Object(item).destroy(); }catch(e:Error){}
+				ITouchListItemRenderer( item ).destroy();
 			}
 		}
 		
@@ -281,13 +363,14 @@
 		protected var touchPoint:Point = new Point(0,0);
 		
 		protected var lastMoveDY:Number;
-		protected var lastMoveDT:Number;
 		
 		/**
 		 * Detects first mouse or touch down position.
 		 * */
 		protected function onMouseDown( e:MouseEvent ):void 
 		{
+			var wasAnimating:Boolean = isAnimating;
+			
 			// stop any kind of animation
 			stopAnimation( false );
 			
@@ -299,37 +382,42 @@
 			stage.addEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
 			stage.addEventListener( MouseEvent.MOUSE_UP, onMouseUp );
 			
-			// list boundaries
-			minY = -list.height + listHeight;
-			maxY = 0;
+			// scrollbar should now be visible
+			showScrollbar();
 			
 			// tap delay to stop item highlighting when being dragged
 			selectDelayCount = maxSelectDelayCount;
 			
-			// item that was under the finger when tapped
-			// can this be optimised?
-			touchPoint.y = e.stageY;
-			touchPoint = list.globalToLocal( touchPoint );
-			
-			// loop
-			var i:uint = 0;
-			var child:DisplayObject = list.getChildAt( i );
-			var last:uint = list.numChildren - 1;
-
-			while( i < last && child.y < touchPoint.y )
+			// if the list was currently animating, we don't select an item on tap
+			if( wasAnimating )
 			{
-				child = list.getChildAt( ++i );
-			}
-			
-			// finished the loop
-			if( i == 0 )
-			{
-				// not clicked on anything
-				tapItem = null;
+				selectedItem = null;
 			}else{
-				// i is the index of the first child further down than the tap coordinate
-				// so i-1 is the index of the element under the finger
-				tapItem = ITouchListItemRenderer( list.getChildAt( i - 1 ) );
+				// check which item was under the finger when tapped
+				// TODO: can this be optimised?
+				touchPoint.y = e.stageY;
+				touchPoint = list.globalToLocal( touchPoint );
+				
+				// loop
+				var i:uint = 0;
+				var child:DisplayObject = list.getChildAt( i );
+				var last:uint = list.numChildren - 1;
+	
+				while( i < last && child.y < touchPoint.y )
+				{
+					child = list.getChildAt( ++i );
+				}
+				
+				// finished the loop
+				if( i == 0 )
+				{
+					// not clicked on anything
+					selectedItem = null;
+				}else{
+					// i is the index of the first child further down than the tap coordinate
+					// so i-1 is the index of the element under the finger
+					selectedItem = ITouchListItemRenderer( list.getChildAt( i - 1 ) );
+				}
 			}
 		}
 		
@@ -340,13 +428,13 @@
 		 * */
 		protected function onMouseMove( e:MouseEvent ):void 
 		{
-			if( tapItem )
+			if( selectedItem )
 			{
 				// once the tap delay has expired, we highlight the item
 				// this prevents items initially flashing as selected when dragging the list
 				if( selectDelayCount == 0 )
 				{
-					tapItem.selectItem();
+					selectedItem.selectItem();
 				}else{
 					selectDelayCount--;
 				}
@@ -354,13 +442,12 @@
 				// if the user moves even a little bit, this won't be treated as a tap anymore
 				if( Math.abs( e.stageY - firstY ) > MOVE_THRESHOLD )
 				{
-					tapItem.unselectItem();
-					tapItem = null;
+					selectedItem.unselectItem();
+					selectedItem = null;
 				}
 			}
 			
 			lastMoveDY = e.stageY - ty;
-			lastMoveDT = getTimer() - tt;
 			
 			ty = e.stageY;
 			tt = getTimer();
@@ -388,10 +475,11 @@
 			stage.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseUp );
 
 			// if something was tapped, we are finished
-			if( tapItem )
+			if( selectedItem )
 			{
-				tapItem.unselectItem();
-				dispatchEvent( new ListItemEvent( ListItemEvent.ITEM_SELECTED, tapItem, true ) );
+				hideScrollbar();
+				selectedItem.unselectItem();
+				dispatchEvent( new ListItemEvent( ListItemEvent.ITEM_SELECTED, selectedItem, true ) );
 				return;
 			}
 			
@@ -400,25 +488,22 @@
 			if( list.y < minY )
 			{
 				// list was dragged down past the minimum point
-				frameTargetY = minY;
-				addEventListener( Event.ENTER_FRAME, toTarget );
+				easeToTarget( minY );
+
 			}else if( list.y > maxY ){
 				// list was dragged up past the maximum point
-				frameTargetY = maxY;
-				addEventListener( Event.ENTER_FRAME, toTarget );
+				easeToTarget( maxY );
 			}else{
-				// still within normal bounds
-				if( lastMoveDT != 0 && lastMoveDY != 0 )
-				{
-					// we calculate the speed based on the expected Enter_frame loop duration
-					// so that the animation will be similar to the finger movement
-					animSpeed = ( lastMoveDY / frameTime );
+				// still within normal bounds - should carry on scrolling and slow down gradually
+				// we calculate the speed based on the expected Enter_frame loop duration
+				// so that the animation will be similar to the finger movement
+				animSpeed = ( lastMoveDY / frameTime );
 
-					// toInertia records time difference - start tracking here
-					tt = getTimer();
-					
-					// start the animation loop
-					addEventListener( Event.ENTER_FRAME, toInertia );
+				if( animSpeed != 0 )
+				{
+					startInertiaAnim();
+				}else{
+					hideScrollbar();
 				}
 			}
 		}
@@ -432,10 +517,12 @@
 		protected function toTarget( e:Event ):void
 		{
 			list.y += ( frameTargetY - list.y ) / 4;
+			updateScrollbarPosition();
 			
 			if( Math.abs( list.y - frameTargetY ) < ABS_TARGET_ANIM_MARGIN )
 			{
 				list.y = frameTargetY;
+				hideScrollbar();
 				stopAnimation();
 			}
 		}
@@ -447,32 +534,80 @@
 		 */		
 		protected function toInertia( e:Event ):void
 		{
+			// time since last event
 			var dt:Number = getTimer() - tt;
 			tt = getTimer();
 			
+			// update position ( distance = time * speed )
 			list.y += dt*animSpeed;
+			
+			// slow down
 			animSpeed *= SPEED_MULTIPLIER;
 			
+			// list has moved - update scrollbar
+			updateScrollbarPosition();
+			
+			// if movement has become very small, then we need to stop the animation
 			if( Math.abs( dt*animSpeed ) < ABS_INERTIA_MARGIN )
 			{
-				stopAnimation( false );
+				stopAnimation(false);
+				
+				// if the list has overshot, go into easing animation back to list boundaries
+				if( list.y > maxY )
+				{
+					easeToTarget( maxY );
+				}else if( list.y < minY ){
+					easeToTarget( minY );
+				}else{
+					hideScrollbar();
+				}
+				return;
 			}
-			
-			
+
+			// animation is still ongoing
+			// if we've overshot by more than the allowed overshoot, we switch into easing animation back to list boundaries
 			if( list.y > maxY + INERTIA_OVERSHOOT )
 			{
 				list.y = maxY + INERTIA_OVERSHOOT;
 				stopAnimation(false);
-				frameTargetY = maxY;
-				addEventListener( Event.ENTER_FRAME, toTarget );
+				easeToTarget( maxY );
 			}else if( list.y < minY - INERTIA_OVERSHOOT ){
 				list.y = minY - INERTIA_OVERSHOOT;
 				stopAnimation(false);
-				frameTargetY = minY;
-				addEventListener( Event.ENTER_FRAME, toTarget );
+				easeToTarget( minY );
 			}
 		}
 		
+		
+		/**
+		 * Event handler - enter frame loop to fade the scrollbar in. 
+		 * @param e
+		 */		
+		protected function scrollFadeIn( e:Event ):void
+		{
+			scrollBar.alpha += SCROLL_FADE_STEP;
+			if( scrollBar.alpha >= 1 )
+			{
+				scrollBar.alpha = 1;
+				removeEventListener( Event.ENTER_FRAME, scrollFadeIn );
+			}
+		}
+		
+		/**
+		 * Event handler - enter frame loop to fade the scrollbar outs. 
+		 * @param e
+		 */		
+		protected function scrollFadeOut( e:Event ):void
+		{
+			scrollBar.alpha -= SCROLL_FADE_STEP;
+			if( scrollBar.alpha <= 0 )
+			{
+				scrollBar.alpha = 0;
+				removeEventListener( Event.ENTER_FRAME, scrollFadeOut );
+			}
+		}
+
+
 		
 		/**
 		 * Destroy, destroy, must destroy.
@@ -481,9 +616,10 @@
 		{
 			stopAnimation(false);
 			removeEventListener(Event.REMOVED, destroy);
+			removeEventListener( Event.ENTER_FRAME, scrollFadeIn );
+			removeEventListener( Event.ENTER_FRAME, scrollFadeOut );
 			removeListItems();
 			selectDelayCount = 0;
-			tapEnabled = false;
 			removeChild(scrollBar);
 			removeChild(list);
 			removeChild(listHitArea);
