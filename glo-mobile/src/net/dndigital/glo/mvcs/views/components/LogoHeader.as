@@ -47,7 +47,7 @@ package net.dndigital.glo.mvcs.views.components
 			
 			// vertical positioning
 			logo.y = ( height - logo.height ) / 2;
-			swoosh.y = ( height - swoosh.height ) / 2;
+			swoosh.y = height - swoosh.height;
 			
 			// horizontal positioning
 			logo.x = 10;
