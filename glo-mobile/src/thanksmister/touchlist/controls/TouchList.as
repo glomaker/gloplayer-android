@@ -1,24 +1,4 @@
-﻿/**
- * @author Michael Ritchie
- * @blog http://www.thanksmister.com
- * @twitter Thanksmister
- * Copyright (c) 2010
- * 
- * TouchList is an ActionScript 3 scrolling list for Android mobile phones. I used and modified some code
- * within the component from other Flex/Flash examples for scrolling lists by the following people or location:
- * 
- * Dan Florio ( polyGeek )
- * polygeek.com/2846_flex_adding-physics-to-your-gestures
- * 
- * James Ward
- * www.jamesward.com/2010/02/19/flex-4-list-scrolling-on-android-with-flash-player-10-1/
- * 
- * FlepStudio
- * www.flepstudio.org/forum/flepstudio-utilities/4973-tipper-vertical-scroller-iphone-effect.html
- * 
- * You may use this code for your personal or professional projects, just be sure to give credit where credit is due.
- * */
-package thanksmister.touchlist.controls 
+﻿package thanksmister.touchlist.controls 
 {
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
@@ -34,17 +14,17 @@ package thanksmister.touchlist.controls
 	import thanksmister.touchlist.renderers.ITouchListItemRenderer;
 	
 
+	/**
+	 * List with touch interaction.
+	 * Not optimised for long lists.
+	 * @author nilsmillahn
+	 */	
 	public class TouchList extends Sprite
 	{
 		/**
 		 * Maximum number of pixels of mouse movement before a tap becomes a drag. 
 		 */		
 		protected static const MOVE_THRESHOLD:Number = 3;
-		
-		/**
-		 * Absolute value (ie. +) of maximum speed for inertia scrolling. 
-		 */		
-		protected static const ABS_MAX_SPEED:Number = 30;
 		
 		/**
 		 * Absolute value (in pixels) of distance to frameTargetY within which the eased animation is seen to have finished. 
@@ -58,15 +38,15 @@ package thanksmister.touchlist.controls
 		protected static const SPEED_MULTIPLIER:Number = 0.95;
 		
 		/**
-		 * Amount by which animSpeed is multiplied to produce actual list movement during inertia scrolling. 
+		 * Absolute movement amount in pixels at which the inertia movement is deemed to have stopped. 
 		 */		
-		protected static const MOVEMENT_MULTIPLIER:Number = 50;
+		protected static const ABS_INERTIA_MARGIN:Number = 0.5;
 		
 		/**
 		 * Amount (in positive pixels) by which the inertia animation will overshoot the list min/max position.
 		 * Once it's done so, the inertia animation will revert to the eased animation back to min/max. 
 		 */		
-		protected static const INERTIA_OVERSHOOT:Number = 100;
+		protected static const INERTIA_OVERSHOOT:Number = 125;
 		
 		
 		
@@ -78,8 +58,6 @@ package thanksmister.touchlist.controls
 		private var listWidth:Number = 100;
 		private var scrollListHeight:Number;
 		private var scrollAreaHeight:Number;
-		
-		private const listTimer:Timer = new Timer( 33 ); // timer for all events
 		
 		//------ Scrolling ---------------
 		
@@ -97,8 +75,8 @@ package thanksmister.touchlist.controls
 		//------- Touch Events --------
 		
 		private var isTouching:Boolean = false;
-		private var tapDelayTime:Number = 0;
-		private var maxTapDelayTime:Number = 3; // change this to increase or descrease tap sensitivity
+		private var selectDelayCount:Number = 0;
+		private var maxSelectDelayCount:Number = 3; // change this to increase or descrease tap sensitivity
 		private var tapItem:ITouchListItemRenderer;
 		private var tapEnabled:Boolean = false;
 
@@ -123,13 +101,24 @@ package thanksmister.touchlist.controls
 			addEventListener(Event.ADDED_TO_STAGE, onAdded);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemoved);
 		}
+
+		protected var frameTime:Number = 30;
 		
-		private function onAdded( e:Event ):void
+		/**
+		 * Event handler - added to stage. 
+		 * @param e
+		 */		
+		protected function onAdded( e:Event ):void
 		{
+			frameTime = 1000 / stage.frameRate;
 			addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
 		}
 		
-		private function onRemoved( e:Event ):void
+		/**
+		 * Event handler - removed from stage. 
+		 * @param e
+		 */		
+		protected function onRemoved( e:Event ):void
 		{
 			removeEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
 			stage.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
@@ -137,7 +126,11 @@ package thanksmister.touchlist.controls
 			
 			stopAnimation( true );
 		}
-		
+
+		/**
+		 * Stop any ongoing animation. 
+		 * @param complete true - complete existing animation, false - don't complete existing animation
+		 */		
 		protected function stopAnimation( complete:Boolean = false ):void
 		{
 			removeEventListener( Event.ENTER_FRAME, toTarget );
@@ -208,6 +201,8 @@ package thanksmister.touchlist.controls
 		 * */
 		public function resize(w:Number, h:Number):void
 		{
+			stopAnimation( true );
+			
 			listWidth = w; 
 			listHeight = h;
 			
@@ -230,6 +225,8 @@ package thanksmister.touchlist.controls
 		 * */
 		public function addListItem(item:ITouchListItemRenderer):void
 		{
+			stopAnimation( true );
+			
 			var listItem:DisplayObject = item as DisplayObject;
 				listItem.y = scrollListHeight;
 				
@@ -237,9 +234,6 @@ package thanksmister.touchlist.controls
 			
 			// add to display list
 			list.addChild(listItem);
-			
-			// list has at least one item - timer should be running
-			listTimer.start();
 			
 			// height has changed
 			scrollListHeight = scrollListHeight + listItem.height;
@@ -251,17 +245,13 @@ package thanksmister.touchlist.controls
 		 * */
 		public function removeListItem(index:Number):void
 		{
+			stopAnimation( true );
+			
 			var item:DisplayObject = list.removeChildAt(index);
 
 			// height has changed
 			scrollListHeight -= ITouchListItemRenderer(item).itemHeight;
 			createScrollBar();
-			
-			// if last list item removed, stop timer
-			if( list.numChildren == 0 )
-			{
-				listTimer.stop();				
-			}
 		}
 		
 		/**
@@ -269,10 +259,10 @@ package thanksmister.touchlist.controls
 		 * */
 		public function removeListItems():void
 		{
-			tapDelayTime = 0;
-
-			listTimer.stop();
+			stopAnimation( true );
 			
+			selectDelayCount = 0;
+
 			isTouching = false;
 			scrollAreaHeight = 0;
 			scrollListHeight = 0;
@@ -314,7 +304,7 @@ package thanksmister.touchlist.controls
 			maxY = 0;
 			
 			// tap delay to stop item highlighting when being dragged
-			tapDelayTime = maxTapDelayTime;
+			selectDelayCount = maxSelectDelayCount;
 			
 			// item that was under the finger when tapped
 			// can this be optimised?
@@ -354,11 +344,11 @@ package thanksmister.touchlist.controls
 			{
 				// once the tap delay has expired, we highlight the item
 				// this prevents items initially flashing as selected when dragging the list
-				if( tapDelayTime == 0 )
+				if( selectDelayCount == 0 )
 				{
 					tapItem.selectItem();
 				}else{
-					tapDelayTime--;
+					selectDelayCount--;
 				}
 				
 				// if the user moves even a little bit, this won't be treated as a tap anymore
@@ -420,16 +410,14 @@ package thanksmister.touchlist.controls
 				// still within normal bounds
 				if( lastMoveDT != 0 && lastMoveDY != 0 )
 				{
-					animSpeed = lastMoveDY / lastMoveDT;
+					// we calculate the speed based on the expected Enter_frame loop duration
+					// so that the animation will be similar to the finger movement
+					animSpeed = ( lastMoveDY / frameTime );
+
+					// toInertia records time difference - start tracking here
+					tt = getTimer();
 					
-					if( animSpeed < -ABS_MAX_SPEED )
-					{
-						animSpeed = -ABS_MAX_SPEED;
-					}else if( animSpeed > ABS_MAX_SPEED ){
-						animSpeed = ABS_MAX_SPEED;
-					}
-					
-					trace("anim speed:", animSpeed);
+					// start the animation loop
 					addEventListener( Event.ENTER_FRAME, toInertia );
 				}
 			}
@@ -459,8 +447,17 @@ package thanksmister.touchlist.controls
 		 */		
 		protected function toInertia( e:Event ):void
 		{
-			list.y += MOVEMENT_MULTIPLIER * animSpeed;
+			var dt:Number = getTimer() - tt;
+			tt = getTimer();
+			
+			list.y += dt*animSpeed;
 			animSpeed *= SPEED_MULTIPLIER;
+			
+			if( Math.abs( dt*animSpeed ) < ABS_INERTIA_MARGIN )
+			{
+				stopAnimation( false );
+			}
+			
 			
 			if( list.y > maxY + INERTIA_OVERSHOOT )
 			{
@@ -478,112 +475,15 @@ package thanksmister.touchlist.controls
 		
 		
 		/**
-		 * Timer event handler.  This is always running keeping track
-		 * of the mouse movements and updating any scrolling or
-		 * detecting any tap events.
-		 * 
-		 * Mouse x,y coords come through as negative integers when this out-of-window tracking happens. 
-		 * The numbers usually appear as -107374182, -107374182. To avoid having this problem we can 
-		 * test for the mouse maximum coordinates.
-		 * */
-		private function onListTimer(e:Event):void
-		{
-			// test for touch or tap event
-			if(tapEnabled) {
-				onTapDelay();
-			}
-			
-			// scroll the list on mouse up
-			if(!isTouching) {
-				
-				if(list.y > 0) {
-					inertiaY = 0;
-					list.y *= 0.3;
-					
-					if(list.y < 1) {
-						list.y = 0;
-					}
-				} else if(scrollListHeight >= listHeight && list.y < listHeight - scrollListHeight) {
-					inertiaY = 0;
-
-					var diff:Number = (listHeight - scrollListHeight) - list.y;
-					
-					if(diff > 1)
-						diff *= 0.1;
-
-					list.y += diff;
-				} else if(scrollListHeight < listHeight && list.y < 0) {
-					inertiaY = 0;
-					list.y *= 0.8;
-					
-					if(list.y > -1) {
-						list.y = 0;
-					}
-				}
-				
-				if( Math.abs(inertiaY) > 1) {
-					list.y += inertiaY;
-					inertiaY *= 0.9;
-				} else {
-					inertiaY = 0;
-				}
-			
-				if(inertiaY != 0) {
-					if(scrollBar.alpha < 1 )
-						scrollBar.alpha = Math.min(1, scrollBar.alpha + 0.1);
-					
-					scrollBar.y = listHeight * Math.min( 1, (-list.y/scrollListHeight) );
-				} else {
-					if(scrollBar.alpha > 0 )
-						scrollBar.alpha = Math.max(0, scrollBar.alpha - 0.1);
-				}
-		
-			} else {
-				if(scrollBar.alpha < 1)
-					scrollBar.alpha = Math.min(1, scrollBar.alpha + 0.1);
-				
-				scrollBar.y = listHeight * Math.min(1, (-list.y/scrollListHeight) );
-			}
-		}
-		
-		/**
-		 * The ability to tab is disabled if the list scrolls.
-		 * */
-		protected function onTapDisabled():void
-		{
-			if(tapItem){
-				tapItem.unselectItem();
-				tapEnabled = false;
-				tapDelayTime = 0;
-			}
-		}
-		
-		/**
-		 * We set up a tap delay timer that only selectes a list
-		 * item if the tap occurs for a set amount of time.
-		 * */
-		protected function onTapDelay():void
-		{
-			tapDelayTime++;
-			
-			if(tapDelayTime > maxTapDelayTime ) {
-				tapItem.selectItem();
-				tapDelayTime = 0;
-				tapEnabled = false;
-			}
-		}
-		
-		/**
 		 * Destroy, destroy, must destroy.
 		 * */
 		protected function destroy(e:Event = null):void
 		{
+			stopAnimation(false);
 			removeEventListener(Event.REMOVED, destroy);
 			removeListItems();
-			tapDelayTime = 0;
+			selectDelayCount = 0;
 			tapEnabled = false;
-			listTimer.stop();
-			listTimer.removeEventListener( TimerEvent.TIMER, onListTimer);
 			removeChild(scrollBar);
 			removeChild(list);
 			removeChild(listHitArea);
