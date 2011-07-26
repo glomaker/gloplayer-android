@@ -2,16 +2,11 @@ package net.dndigital.glo.mvcs.views
 {
 	import eu.kiichigo.utils.log;
 	
-	import flash.display.GradientType;
 	import flash.events.MouseEvent;
-	import flash.geom.Matrix;
-	import flash.text.TextFormat;
 	
 	import net.dndigital.components.Container;
 	import net.dndigital.components.IGUIComponent;
-	import net.dndigital.components.Label;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
-	import net.dndigital.glo.mvcs.models.enum.ColourPalette;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
 	import net.dndigital.glo.mvcs.views.components.BackToMenuButton;
 	import net.dndigital.glo.mvcs.views.components.NavButton;
