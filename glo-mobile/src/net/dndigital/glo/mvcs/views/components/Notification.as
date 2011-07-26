@@ -4,8 +4,10 @@ package net.dndigital.glo.mvcs.views.components
 	
 	import eu.kiichigo.utils.log;
 	
+	import flash.display.BlendMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.filters.DropShadowFilter;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -121,12 +123,15 @@ package net.dndigital.glo.mvcs.views.components
 		 */
 		override public function initialize():IGUIComponent
 		{
-			height = ScreenMaths.mmToPixels(10);
+			height = ScreenMaths.mmToPixels(14);
 			
 			stage.addEventListener(Event.RESIZE, destroy);
 			stage.addEventListener(MouseEvent.CLICK, destroy);
 			
 			timeoutId = setTimeout(destroy, 10000);
+			
+			blendMode = BlendMode.LAYER;
+			filters = [ new DropShadowFilter(3, 90, 0x000000, .6, 8, 8, 1, 2) ];
 			
 			return super.initialize();
 		}
@@ -152,7 +157,7 @@ package net.dndigital.glo.mvcs.views.components
 			
 			if (textField.text != _text) {
 				textField.text = _text;
-				width = textField.width + 10; // 30 is 15 pixel padding.
+				width = textField.width + 15; // 30 is 15 pixel padding.
 			}
 		}
 		
@@ -163,7 +168,7 @@ package net.dndigital.glo.mvcs.views.components
 		{
 			super.resized(width, height);
 			
-			drawRectangle(this, 0x000000, width, height, .5, 25);
+			drawRectangle(this, 0x000000, width, height, .75, 25);
 			
 			x = (stage.fullScreenWidth - width) / 2;
 			y = (stage.fullScreenHeight - height) / 2;

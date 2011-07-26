@@ -11,6 +11,11 @@ package net.dndigital.components.mobile
 	import net.dndigital.components.mobile.IMobileListItemRenderer;
 	import net.dndigital.components.mobile.MobileListEvent;
 	
+	/**
+	 * Dispatched when a list item has been selected (ie. tapped) by the user.
+	 * @eventType net.dndigital.components.mobile.MobileListEvent.ITEM_SELECTED
+	 */
+	[Event(name="itemSelected", type="net.dndigital.components.mobile.MobileListEvent")]
 	
 	/**
 	 * List with touch interaction.
@@ -319,7 +324,8 @@ package net.dndigital.components.mobile
 			var listItem:DisplayObject = item as DisplayObject;
 			listItem.y = scrollListHeight;
 			
-			IMobileListItemRenderer(listItem).itemWidth = listWidth;
+			item.itemWidth = listWidth;
+			item.index = list.numChildren; // needs to be done before addChild()
 			
 			// add to display list
 			list.addChild(listItem);

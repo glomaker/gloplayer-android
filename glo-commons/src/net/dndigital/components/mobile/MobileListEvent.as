@@ -12,7 +12,7 @@ package net.dndigital.components.mobile
 		/**
 		 * Event type - a list item was selected. 
 		 */		
-		public static const ITEM_SELECTED:String = "MobileListEvent.ItemSelected";
+		public static const ITEM_SELECTED:String = "itemSelected";
 
 		/**
 		 * Item associated with this event (if any) 

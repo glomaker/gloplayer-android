@@ -96,7 +96,8 @@ package net.dndigital.glo.mvcs.views.components
 			this.graphics.beginFill(0xEAEAEA, .5);
 			this.graphics.drawRect(0, _itemHeight - 1, itemWidth, .5);
 			this.graphics.endFill();
-			
+
+			this.textField.textColor = 0x000000;
 			this.filters = [shadowFilter];
 		}
 		
@@ -148,6 +149,7 @@ package net.dndigital.glo.mvcs.views.components
 				
 			textField.x = 5;
 			textField.text = String(data);
+			textField.textColor = 0xffffff;
 			
 			var lm:TextLineMetrics = textField.getLineMetrics(0);
 			textField.height = lm.height + lm.descent;

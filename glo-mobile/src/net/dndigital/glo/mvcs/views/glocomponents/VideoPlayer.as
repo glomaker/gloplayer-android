@@ -467,11 +467,14 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		{
 			super.destroy();
 			
-			if (netStream) {
+			if (netStream)
+			{
 				netStream.close();
 				if (netStream.client)
-					// FIXME It's impossible to set netStream to empty object with empty handler, find a better solution.
+				{
+					// FIXME It's impossible to set netStream.client to empty object with empty handler, find a better solution.
 					netStream.client = {onMetaData: function(info:Object):void {}};
+				}
 				netStream = null
 			}
 			
@@ -505,7 +508,6 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function load(source:String):void
 		{
-			//log("load({0})", source);
 			netStream.play(component.directory.resolvePath(source).url);
 			paused = false;
 			loaded = true;
@@ -533,7 +535,6 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function handleMouse(event:MouseEvent):void
 		{
-			log("handleMouse() target={0}", event.target);
 			if (event.target == fullscreenButton)
 				player.fullscreen(this);			// Fullscreen
 			else
@@ -566,7 +567,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 							invalidateDisplay();
 							break;
 						default:
-							//log("handleNetStatus({0*})", event.info);
+							break;
 					}
 					break;
 				case "error":
@@ -577,7 +578,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					}
 					break;
 				default:
-					//log("handleNetStatus({0*})", event.info);
+					break;
 			}
 		}
 		

@@ -146,7 +146,7 @@ package net.dndigital.glo.mvcs.views
 			}
 
 			// square nav buttons with menu button and two gaps in between
-			var gap:Number = ScreenMaths.mmToPixels( 2 );
+			var gap:Number = ScreenMaths.mmToPixels( 1 );
 
 			prev.height = height;
 			next.height = height;
