@@ -1,14 +1,10 @@
-/**
- * @author Michael Ritchie
- * @blog http://www.thanksmister.com
- * @twitter Thanksmister
- * Copyright (c) 2011
- * 
- * ITouchListItemRenderer must be implemented in any item renderer you want to use for the list.
- * */
-package thanksmister.touchlist.renderers
+package net.dndigital.components.mobile
 {
-	public interface ITouchListItemRenderer
+	/**
+	 * Interface for MobileList item renderers. 
+	 * @author nilsmillahn
+	 */	
+	public interface IMobileListItemRenderer
 	{
 		function set data(value:Object):void;
 		function get data():Object;

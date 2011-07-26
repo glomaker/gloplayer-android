@@ -5,15 +5,19 @@ package net.dndigital.glo.mvcs.views
 	import flash.utils.Dictionary;
 	
 	import net.dndigital.components.Container;
+	import net.dndigital.components.mobile.IMobileListItemRenderer;
+	import net.dndigital.components.mobile.MobileListEvent;
 	import net.dndigital.glo.mvcs.events.GloMenuEvent;
 	import net.dndigital.glo.mvcs.models.vo.Glo;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
 	import net.dndigital.glo.mvcs.views.components.GTouchList;
 	import net.dndigital.glo.mvcs.views.components.MenuListItem;
-	
-	import thanksmister.touchlist.events.ListItemEvent;
-	import thanksmister.touchlist.renderers.ITouchListItemRenderer;
-	
+
+	/**
+	 * View component used to display the menu. 
+	 * @author nilsmillahn
+	 * 
+	 */	
 	public class GloMenu extends Container implements IGloView
 	{
 		//--------------------------------------------------------------------------
@@ -39,7 +43,7 @@ package net.dndigital.glo.mvcs.views
 		protected const list:GTouchList = new GTouchList; 
 		
 		/**
-		 * maps ITouchListItemRenderer instances ot their Glo value objects. 
+		 * maps IMobileListItemRenderer instances ot their Glo value objects. 
 		 */		
 		protected var fileDict:Dictionary = new Dictionary();
 		
@@ -115,7 +119,7 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.createChildren();
 			add(list);
-			list.addEventListener( ListItemEvent.ITEM_SELECTED, handleButton );
+			list.addEventListener( MobileListEvent.ITEM_SELECTED, handleButton );
 		}
 		
 		/**
@@ -145,7 +149,7 @@ package net.dndigital.glo.mvcs.views
 				
 				for (var i:int = 0; i < _files.length*20; i ++)
 				{
-					var ir:ITouchListItemRenderer = new MenuListItem();
+					var ir:IMobileListItemRenderer = new MenuListItem();
 					ir.data = _files[i % _files.length].displayName;
 					ir.itemHeight = ScreenMaths.mmToPixels(15);
 					list.touchList.addListItem( ir );
@@ -162,9 +166,9 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Handles menu buttons clicks.
 		 */
-		protected function handleButton(event:ListItemEvent):void
+		protected function handleButton(event:MobileListEvent):void
 		{
-			var glo:Glo = fileDict[ event.renderer ];
+			var glo:Glo = fileDict[ event.item ];
 			if( glo )
 				dispatchEvent(new GloMenuEvent(GloMenuEvent.LOAD_FILE, glo.file));
 		}

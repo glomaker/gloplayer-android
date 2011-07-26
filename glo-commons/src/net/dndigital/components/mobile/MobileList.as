@@ -1,27 +1,23 @@
-﻿package thanksmister.touchlist.controls 
+package net.dndigital.components.mobile
 {
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
 	import flash.geom.Point;
-	import flash.utils.Timer;
 	import flash.utils.getTimer;
 	
-	import flashx.textLayout.formats.IListMarkerFormat;
+	import net.dndigital.components.mobile.IMobileListItemRenderer;
+	import net.dndigital.components.mobile.MobileListEvent;
 	
-	import thanksmister.touchlist.events.ListItemEvent;
-	import thanksmister.touchlist.renderers.ITouchListItemRenderer;
 	
-
 	/**
 	 * List with touch interaction.
 	 * Not optimised for long lists.
 	 * @author nilsmillahn
 	 */	
-	public class TouchList extends Sprite
+	public class MobileList extends Sprite
 	{
 		/**
 		 * Maximum number of pixels of mouse movement before a tap becomes a drag. 
@@ -58,7 +54,7 @@
 		
 		
 		//------- List --------
-
+		
 		private var listHitArea:Shape;
 		private const list:Sprite = new Sprite();
 		private var listHeight:Number = 100;
@@ -83,12 +79,12 @@
 		
 		private var selectDelayCount:Number = 0;
 		private var maxSelectDelayCount:Number = 3; // change this to increase or descrease tap sensitivity
-		private var selectedItem:ITouchListItemRenderer;
+		private var selectedItem:IMobileListItemRenderer;
 		private var isAnimating:Boolean = false;
-
+		
 		// ------ Constructor --------
 		
-		public function TouchList(w:Number, h:Number)
+		public function MobileList(w:Number, h:Number)
 		{
 			init( w, h );
 		}
@@ -98,7 +94,7 @@
 			listWidth = w; 
 			listHeight = h;
 			scrollAreaHeight = listHeight;
-
+			
 			scrollListHeight = 0;
 			
 			createList();
@@ -107,7 +103,7 @@
 			addEventListener(Event.ADDED_TO_STAGE, onAdded);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemoved);
 		}
-
+		
 		protected var frameTime:Number = 30;
 		
 		/**
@@ -132,7 +128,7 @@
 			
 			stopAnimation( true );
 		}
-
+		
 		/**
 		 * Stop any ongoing animation. 
 		 * @param complete true - complete existing animation, false - don't complete existing animation
@@ -239,7 +235,7 @@
 			removeEventListener( Event.ENTER_FRAME, toInertia );
 			addEventListener( Event.ENTER_FRAME, toTarget );
 		}
-
+		
 		/**
 		 * Start an easing animation to a particular target value. 
 		 * @param targetValue
@@ -252,7 +248,7 @@
 			removeEventListener( Event.ENTER_FRAME, toTarget );
 			addEventListener( Event.ENTER_FRAME, toInertia );
 		}
-
+		
 		/**
 		 * Calculate current scroll percentage. 
 		 */		
@@ -261,7 +257,7 @@
 			// need to bound to 0 <= p <= 1 because of overshoot animation
 			return Math.min( 1, Math.max( 0, ( maxY - list.y )/(maxY - minY) ) ); 
 		}
-			
+		
 		/**
 		 * Recalculate minY, maxY list position values based on list height and scroll area. 
 		 */		
@@ -270,7 +266,7 @@
 			minY = -scrollListHeight + scrollAreaHeight;
 			maxY = 0;
 		}
-
+		
 		/**
 		 * Updates scrollbar position based on current list position. 
 		 */		
@@ -296,7 +292,7 @@
 			
 			createList(); // redraw list
 			createScrollBar(); // redraw scrollbar
-
+			
 			// reset list to top
 			// TODO: maintain scroll percentage
 			recalcScrollBounds();
@@ -308,7 +304,7 @@
 			var children:Number = list.numChildren;
 			for (var i:int = 0; i < children; i++) {
 				var item:DisplayObject = list.getChildAt(i);
-				ITouchListItemRenderer(item).itemWidth = listWidth;
+				IMobileListItemRenderer(item).itemWidth = listWidth;
 			}
 		}
 		
@@ -316,14 +312,14 @@
 		 * Add item to the end of the list. 
 		 * @param item
 		 */		
-		public function addListItem(item:ITouchListItemRenderer):void
+		public function addListItem(item:IMobileListItemRenderer):void
 		{
 			stopAnimation( true );
 			
 			var listItem:DisplayObject = item as DisplayObject;
-				listItem.y = scrollListHeight;
-				
-			ITouchListItemRenderer(listItem).itemWidth = listWidth;
+			listItem.y = scrollListHeight;
+			
+			IMobileListItemRenderer(listItem).itemWidth = listWidth;
 			
 			// add to display list
 			list.addChild(listItem);
@@ -340,9 +336,9 @@
 		public function removeListItems():void
 		{
 			stopAnimation( true );
-
+			
 			selectDelayCount = 0;
-
+			
 			scrollListHeight = 0;
 			
 			recalcScrollBounds();
@@ -350,13 +346,12 @@
 			
 			while(list.numChildren > 0) {
 				var item:DisplayObject = list.removeChildAt(0);
-				ITouchListItemRenderer( item ).destroy();
+				IMobileListItemRenderer( item ).destroy();
 			}
 		}
 		
 		// ------ private methods -------
 		
-		protected var firstT:Number;
 		protected var ty:Number;
 		protected var tt:Number;
 		protected var touchPoint:Point = new Point(0,0);
@@ -375,7 +370,7 @@
 			
 			//
 			firstY = ty = e.stageY;
-			firstT = tt = getTimer();
+			lastMoveDY = 0;
 			
 			// handle further mouse events on stage for better response
 			stage.addEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
@@ -401,7 +396,7 @@
 				var i:uint = 0;
 				var child:DisplayObject = list.getChildAt( i );
 				var last:uint = list.numChildren - 1;
-	
+				
 				while( i < last && child.y < touchPoint.y )
 				{
 					child = list.getChildAt( ++i );
@@ -415,7 +410,8 @@
 				}else{
 					// i is the index of the first child further down than the tap coordinate
 					// so i-1 is the index of the element under the finger
-					selectedItem = ITouchListItemRenderer( list.getChildAt( i - 1 ) );
+					selectedItem = IMobileListItemRenderer( list.getChildAt( i - 1 ) );
+					addEventListener( Event.ENTER_FRAME, delayedItemSelect );
 				}
 			}
 		}
@@ -429,27 +425,20 @@
 		{
 			if( selectedItem )
 			{
-				// once the tap delay has expired, we highlight the item
-				// this prevents items initially flashing as selected when dragging the list
-				if( selectDelayCount == 0 )
-				{
-					selectedItem.selectItem();
-				}else{
-					selectDelayCount--;
-				}
-				
 				// if the user moves even a little bit, this won't be treated as a tap anymore
 				if( Math.abs( e.stageY - firstY ) > MOVE_THRESHOLD )
 				{
 					selectedItem.unselectItem();
 					selectedItem = null;
+					removeEventListener( Event.ENTER_FRAME, delayedItemSelect );
 				}
 			}
-			
+
+			// record move since last mouse-move
 			lastMoveDY = e.stageY - ty;
-			
+
+			// record positions for next loop
 			ty = e.stageY;
-			tt = getTimer();
 			
 			// should get harder if we're dragging past the boundaries
 			if( list.y < minY || list.y > maxY )
@@ -472,13 +461,14 @@
 			// no need to handle mouse events anymore
 			stage.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
 			stage.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseUp );
-
+			
 			// if something was tapped, we are finished
 			if( selectedItem )
 			{
 				hideScrollbar();
+				removeEventListener( Event.ENTER_FRAME, delayedItemSelect );
 				selectedItem.unselectItem();
-				dispatchEvent( new ListItemEvent( ListItemEvent.ITEM_SELECTED, selectedItem, true ) );
+				dispatchEvent( new MobileListEvent( MobileListEvent.ITEM_SELECTED, selectedItem, true ) );
 				return;
 			}
 			
@@ -488,7 +478,7 @@
 			{
 				// list was dragged down past the minimum point
 				easeToTarget( minY );
-
+				
 			}else if( list.y > maxY ){
 				// list was dragged up past the maximum point
 				easeToTarget( maxY );
@@ -497,13 +487,36 @@
 				// we calculate the speed based on the expected Enter_frame loop duration
 				// so that the animation will be similar to the finger movement
 				animSpeed = ( lastMoveDY / frameTime );
-
+				
 				if( animSpeed != 0 )
 				{
 					startInertiaAnim();
 				}else{
 					hideScrollbar();
 				}
+			}
+		}
+		
+		/**
+		 * Event handler - enter-frame loop to select tapped item after a certain duration. 
+		 * @param e
+		 */		
+		protected function delayedItemSelect( e:Event ):void
+		{
+			if( !selectedItem )
+			{
+				removeEventListener( Event.ENTER_FRAME, delayedItemSelect );
+				return;
+			}
+
+			// once the tap delay has expired, we highlight the item
+			// this prevents items initially flashing as selected when dragging the list
+			if( selectDelayCount == 0 )
+			{
+				selectedItem.selectItem();
+				removeEventListener( Event.ENTER_FRAME, delayedItemSelect );
+			}else{
+				selectDelayCount--;
 			}
 		}
 		
@@ -562,7 +575,7 @@
 				}
 				return;
 			}
-
+			
 			// animation is still ongoing
 			// if we've overshot by more than the allowed overshoot, we switch into easing animation back to list boundaries
 			if( list.y > maxY + INERTIA_OVERSHOOT )
@@ -605,8 +618,8 @@
 				removeEventListener( Event.ENTER_FRAME, scrollFadeOut );
 			}
 		}
-
-
+		
+		
 		
 		/**
 		 * Destroy, destroy, must destroy.
@@ -617,6 +630,7 @@
 			removeEventListener(Event.REMOVED, destroy);
 			removeEventListener( Event.ENTER_FRAME, scrollFadeIn );
 			removeEventListener( Event.ENTER_FRAME, scrollFadeOut );
+			removeEventListener( Event.ENTER_FRAME, delayedItemSelect );
 			removeListItems();
 			selectDelayCount = 0;
 			removeChild(scrollBar);

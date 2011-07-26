@@ -1,8 +1,7 @@
 package net.dndigital.glo.mvcs.views.components
 {
 	import net.dndigital.components.GUIComponent;
-	
-	import thanksmister.touchlist.controls.TouchList;
+	import net.dndigital.components.mobile.MobileList;
 	
 	/**
 	 * Provides a GUIComponent wrapper for the TouchList class so that it can be added to containers. 
@@ -21,7 +20,7 @@ package net.dndigital.glo.mvcs.views.components
 		/**
 		 * TouchList component wrapped by this class 
 		 */		
-		protected const _list:TouchList = new TouchList(0, 0);
+		protected const _list:MobileList = new MobileList(0, 0);
 		
 		
 		//--------------------------------------------------------------------------
@@ -48,7 +47,7 @@ package net.dndigital.glo.mvcs.views.components
 		 * Returns the TouchList instance contained within the component. 
 		 * @return 
 		 */		
-		public function get touchList():TouchList
+		public function get touchList():MobileList
 		{
 			return _list;
 		}

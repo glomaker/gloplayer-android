@@ -1,24 +1,20 @@
 package net.dndigital.glo.mvcs.views.components
 {
 	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
 	import flash.filters.DropShadowFilter;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.text.TextLineMetrics;
 	
+	import net.dndigital.components.mobile.IMobileListItemRenderer;
 	import net.dndigital.glo.mvcs.models.enum.ColourPalette;
-	
-	import thanksmister.touchlist.events.ListItemEvent;
-	import thanksmister.touchlist.renderers.ITouchListItemRenderer;
 
 	/**
 	 * List item for the menu list.
 	 * This is a copy of the TouchListItemRenderer from thanksmister with some tweaks.
 	 * @author nilsmillahn
 	 */	
-	public class MenuListItem extends Sprite implements ITouchListItemRenderer
+	public class MenuListItem extends Sprite implements IMobileListItemRenderer
 	{
 		protected var _data:Object;
 		protected var _index:Number = 0;
@@ -73,6 +69,7 @@ package net.dndigital.glo.mvcs.views.components
 		public function MenuListItem()
 		{
 			createChildren();
+			cacheAsBitmap = true;
 		}
 		
 		//-------- public methods -----------
