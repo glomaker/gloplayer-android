@@ -5,7 +5,10 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	
 	import eu.kiichigo.utils.log;
 	
+	import flash.display.Graphics;
 	import flash.display.LineScaleMode;
+	import flash.display.Shape;
+	import flash.events.Event;
 	import flash.geom.Rectangle;
 	import flash.html.HTMLSWFCapability;
 	import flash.text.TextField;
@@ -14,6 +17,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	import flash.utils.Dictionary;
 	
 	import net.dndigital.components.IGUIComponent;
+	import net.dndigital.glo.mvcs.models.enum.ColourPalette;
 
 	/**
 	 * TextArea component renders formatted and not formatted text.
@@ -59,6 +63,12 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected var redrawBorder:Boolean = false;
 		
+		/**
+		 * @private 
+		 */		
+		protected var scrollIndicator:Shape = new Shape;
+		
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -78,7 +88,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * @private
 		 */
 		public function set htmlText(value:String):void { 
-			textField.htmlText = value; 
+			textField.htmlText = value;
+			invalidateDisplay();
 		}
 		
 		/**
@@ -95,9 +106,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		public function set text(value:String):void {
 			textField.text = value || "";
-			var lm:TextLineMetrics = textField.getLineMetrics(0);
-			var cb:flash.geom.Rectangle = textField.getCharBoundaries(0);
-		
+			invalidateDisplay();
 		}
 		
 		/**
@@ -144,6 +153,16 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			return super.initialize();
 		}
 		
+		override public function destroy():void
+		{
+			super.destroy();
+			
+			if( textField )
+			{
+				textField.removeEventListener( Event.SCROLL, updateScrollbarPosition );
+			}
+		}
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -156,6 +175,10 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			textField.wordWrap = true;
 			textField.border = false;
 			addChild(textField);
+			
+			scrollIndicator.visible = false;
+			scrollIndicator.cacheAsBitmap = true;
+			addChild( scrollIndicator );
 		}
 		
 		/**
@@ -173,6 +196,32 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			textField.scaleX = coefficient;
 			textField.scaleY = coefficient;
 			
+			//
+			scrollIndicator.x = width;
+			
+			// scrollbar needs redrawing to reflect available scroll area
+			if( textField.maxScrollV > 1 )
+			{
+				scrollIndicator.visible = true;
+				textField.addEventListener( Event.SCROLL, updateScrollbarPosition, false, 0, true );
+				
+				var visibleLines:uint = textField.bottomScrollV - ( textField.scrollV - 1 );
+				var scrollH:Number = height * visibleLines / textField.numLines;
+				
+				var g:Graphics = scrollIndicator.graphics;
+				g.clear();
+				g.beginFill( ColourPalette.SLATE_BLUE, 0.6 );
+				g.drawRoundRectComplex( 0, 0, 5, scrollH, 3, 3, 3, 3  );
+				
+				updateScrollbarPosition();
+				
+			}else{
+				
+				scrollIndicator.visible = false;
+				textField.removeEventListener( Event.SCROLL, updateScrollbarPosition );
+				
+			}
+			
 			// draw border
 			graphics.clear();
 			if (_border) {
@@ -183,9 +232,21 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Private Method
+		//  Private Methods
 		//
 		//--------------------------------------------------------------------------
+		
+		/**
+		 * Event handler - text field has been scrolled.
+		 * Can also be called as a normal function. 
+		 * @param e
+		 */		
+		protected function updateScrollbarPosition( e:Event = null ):void
+		{
+			// NB: scrollV and maxScrollV are 1-based indices
+			scrollIndicator.y = ( ( textField.scrollV - 1 ) / ( textField.maxScrollV - 1 ) ) * ( textField.height - scrollIndicator.height );
+		}
+		
 		
 		/**
 		 * Processes the text, and enlarges it by parameter passed in <code>by</code>.
