@@ -23,7 +23,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			
 			// background
 			g.beginFill( ColourPalette.SLATE_BLUE, 0.5 );
-			g.drawRoundRectComplex(0, 0, width, height, 20, 20, 20, 20);
+			g.drawRoundRectComplex(0, 0, width, height, 10, 10, 10, 10);
 			g.endFill();
 			
 			// triangle, half-size of button

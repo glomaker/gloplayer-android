@@ -136,6 +136,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */		
 		protected var isFullScreen:Boolean = false;
 		
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -207,13 +208,13 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		}
 		
 		/**
-		 * 
+		 * @see IFullscreenable
 		 * @param value
-		 * 
 		 */		
 		public function set isFullScreened( value:Boolean ):void
 		{
 			isFullScreen = value; // picked up by next resized()
+			invalidateDisplay();
 		}
 		
 		
@@ -371,7 +372,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			addChild(playbackProgress);
 			
 			// Setup play button.
-			playButton.width = playButton.height = 2;
+			playButton.width = playButton.height = ScreenMaths.mmToPixels(5);
+			// playButton.width = playButton.height = 2;
 			playButton.visible = false;
 			addChild(playButton);
 			
@@ -407,20 +409,26 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					video.y = (height - video.height) / 2;
 					
 					// Play Button
+					var mm:Number = ScreenMaths.mmToPixels(1);
 					playButton.visible = paused;
 					if (playButton.visible) {
+						
+						/*
 						var desiredSize:int = ScreenMaths.mmToPixels(10);
 						if (desiredSize > video.width || desiredSize > video.height)
 							desiredSize = 0.8*Math.min(video.width, video.height);
 						playButton.width = playButton.height = desiredSize;
 						playButton.x = (width - playButton.width) / 2;
 						playButton.y = (height - playButton.height) / 2;
+						*/
+						playButton.x = mm;
+						playButton.y = height - playButton.height - mm;
 					}
 					
 					// Fullscreen Button
 					fullscreenButton.visible = !paused || isFullScreen;
-					fullscreenButton.x = width - fullscreenButton.width - ScreenMaths.mmToPixels(1);
-					fullscreenButton.y = height - fullscreenButton.height - ScreenMaths.mmToPixels(1);
+					fullscreenButton.x = width - fullscreenButton.width - mm;
+					fullscreenButton.y = height - fullscreenButton.height - mm;
 					
 					// Playback progress
 					playbackProgress.visible = !paused;
