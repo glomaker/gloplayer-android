@@ -229,9 +229,13 @@ package net.dndigital.glo.mvcs.views
 		public function fullscreen(target:IFullscreenable):void
 		{
 			if (fullscreened == target)
+			{
+				target.isFullScreened = false;
 				fullscreened = null;
-			else
+			}else{
 				fullscreened = target;
+				target.isFullScreened = true;
+			}
 			invalidateDisplay();
 		}
 		

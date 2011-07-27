@@ -131,6 +131,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected var playOnActivate:Boolean = false;
 		
+		/**
+		 * Is currently playing fullscreen? 
+		 */		
+		protected var isFullScreen:Boolean = false;
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -199,6 +204,16 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			super.visible = _visible = value;
 			if (!paused && loaded && !value)
 				pause();
+		}
+		
+		/**
+		 * 
+		 * @param value
+		 * 
+		 */		
+		public function set isFullScreened( value:Boolean ):void
+		{
+			isFullScreen = value; // picked up by next resized()
 		}
 		
 		
@@ -295,7 +310,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			if(!loaded)
 				return this;
 			
-			netStream.seek(0);
+			if( netStream )
+			{
+				netStream.seek(0);
+			}
+			
 			return pause();
 		}
 		
@@ -357,7 +376,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			addChild(playButton);
 			
 			// Setup fullscreen button
-			fullscreenButton.width = fullscreenButton.height = ScreenMaths.mmToPixels(10);
+			fullscreenButton.width = fullscreenButton.height = ScreenMaths.mmToPixels(5);
 			fullscreenButton.visible = false;
 			fullscreenButton.alpha = 0;
 			addChild(fullscreenButton);
@@ -399,7 +418,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					}
 					
 					// Fullscreen Button
-					fullscreenButton.visible = !paused;
+					fullscreenButton.visible = !paused || isFullScreen;
 					fullscreenButton.x = width - fullscreenButton.width - ScreenMaths.mmToPixels(1);
 					fullscreenButton.y = height - fullscreenButton.height - ScreenMaths.mmToPixels(1);
 					
@@ -531,7 +550,9 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function removedFromStage(event:Event):void
 		{
-			pause();
+			rewind(); // also pauses
+			playButton.validate(); // fix for GUIComponent issue with not validating if not on display list
+			fullscreenButton.validate(); // fix for GUIComponent issue with not validating if not on display list
 		}
 		
 		/**
@@ -539,6 +560,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function handleNetStatus(event:NetStatusEvent):void
 		{
+			log( "status: {0}", event.info.code );
+			
 			switch (event.info.level) {
 				case "status":
 					switch (event.info.code) {
