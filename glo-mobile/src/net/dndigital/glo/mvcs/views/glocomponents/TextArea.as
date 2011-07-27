@@ -197,7 +197,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			textField.scaleY = coefficient;
 			
 			//
-			scrollIndicator.x = width;
+			scrollIndicator.x = width + 2;
 			
 			// scrollbar needs redrawing to reflect available scroll area
 			if( textField.maxScrollV > 1 )
@@ -210,7 +210,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 				
 				var g:Graphics = scrollIndicator.graphics;
 				g.clear();
-				g.beginFill( ColourPalette.SLATE_BLUE, 0.6 );
+				g.beginFill( ColourPalette.SLATE_BLUE, 0.3 );
 				g.drawRoundRectComplex( 0, 0, 5, scrollH, 3, 3, 3, 3  );
 				
 				updateScrollbarPosition();

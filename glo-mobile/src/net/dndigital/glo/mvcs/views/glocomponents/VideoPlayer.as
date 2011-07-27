@@ -49,20 +49,6 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		//
 		//--------------------------------------------------------------------------
 
-		[Embed(source="assets/video.player.play.button.png")]
-		/**
-		 * @private
-		 * Play Button asset.
-		 */
-		protected static const playButtonAsset:Class;
-		
-		[Embed(source="assets/video.player.fullscreen.button.png")]
-		/**
-		 * @private
-		 * Fullscreen Button asset.
-		 */
-		protected static const fullscreenButtonAsset:Class;
-		
 		//--------------------------------------------------------------------------
 		//
 		//  Instance Fields
@@ -98,12 +84,12 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		/**
 		 * @private
 		 */
-		protected const playButton:AnimatedButton = new AnimatedButton;
+		protected const playButton:VideoPlayButton = new VideoPlayButton;
 		
 		/**
 		 * @private
 		 */
-		protected const fullscreenButton:AnimatedButton = new AnimatedButton;
+		protected const fullscreenButton:VideoFullscreenButton = new VideoFullscreenButton;
 		
 		/**
 		 * @private
@@ -366,16 +352,14 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			addChild(playbackProgress);
 			
 			// Setup play button.
-			playButton.upSkin = new playButtonAsset().bitmapData;
 			playButton.width = playButton.height = 2;
 			playButton.visible = false;
 			addChild(playButton);
 			
 			// Setup fullscreen button
-			fullscreenButton.upSkin = new fullscreenButtonAsset().bitmapData;
 			fullscreenButton.width = fullscreenButton.height = ScreenMaths.mmToPixels(10);
-			fullscreenButton.visible = true;
-			fullscreenButton.alpha = 0.4;
+			fullscreenButton.visible = false;
+			fullscreenButton.alpha = 0;
 			addChild(fullscreenButton);
 		}
 		
@@ -406,18 +390,18 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					// Play Button
 					playButton.visible = paused;
 					if (playButton.visible) {
-						var desiredSize:int = ScreenMaths.mmToPixels(50);
+						var desiredSize:int = ScreenMaths.mmToPixels(10);
 						if (desiredSize > video.width || desiredSize > video.height)
-							desiredSize = Math.min(video.width, video.height);
+							desiredSize = 0.8*Math.min(video.width, video.height);
 						playButton.width = playButton.height = desiredSize;
 						playButton.x = (width - playButton.width) / 2;
 						playButton.y = (height - playButton.height) / 2;
 					}
 					
 					// Fullscreen Button
-					// DISABLED: fullscreenButton.visible = !paused;
-					fullscreenButton.x = width - fullscreenButton.width;
-					fullscreenButton.y = height - fullscreenButton.height;
+					fullscreenButton.visible = !paused;
+					fullscreenButton.x = width - fullscreenButton.width - ScreenMaths.mmToPixels(1);
+					fullscreenButton.y = height - fullscreenButton.height - ScreenMaths.mmToPixels(1);
 					
 					// Playback progress
 					playbackProgress.visible = !paused;

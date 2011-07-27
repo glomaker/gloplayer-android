@@ -3,6 +3,8 @@ package net.dndigital.glo.mvcs.views.components
 	import com.greensock.TweenLite;
 	
 	import eu.kiichigo.utils.log;
+	
+	import flash.display.BlendMode;
 
 	public class AnimatedButton extends IconButton
 	{
@@ -16,6 +18,23 @@ package net.dndigital.glo.mvcs.views.components
 		 * @private
 		 */
 		protected static const log:Function = eu.kiichigo.utils.log(AnimatedButton);
+
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Constructor
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @constructor 
+		 */		
+		public function AnimatedButton()
+		{
+			blendMode = BlendMode.LAYER;
+			cacheAsBitmap = true;
+		}
+		
 		
 		//--------------------------------------------------------------------------
 		//
