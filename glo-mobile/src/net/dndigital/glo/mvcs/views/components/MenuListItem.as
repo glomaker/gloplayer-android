@@ -1,5 +1,6 @@
 package net.dndigital.glo.mvcs.views.components
 {
+	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
 	import flash.filters.DropShadowFilter;
 	import flash.text.TextField;
@@ -89,14 +90,17 @@ package net.dndigital.glo.mvcs.views.components
 		{
 			this.graphics.clear();
 			
+			// background
 			this.graphics.beginFill( ColourPalette.HIGHLIGHT_BLUE, .9);
 			this.graphics.drawRect(0, 0, itemWidth, itemHeight);
 			this.graphics.endFill();
 			
-			this.graphics.beginFill(0xEAEAEA, .5);
-			this.graphics.drawRect(0, _itemHeight - 1, itemWidth, .5);
-			this.graphics.endFill();
+			// underline
+			this.graphics.lineStyle( 1, 0x757575, 1, true, LineScaleMode.NONE );
+			graphics.moveTo( 0, _itemHeight - 1 );
+			graphics.lineTo( _itemWidth, _itemHeight - 1 );
 
+			// text and shadow
 			this.textField.textColor = 0x000000;
 			this.filters = [shadowFilter];
 		}
@@ -163,9 +167,10 @@ package net.dndigital.glo.mvcs.views.components
 			this.graphics.drawRect(0, 0, itemWidth, itemHeight);
 			this.graphics.endFill();
 			
-			this.graphics.beginFill(0xEAEAEA, 1);
-			this.graphics.drawRect(0, itemHeight - 1, itemWidth, .5);
-			this.graphics.endFill();
+			// underline
+			this.graphics.lineStyle( 1, 0x757575, 1, true, LineScaleMode.NONE );
+			graphics.moveTo( 0, _itemHeight - 1 );
+			graphics.lineTo( _itemWidth, _itemHeight - 1 );
 			
 			this.filters = [];
 		}

@@ -153,7 +153,7 @@ package net.dndigital.glo.mvcs.views
 				{
 					var ir:IMobileListItemRenderer = new MenuListItem();
 					ir.data = _files[i % _files.length].displayName;
-					ir.itemHeight = ScreenMaths.mmToPixels(15);
+					ir.itemHeight = Math.round( ScreenMaths.mmToPixels(15) );
 					buffer.push( ir );
 					
 					fileDict[ ir ] = _files[ i % _files.length ];

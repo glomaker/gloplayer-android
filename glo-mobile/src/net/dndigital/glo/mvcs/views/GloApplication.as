@@ -113,7 +113,6 @@ package net.dndigital.glo.mvcs.views
 		 */
 		override public function initialize():IGUIComponent
 		{
-			log("Welcome to GloPlayer. {0}", Capabilities.version);
 			super.initialize();
 			
 			dispatchEvent(new ApplicationEvent(ApplicationEvent.INITIALIZED));
@@ -172,7 +171,6 @@ package net.dndigital.glo.mvcs.views
 		{
 			if(current == view)
 				return null;
-			//log("replace({0}) curret={1} children={2}", view, current, children);
 			
 			// remove current view if any.
 			if(current != null)

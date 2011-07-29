@@ -268,7 +268,7 @@ package net.dndigital.components.mobile
 		 */		
 		protected function recalcScrollBounds():void
 		{
-			minY = -scrollListHeight + scrollAreaHeight;
+			minY = Math.min( -scrollListHeight + scrollAreaHeight, 0 );
 			maxY = 0;
 		}
 		
@@ -356,7 +356,7 @@ package net.dndigital.components.mobile
 				list.addChild( d );
 				
 				// height has changed
-				scrollListHeight += d.height;
+				scrollListHeight += item.itemHeight;
 			}
 			
 			// scrollbars
@@ -424,31 +424,37 @@ package net.dndigital.components.mobile
 				// check which item was under the finger when tapped
 				// TODO: can this be optimised?
 				touchPoint.y = e.stageY;
-				touchPoint = list.globalToLocal( touchPoint );
+				const touchY:Number = list.globalToLocal( touchPoint ).y;
 				
 				// loop
 				var i:uint = 0;
-				var child:DisplayObject = list.getChildAt( ++i );
+				var child:DisplayObject;
 				
-				// i == 1 going in to the loop
-				while(child.y < touchPoint.y )
+				while(i < list.numChildren)
 				{
-					child = list.getChildAt( i++ );
-					if( i == list.numChildren )
+					child = list.getChildAt(i);
+					if( touchY > child.y && touchY < child.y + child.height )
 					{
 						break;
 					}
+					
+					// next (important to do this after the if-statement)
+					i++;
 				}
 				
-				// finished the loop
-				if( i == 0 )
+				// check results
+				if( i == list.numChildren )
 				{
-					// not clicked on anything
+					// went through whole list without finding anything
 					selectedItem = null;
 				}else{
-					// i is the index of the first child further down than the tap coordinate
-					// so i-1 is the index of the element under the finger
-					selectedItem = IMobileListItemRenderer( list.getChildAt( i - 1 ) );
+					// found an item in the middle
+					selectedItem = IMobileListItemRenderer( child );
+				}
+				
+				// start item highlight loop
+				if( selectedItem )
+				{
 					addEventListener( Event.ENTER_FRAME, delayedItemSelect );
 				}
 			}
@@ -471,7 +477,7 @@ package net.dndigital.components.mobile
 					removeEventListener( Event.ENTER_FRAME, delayedItemSelect );
 				}
 			}
-
+			
 			// record move since last mouse-move
 			lastMoveDY = e.stageY - ty;
 

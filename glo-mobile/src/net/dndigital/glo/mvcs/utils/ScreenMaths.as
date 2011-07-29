@@ -25,7 +25,7 @@ package net.dndigital.glo.mvcs.utils
 		 */		
 		public static function mmToPixels(mm:int):uint
 		{
-			return Capabilities.screenDPI * (mm / 25.4);
+			return Math.round(Capabilities.screenDPI * (mm / 25.4));
 		}
 	}
 }
