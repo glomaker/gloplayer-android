@@ -1,5 +1,6 @@
 package net.dndigital.glo.mvcs.services
 {
+	import flash.events.Event;
 	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
@@ -93,8 +94,14 @@ package net.dndigital.glo.mvcs.services
 		{
 			if (_file == value)
 				return;
-			_file = loadFile(value);
+			_file = value;
+			loadFile(value);
 		}
+		
+		/**
+		 * FileStream instance used to read from files. 
+		 */		
+		protected var _stream:FileStream;
 
 		//--------------------------------------------------------------------------
 		//
@@ -102,27 +109,50 @@ package net.dndigital.glo.mvcs.services
 		//
 		//--------------------------------------------------------------------------
 		
+		
 		/**
 		 * Loads GLO project XML from a file reference.
 		 * @param file
 		 * @returns The file object if load completed successfully, null otherwise.
 		 */		
-		protected function loadFile(file:File):File
+		protected function loadFile(file:File):void
 		{
 			if(file == null)
-				return null;
+				return;
 			
-			var stream:FileStream = new FileStream();
-			stream.open(file, FileMode.READ);
-			stream.position = 0;
+			// cleanup previous stream
+			if( _stream )
+			{
+				_stream.close();
+				_stream.removeEventListener( Event.COMPLETE, fileCompleteHandler );
+			}
 			
-			var xml:XML = XML(stream.readUTFBytes(stream.bytesAvailable));
+			// new stream
+			// async reading makes the app more responsive on mobile devices
+			_stream = new FileStream();
+			_stream.addEventListener(Event.COMPLETE, fileCompleteHandler)
+			_stream.openAsync(file, FileMode.READ);
+		}
+		
+		/**
+		 * Event handler - file has finished async open operation.
+		 * Data is now loaded and ready. 
+		 * @param event
+		 */		
+		protected function fileCompleteHandler(event:Event):void
+		{
+			// read
+			var xml:XML = XML(_stream.readUTFBytes(_stream.bytesAvailable));
+				
+			// cleanup
+			_stream.close();
+			_stream.removeEventListener( Event.COMPLETE, fileCompleteHandler );
 			
-			// Validate projects integrity.
+			// Validate project's integrity.
 			if(!validateGlo(xml))
 			{
 				dispatch( new ProjectEvent( ProjectEvent.GLO_VALIDATE_ERROR ) );
-				return file;
+				return;
 			}
 			
 			// Parse project
@@ -134,8 +164,6 @@ package net.dndigital.glo.mvcs.services
 			
 			// Clean up xml.
 			System.disposeXML(xml);
-			
-			return file;
 		}
 	}
 }

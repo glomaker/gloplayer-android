@@ -8,6 +8,7 @@ package net.dndigital.glo.mvcs.views
 	import flash.utils.Timer;
 	
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
+	import net.dndigital.glo.mvcs.events.GloMenuEvent;
 	import net.dndigital.glo.mvcs.events.NotificationEvent;
 	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.views.components.Notification;
@@ -68,11 +69,11 @@ package net.dndigital.glo.mvcs.views
 		 */
 		override public function onRegister():void
 		{
-			//log("onRegister() view={0}", view);
-			
+			super.onRegister();			
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, showPlayer);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_MENU, showMenu);
 			eventMap.mapListener(eventDispatcher, NotificationEvent.NOTIFICATION, notify);
+			eventMap.mapListener(eventDispatcher, GloMenuEvent.LOAD_FILE, clear);
 			
 			eventMap.mapListener(view, ApplicationEvent.INITIALIZED, showMenu);
 			
@@ -84,12 +85,7 @@ package net.dndigital.glo.mvcs.views
 		 */
 		override public function onRemove():void
 		{
-			eventMap.unmapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, showPlayer);
-			eventMap.unmapListener(eventDispatcher, ApplicationEvent.SHOW_MENU, showMenu);
-			eventMap.unmapListener(eventDispatcher, NotificationEvent.NOTIFICATION, notify);
-			
-			eventMap.unmapListener(view, ApplicationEvent.INITIALIZED, showMenu);
-			
+			super.onRemove();
 			view.stage.removeEventListener(Event.RESIZE, stageResized);
 		}
 		
@@ -103,7 +99,7 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Invokes showPlayer on view.
 		 */
-		protected function showPlayer(event:ApplicationEvent):void
+		protected function showPlayer(event:Event = null):void
 		{
 			view.showPlayer();
 		}
@@ -112,10 +108,18 @@ package net.dndigital.glo.mvcs.views
 		 * @private
 		 * Invokes showPlayer on view.
 		 */
-		protected function showMenu(event:ApplicationEvent):void
+		protected function showMenu(event:Event = null):void
 		{
-			//log("startPlayer() event={0}", event);
 			view.showMenu();
+		}
+		
+		/**
+		 * @private
+		 * Invokes showPlayer on view.
+		 */
+		protected function clear(event:Event = null):void
+		{
+			view.clear();
 		}
 		
 		/**

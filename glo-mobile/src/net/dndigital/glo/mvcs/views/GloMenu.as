@@ -147,7 +147,7 @@ package net.dndigital.glo.mvcs.views
 				list.touchList.removeListItems();
 				fileDict = new Dictionary();
 				
-				for (var i:int = 0; i < _files.length*20; i ++)
+				for (var i:int = 0; i < _files.length*10; i ++)
 				{
 					var ir:IMobileListItemRenderer = new MenuListItem();
 					ir.data = _files[i % _files.length].displayName;

@@ -82,8 +82,8 @@ package net.dndigital.components.mobile
 		
 		//------- Touch Events --------
 		
-		private var selectDelayCount:Number = 0;
-		private var maxSelectDelayCount:Number = 3; // change this to increase or descrease tap sensitivity
+		private var selectDelayCount:int = -1; // set to -1 once item.selectItem() has been called
+		private var maxSelectDelayCount:int = 3; // change this to make 'tap press' item selection slower or faster
 		private var selectedItem:IMobileListItemRenderer;
 		private var isAnimating:Boolean = false;
 		
@@ -343,8 +343,7 @@ package net.dndigital.components.mobile
 		{
 			stopAnimation( true );
 			
-			selectDelayCount = 0;
-			
+			selectDelayCount = -1;
 			scrollListHeight = 0;
 			
 			recalcScrollBounds();
@@ -462,7 +461,7 @@ package net.dndigital.components.mobile
 		 * Handles mouse up and begins animation. This also deslects
 		 * any currently selected list items. 
 		 * */
-		protected function onMouseUp( e:MouseEvent ):void 
+		protected function onMouseUp( e:MouseEvent ):void
 		{
 			// no need to handle mouse events anymore
 			stage.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
@@ -471,10 +470,19 @@ package net.dndigital.components.mobile
 			// if something was tapped, we are finished
 			if( selectedItem )
 			{
-				hideScrollbar();
 				removeEventListener( Event.ENTER_FRAME, delayedItemSelect );
-				selectedItem.unselectItem();
-				dispatchEvent( new MobileListEvent( MobileListEvent.ITEM_SELECTED, selectedItem, true ) );
+				
+				// if item hasn't been visually selected yet, we do that now
+				// and let 1 frame elapse so it can render the selected state
+				if( selectDelayCount >= 0 )
+				{
+					selectDelayCount = -1;
+					selectedItem.selectItem();
+					addEventListener( Event.ENTER_FRAME, continueItemTap );
+					return;
+				}
+				
+				continueItemTap();
 				return;
 			}
 			
@@ -502,6 +510,19 @@ package net.dndigital.components.mobile
 				}
 			}
 		}
+
+		/**
+		 * Continue processing the item-tap event. 
+		 * Wrapped as function to allow delayed call from mouse_up event handler.
+		 * @param e Optional - may or may not be called from an event handler.
+		 */		
+		protected function continueItemTap( e:Event = null ):void
+		{
+			hideScrollbar();
+			removeEventListener( Event.ENTER_FRAME, continueItemTap );
+			selectedItem.unselectItem();
+			dispatchEvent( new MobileListEvent( MobileListEvent.ITEM_SELECTED, selectedItem, true ) );
+		}
 		
 		/**
 		 * Event handler - enter-frame loop to select tapped item after a certain duration. 
@@ -519,6 +540,7 @@ package net.dndigital.components.mobile
 			// this prevents items initially flashing as selected when dragging the list
 			if( selectDelayCount == 0 )
 			{
+				selectDelayCount = -1;
 				selectedItem.selectItem();
 				removeEventListener( Event.ENTER_FRAME, delayedItemSelect );
 			}else{

@@ -71,6 +71,5 @@ package net.dndigital.glo.mvcs.views
 		{
 			view.files = event.files;
 		}
-		
 	}
 }
