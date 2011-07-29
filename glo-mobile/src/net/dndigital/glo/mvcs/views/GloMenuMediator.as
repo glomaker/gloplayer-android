@@ -69,7 +69,14 @@ package net.dndigital.glo.mvcs.views
 		 */
 		protected function directoryListed(event:GloMenuEvent):void
 		{
-			view.files = event.files;
+			// each time the app switches to the menu, the system re-scans the documents directory
+			// that in turn results in an update call here and when the menu is updated, the scroll position is lost
+			// to avoid this, we only update if the length of the files list has changed - so you can still test by adding new GLOs but don't lose out during normal use
+			// it would of course be more correct to check if there are any new files but that would be too expensive
+			if( view.files == null || event.files.length != view.files.length )
+			{
+				view.files = event.files;
+			}
 		}
 	}
 }

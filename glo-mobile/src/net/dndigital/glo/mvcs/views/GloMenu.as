@@ -81,6 +81,7 @@ package net.dndigital.glo.mvcs.views
 		{
 			if (_files == value)
 				return;
+			
 			_files = value;
 			filesChanged = true;
 			invalidateData();
@@ -142,23 +143,25 @@ package net.dndigital.glo.mvcs.views
 		{
 			super.commited();
 			
-			if (filesChanged) {
-				
+			if (filesChanged)
+			{
 				list.touchList.removeListItems();
 				fileDict = new Dictionary();
+				var buffer:Vector.<IMobileListItemRenderer> = new Vector.<IMobileListItemRenderer>();
 				
-				for (var i:int = 0; i < _files.length*10; i ++)
+				for (var i:int = 0; i < _files.length; i ++)
 				{
 					var ir:IMobileListItemRenderer = new MenuListItem();
 					ir.data = _files[i % _files.length].displayName;
 					ir.itemHeight = ScreenMaths.mmToPixels(15);
-					list.touchList.addListItem( ir );
+					buffer.push( ir );
 					
 					fileDict[ ir ] = _files[ i % _files.length ];
 				}
-
-				invalidateDisplay();
+				
+				list.touchList.addListItems( buffer );
 				filesChanged = false;
+				invalidateDisplay();
 			}
 		}
 		

@@ -337,6 +337,35 @@ package net.dndigital.components.mobile
 		}
 		
 		/**
+		 * Optimised version that adds lots of list items in one go. 
+		 * @param list
+		 */		
+		public function addListItems(items:Vector.<IMobileListItemRenderer>):void
+		{
+			stopAnimation(true);
+			
+			var d:DisplayObject;
+			for each( var item:IMobileListItemRenderer in items )
+			{
+				d = item as DisplayObject;
+				d.y = scrollListHeight;
+				item.itemWidth = listWidth;
+				item.index = list.numChildren; // needs to be done before addChild()
+				
+				// add to display list
+				list.addChild( d );
+				
+				// height has changed
+				scrollListHeight += d.height;
+			}
+			
+			// scrollbars
+			recalcScrollBounds();
+			createScrollBar();
+			
+		}
+		
+		/**
 		 * Remove all items from the list.
 		 **/
 		public function removeListItems():void
@@ -399,12 +428,16 @@ package net.dndigital.components.mobile
 				
 				// loop
 				var i:uint = 0;
-				var child:DisplayObject = list.getChildAt( i );
-				var last:uint = list.numChildren - 1;
+				var child:DisplayObject = list.getChildAt( ++i );
 				
-				while( i < last && child.y < touchPoint.y )
+				// i == 1 going in to the loop
+				while(child.y < touchPoint.y )
 				{
-					child = list.getChildAt( ++i );
+					child = list.getChildAt( i++ );
+					if( i == list.numChildren )
+					{
+						break;
+					}
 				}
 				
 				// finished the loop

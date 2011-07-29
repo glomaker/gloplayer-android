@@ -366,7 +366,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			
 			// Setup video.
 			
-			// video.smoothing = true;
+			video.smoothing = true;
 			addChild(video);
 			
 			// Setup progress

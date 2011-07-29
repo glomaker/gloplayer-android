@@ -1,7 +1,6 @@
 package net.dndigital.components
 {
 	
-	import eu.kiichigo.utils.formatToString;
 	import eu.kiichigo.utils.getClassName;
 	
 	import flash.display.Sprite;
@@ -25,16 +24,6 @@ package net.dndigital.components
 	 */
 	public class GUIComponent extends Sprite implements IGUIComponent
 	{
-		//--------------------------------------------------------------------------
-		//
-		//  Log
-		//
-		//--------------------------------------------------------------------------
-		import eu.kiichigo.utils.log;
-		/**
-		 * @private
-		 */
-		protected static var log:Function = eu.kiichigo.utils.log(GUIComponent);
 		
 		//--------------------------------------------------------------------------
 		//
@@ -201,7 +190,7 @@ package net.dndigital.components
 			var add:Boolean = true;
 			for (var i:int = 0; i < delayed.length; i ++)
 				if (delayed[i].fun == fun && args == null)
-					add = false, log("duplicated");
+					add = false;
 			
 			// Storing funciton with arguments.
 			if (add)
@@ -437,7 +426,6 @@ package net.dndigital.components
 		{
 			if(!resizing)
 				return;
-			//log("{0}.validateDisplay()", this);
 			resizing = false;
 			resized(_width, _height);	
 		}
