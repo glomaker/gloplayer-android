@@ -1,5 +1,6 @@
 package net.dndigital.glo.mvcs.services
 {
+	import flash.events.Event;
 	import flash.filesystem.File;
 	
 	import net.dndigital.glo.mvcs.models.vo.Glo;
@@ -7,21 +8,33 @@ package net.dndigital.glo.mvcs.services
 	public interface IFileService
 	{
 		/**
-		 * Retreives list of files in application directory.
-		 * 
-		 * @see		flash.filesystem.File
-		 * 
-		 * @langversion 3.0
-		 * @playerversion Flash 10
-		 * @playerversion AIR 2.5
-		 * @productversion Flex 4.5
+		 * Retrieves list of GLOs in the associated directory
 		 */
-		function get files():Vector.<Glo>;
+		function get glos():Vector.<Glo>;
 		
 		/**
 		 * Retrieves the documents directory that the service scans for installed GLOs. 
 		 * @return 
 		 */		
 		function get gloDir():File;
+		
+		/**
+		 * Checks whether the service is still scanning the file system. 
+		 * @return 
+		 */		
+		function get isScanning():Boolean;
+		
+		/**
+		 * Event dispatched when the service has completed scanning.
+		 * @return 
+		 */		
+		function get completeEvent():Event;
+		function set completeEvent( value:Event ):void;
+		
+		/**
+		 * Starts a new filesystem scan.
+		 * Any previously retrieved glos are discarded and won't become available until the 'completeEvent' has been dispatched. 
+		 */		
+		function scan():void;
 	}
 }

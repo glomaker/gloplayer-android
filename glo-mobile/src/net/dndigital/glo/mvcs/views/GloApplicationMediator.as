@@ -1,33 +1,17 @@
 package net.dndigital.glo.mvcs.views
 {
-	import eu.kiichigo.utils.loggable;
-	
 	import flash.events.Event;
-	import flash.events.StageOrientationEvent;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
 	
 	import net.dndigital.glo.mvcs.events.ApplicationEvent;
 	import net.dndigital.glo.mvcs.events.GloMenuEvent;
 	import net.dndigital.glo.mvcs.events.NotificationEvent;
-	import net.dndigital.glo.mvcs.events.ProjectEvent;
 	import net.dndigital.glo.mvcs.views.components.Notification;
 	
 	import org.robotlegs.mvcs.Mediator;
 	
 	public final class GloApplicationMediator extends Mediator
 	{
-		//--------------------------------------------------------------------------
-		//
-		//  Log
-		//
-		//--------------------------------------------------------------------------
-		import eu.kiichigo.utils.log;
-		/**
-		 * @private
-		 */
-		protected static var log:Function = eu.kiichigo.utils.log(GloApplicationMediator);
-		
+
 		//--------------------------------------------------------------------------
 		//
 		//  Instance Fields

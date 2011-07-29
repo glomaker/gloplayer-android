@@ -38,13 +38,21 @@ package net.dndigital.glo.mvcs
 		{
 			// Singletons
 			injector.mapSingletonOf(IProjectService, ProjectService);
-			injector.mapSingletonOf(IFileService, FileService);
+			injector.mapSingletonOf(IFileService, AppDirFileService, "appFileService");
+			injector.mapSingletonOf(IFileService, DocumentsDirFileService, "docFileService");
 			injector.mapSingletonOf(GloModel, GloModel);
 			
 			// Controllers and Commands
-			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, Bootstrap, ContextEvent, true);
+			// startup sequence:
+			// 1) scan application directory for GLOs
+			// 2) create main application view
+			// 3) mediators will trigger the next events to fetch other data
+			commandMap.mapEvent(ContextEvent.STARTUP_COMPLETE, ScanAppDirectory, ContextEvent, true);
+			commandMap.mapEvent(FileServiceEvent.APPDIR_SCAN_COMPLETED, CreateApplicationView, FileServiceEvent, true);
 			
-			commandMap.mapEvent(GloMenuEvent.LIST_FILES, ListGLODirectory, GloMenuEvent);
+			commandMap.mapEvent(GloMenuEvent.LIST_FILES, ScanDocumentDirectory, GloMenuEvent);
+			commandMap.mapEvent(FileServiceEvent.DOCUMENTS_SCAN_COMPLETED, DocumentDirScanCompleted, FileServiceEvent);
+			
 			commandMap.mapEvent(GloMenuEvent.LOAD_FILE, LoadProject, GloMenuEvent);
 			commandMap.mapEvent(ProjectEvent.PROJECT, ShowProject, ProjectEvent);
 			commandMap.mapEvent(ProjectEvent.NEXT_PAGE, Paginate, ProjectEvent);

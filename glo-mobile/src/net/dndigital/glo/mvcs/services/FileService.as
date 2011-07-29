@@ -1,56 +1,60 @@
 package net.dndigital.glo.mvcs.services
 {
-	import eu.kiichigo.utils.log;
-	
+	import flash.events.ErrorEvent;
+	import flash.events.Event;
+	import flash.events.FileListEvent;
+	import flash.events.IOErrorEvent;
 	import flash.filesystem.File;
-	import flash.system.Capabilities;
-	import flash.system.System;
 	
 	import net.dndigital.glo.mvcs.models.vo.Glo;
 	
 	import org.robotlegs.mvcs.Actor;
 	
-	public final class FileService extends Actor implements IFileService
+	/**
+	 * Abstract class to provide filesystem scanning services.
+	 * You must subclass it in order to override the gloDir getter. 
+	 * @author nilsmillahn
+	 * 
+	 */	
+	public class FileService extends Actor implements IFileService
 	{
 		//--------------------------------------------------------------------------
 		//
-		//  Log
+		//  Constants
 		//
 		//--------------------------------------------------------------------------
-		
-		/**
-		 * @private
-		 */
-		protected static const log:Function = eu.kiichigo.utils.log(FileService);
-		
-		
-		/**
-		 * Default GLO directory subpath inside File.documentsDirectory.
-		 * This directory will be scanned for GLO project files. 
-		 */		
-		protected static const DEFAULT_GLO_DIRECTORY:String = "GLO_Maker/GLOs";
-
 		
 		/**
 		 * File extension for GLO Maker files. 
 		 */		
 		protected static const GLO_FILE_EXTENSION:String = "glo";
+
 		
+		//--------------------------------------------------------------------------
+		//
+		//  Instance Properties
+		//
+		//--------------------------------------------------------------------------
+		
+		protected var _cache:Vector.<Glo>;
+		protected var _pendingDirs:Vector.<File>;
+		protected var _isScanning:Boolean = false;
+		protected var _completeEvent:Event;
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Getter / Setters
+		//
+		//--------------------------------------------------------------------------
 		
 		/**
-		 * @copy	net.dndigital.glo.mvcs.services.IFileService#files
-		 * 
-		 * @see		flash.filesystem.File
-		 * 
-		 * @langversion 3.0
-		 * @playerversion Flash 10
-		 * @playerversion AIR 2.5
-		 * @productversion Flex 4.5
+		 * @copy	net.dndigital.glo.mvcs.services.IFileService#isScanning 
+		 * @return 
 		 */
-		public function get files():Vector.<Glo>
+		public function get isScanning():Boolean
 		{
-			return scanDirectory(gloDir).concat(
-				   scanDirectory(File.applicationDirectory));
+			return _isScanning;
 		}
 		
 		/**
@@ -59,43 +63,164 @@ package net.dndigital.glo.mvcs.services
 		 */		
 		public function get gloDir():File
 		{
-			return File.documentsDirectory.resolvePath( DEFAULT_GLO_DIRECTORY );
+			// read-only property - override in sub-class to set to a specific value
+			throw new Error("Abstract method - implement in subclass.");
+			return null;
+		}
+
+		/**
+		 * @copy	net.dndigital.glo.mvcs.services.IFileService#glos 
+		 * @return 
+		 */
+		public function get glos():Vector.<Glo>
+		{
+			if( _cache == null )
+			{
+				throw new Error("Must call 'scan()' first and wait for complete event.");
+			}
+			return _cache;
 		}
 		
 		/**
-		 * Scans directory and sub directories for glo projects.
-		 * 
-		 * @param	directory	Directory that's will be scanned for files.
-		 * @param	to			<code>Vector.<File></code>. Collection of files that used as primary storage.
-		 * @param	tailed		Auxiliary argument, should not be used by user manually. Indicates whether function is in tail-recursion mode, this argument emulates tail recursion without creating another function for tail-only.
-		 * 
-		 * @return	Vector.<File> filed with glo projects.
-		 * 
-		 * @langversion 3.0
-		 * @playerversion Flash 10
-		 * @playerversion AIR 2.5
-		 * @productversion Flex 4.5
+		 * @copy	net.dndigital.glo.mvcs.services.IFileService#completeEvent
+		 * @return 
 		 */
-		protected function scanDirectory(directory:File, list:Vector.<Glo> = null, tailed:Boolean = false):Vector.<Glo>
+		public function set completeEvent( value:Event ):void
 		{
-			if (list == null)
-				list = new Vector.<Glo>;
-			
-			if ( !directory.exists )
-				return list;
-			
-			var dir:Array = directory.getDirectoryListing();
-			
-			for (var i:int = 0; i < dir.length; i ++) {
-				const current:File = dir[i] as File;
-				if (current.isDirectory)
-					scanDirectory(current, list, true);
-				else if (current.extension == GLO_FILE_EXTENSION )
-					list.push( new Glo( current, getDisplayName( current ) ) );
+			_completeEvent = value;
+		}
+		public function get completeEvent():Event
+		{
+			return _completeEvent;
+		}
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Public Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @copy	net.dndigital.glo.mvcs.services.IFileService#scan
+		 * @return 
+		 */
+		public function scan():void
+		{
+			if( gloDir == null )
+			{
+				throw new Error("Must set directory before scanning.");
 			}
-			if (!tailed)
-				list.fixed = true;
-			return list;
+			
+			if( completeEvent == null )
+			{
+				throw new Error("Must set completeEvent before scanning.");
+			}
+			
+			_cache = null;
+			_isScanning = true;
+			
+			var f:File = gloDir; // NB: doesn't work directly on gloDir, presumably because there is no setter
+			f.addEventListener(FileListEvent.DIRECTORY_LISTING, directoryListingHandler);
+			f.addEventListener(IOErrorEvent.IO_ERROR, handleIOError );
+			f.getDirectoryListingAsync();
+		}
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Protected Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * Event handler - directory scan has completed. 
+		 * @param event
+		 */
+		protected function directoryListingHandler(event:FileListEvent):void
+		{
+			// cleanup
+			File( event.target ).removeEventListener(FileListEvent.DIRECTORY_LISTING, directoryListingHandler);
+			File( event.target ).removeEventListener(IOErrorEvent.IO_ERROR, handleIOError );
+			
+			// process
+			_cache = new Vector.<Glo>();
+			_pendingDirs = new Vector.<File>();
+			
+			for each( var f:File in event.files )
+			{
+				if( f.isDirectory )
+				{
+					// need to process further (we just go 1 level deeper, not full recursion)
+					_pendingDirs.push( f );
+				}else if( f.extension == GLO_FILE_EXTENSION ){
+					// this is already a GLO, store it
+					_cache.push( new Glo( f, getDisplayName( f ) ) );
+				}
+			}
+			
+			// process any pending directories
+			// if there aren't any, this method will also send the completeEvent
+			processNextPendingDir();
+		}
+		
+		/**
+		 * Event handler - IO Error occured while scanning directories. 
+		 * @param event
+		 */		
+		protected function handleIOError( event:IOErrorEvent ):void
+		{
+			trace("FileService::io error", event.text);
+		}
+		
+		/**
+		 * Event handler - getDirectoryListingAsync() on subdirectory has completed.
+		 * @param event
+		 */		
+		protected function processSubDir( event:FileListEvent ):void
+		{
+			// cleanup
+			File( event.target ).removeEventListener( FileListEvent.DIRECTORY_LISTING, processSubDir );
+			
+			// find all the GLO files in this subdirectory
+			for each( var f:File in event.files )
+			{
+				if( !f.isDirectory && f.extension == GLO_FILE_EXTENSION )
+				{
+					// this is a GLO, store it
+					_cache.push( new Glo( f, getDisplayName( f ) ) );
+				}
+			}
+			
+			// next
+			processNextPendingDir();
+		}
+		
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Event Handlers
+		//
+		//--------------------------------------------------------------------------
+		
+		
+		/**
+		 * Take the next pending subdirectory and start getDirectoryListingAsync.
+		 * If no more subdirectories are waiting to be processed, dispatches the 'completeEvent' event. 
+		 */		
+		protected function processNextPendingDir():void
+		{
+			// anything left to process?
+			if( _pendingDirs.length == 0 )
+			{
+				dispatch( completeEvent );
+				return;
+			}
+			
+			// next one - must be directory, as it's in _pendingDirs
+			var f:File = _pendingDirs.pop();
+			f.addEventListener(FileListEvent.DIRECTORY_LISTING, processSubDir);
+			f.getDirectoryListingAsync();
 		}
 		
 		
@@ -104,7 +229,7 @@ package net.dndigital.glo.mvcs.services
 		 * @param file
 		 * @return 
 		 */		
-		private function getDisplayName( file:File ):String
+		protected function getDisplayName( file:File ):String
 		{
 			// we use the name of the .glo file
 			// unless it's the generic 'project.glo', in which case we use the parent folder instead
