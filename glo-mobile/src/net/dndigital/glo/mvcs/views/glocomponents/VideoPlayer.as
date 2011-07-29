@@ -48,6 +48,8 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		//  Instance Fields
 		//
 		//--------------------------------------------------------------------------
+		
+		protected static const DESIRED_PLAY_SIZE_MM:Number = 10;
 
 		//--------------------------------------------------------------------------
 		//
@@ -372,13 +374,12 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			addChild(playbackProgress);
 			
 			// Setup play button.
-			playButton.width = playButton.height = ScreenMaths.mmToPixels(5);
-			// playButton.width = playButton.height = 2;
+			playButton.width = playButton.height = ScreenMaths.mmToPixels(DESIRED_PLAY_SIZE_MM);
 			playButton.visible = false;
 			addChild(playButton);
 			
 			// Setup fullscreen button
-			fullscreenButton.width = fullscreenButton.height = ScreenMaths.mmToPixels(5);
+			fullscreenButton.width = fullscreenButton.height = ScreenMaths.mmToPixels(6);
 			fullscreenButton.visible = false;
 			fullscreenButton.alpha = 0;
 			addChild(fullscreenButton);
@@ -412,17 +413,10 @@ package net.dndigital.glo.mvcs.views.glocomponents
 					var mm:Number = ScreenMaths.mmToPixels(1);
 					playButton.visible = paused;
 					if (playButton.visible) {
-						
-						/*
-						var desiredSize:int = ScreenMaths.mmToPixels(10);
-						if (desiredSize > video.width || desiredSize > video.height)
-							desiredSize = 0.8*Math.min(video.width, video.height);
+						var desiredSize:int = Math.min( ScreenMaths.mmToPixels(DESIRED_PLAY_SIZE_MM), 0.8*video.width, 0.8*video.height);
 						playButton.width = playButton.height = desiredSize;
 						playButton.x = (width - playButton.width) / 2;
 						playButton.y = (height - playButton.height) / 2;
-						*/
-						playButton.x = mm;
-						playButton.y = height - playButton.height - mm;
 					}
 					
 					// Fullscreen Button
