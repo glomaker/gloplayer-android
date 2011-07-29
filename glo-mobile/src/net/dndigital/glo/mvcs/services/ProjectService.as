@@ -92,8 +92,6 @@ package net.dndigital.glo.mvcs.services
 		 */
 		public function set file(value:File):void
 		{
-			if (_file == value)
-				return;
 			_file = value;
 			loadFile(value);
 		}
