@@ -344,12 +344,11 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			netStream.client = client;
 		
 			//netStream.bufferTime = 0;
-			
 			client.addEventListener(NetStreamEvent.META_DATA, netStreamMetaData);
 			
 			// Setup Event Listeners.
 			addEventListener(MouseEvent.CLICK, handleMouse);
-			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage);
+			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStage, false, 0, true);
 			
 			return super.initialize();
 		}
