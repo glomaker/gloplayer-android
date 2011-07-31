@@ -34,5 +34,30 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		{
 			dispatchEvent(new NetStreamEvent(NetStreamEvent.META_DATA, infoObject.width, infoObject.height, infoObject.duration));
 		}
+		public function onXMPData(infoObject:Object):void
+		{
+			// ignored
+		}
+		public function onCuePoint(info:Object):void
+		{
+			// ignored
+		}
+		public function onSeekPoint(info:Object):void
+		{
+			// ignored
+		}
+		public function onImageData(infoObject:Object):void
+		{
+			// ignored
+		}
+		public function onPlayStatus(infoObject:Object):void
+		{
+			// ignored
+		}
+		public function onTextData(infoObject:Object):void
+		{
+			// ignored
+		}
+
 	}
 }
