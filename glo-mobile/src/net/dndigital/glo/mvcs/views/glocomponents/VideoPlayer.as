@@ -562,8 +562,6 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function handleNetStatus(event:NetStatusEvent):void
 		{
-			log( "status: {0}", event.info.code );
-			
 			switch (event.info.level) {
 				case "status":
 					switch (event.info.code) {
