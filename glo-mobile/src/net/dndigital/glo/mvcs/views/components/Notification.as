@@ -5,6 +5,7 @@ package net.dndigital.glo.mvcs.views.components
 	import eu.kiichigo.utils.log;
 	
 	import flash.display.BlendMode;
+	import flash.display.LineScaleMode;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filters.DropShadowFilter;
@@ -168,6 +169,7 @@ package net.dndigital.glo.mvcs.views.components
 		{
 			super.resized(width, height);
 			
+			graphics.lineStyle( 1, 0xffffff, 1, true, LineScaleMode.NONE );
 			drawRectangle(this, 0x000000, width, height, .75, 25);
 			
 			x = (stage.fullScreenWidth - width) / 2;

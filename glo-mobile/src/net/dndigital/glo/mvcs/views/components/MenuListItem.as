@@ -71,6 +71,7 @@ package net.dndigital.glo.mvcs.views.components
 		{
 			createChildren();
 			cacheAsBitmap = true;
+			opaqueBackground = 0x000000;
 		}
 		
 		//-------- public methods -----------
@@ -156,10 +157,10 @@ package net.dndigital.glo.mvcs.views.components
 			textField.textColor = 0xffffff;
 			
 			var lm:TextLineMetrics = textField.getLineMetrics(0);
-			textField.height = lm.height + lm.descent;
+			textField.height = Math.ceil( lm.height + lm.descent );
 			
 			textField.width = itemWidth - 10;
-			textField.y = ( itemHeight - textField.height )/2;
+			textField.y = Math.floor( ( itemHeight - textField.height )/2 );
 			
 			this.graphics.clear();
 			
@@ -168,9 +169,9 @@ package net.dndigital.glo.mvcs.views.components
 			this.graphics.endFill();
 			
 			// underline
-			this.graphics.lineStyle( 1, 0x757575, 1, true, LineScaleMode.NONE );
-			graphics.moveTo( 0, _itemHeight - 1 );
-			graphics.lineTo( _itemWidth, _itemHeight - 1 );
+			graphics.lineStyle( 1, 0x757575, 1, true, LineScaleMode.NONE );
+			graphics.moveTo( 0, _itemHeight - 2 );
+			graphics.lineTo( _itemWidth, _itemHeight - 2 );
 			
 			this.filters = [];
 		}

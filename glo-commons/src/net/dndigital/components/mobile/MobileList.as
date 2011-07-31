@@ -6,10 +6,8 @@ package net.dndigital.components.mobile
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
-	
-	import net.dndigital.components.mobile.IMobileListItemRenderer;
-	import net.dndigital.components.mobile.MobileListEvent;
 	
 	/**
 	 * Dispatched when a list item has been selected (ie. tapped) by the user.
@@ -56,8 +54,6 @@ package net.dndigital.components.mobile
 		 */		
 		protected static const SCROLL_FADE_STEP:Number = 0.1;
 		
-		
-		
 		//------- List --------
 		
 		private var listHitArea:Shape;
@@ -70,15 +66,10 @@ package net.dndigital.components.mobile
 		//------ Scrolling ---------------
 		
 		private var scrollBar:Sprite;
-		private var lastY:Number = 0; // last touch position
 		private var firstY:Number = 0; // first touch position
-		private var listY:Number = 0; // initial list position on touch 
-		private var diffY:Number = 0;
-		private var inertiaY:Number = 0;
 		private var minY:Number = 0;
 		private var maxY:Number = 0;
-		private var totalY:Number;
-		private var scrollRatio:Number = 40; // how many pixels constitutes a touch
+		private var listScrollRect:Rectangle = new Rectangle(); // scrollrect instance
 		
 		//------- Touch Events --------
 		
@@ -135,6 +126,28 @@ package net.dndigital.components.mobile
 		}
 		
 		/**
+		 * Sets list y position.
+		 * @param value
+		 */		
+		protected function set listY( value:Number ):void
+		{
+			// scrollRect works in reverse
+			listScrollRect.y = -value;
+			listScrollRect.width = listWidth;
+			listScrollRect.height = scrollAreaHeight;
+			list.scrollRect = listScrollRect;
+
+			// scrollbar
+			updateScrollbarPosition();
+		}
+		
+		protected function get listY():Number
+		{
+			// scrollRect works in reverse
+			return -listScrollRect.y;
+		}
+		
+		/**
 		 * Stop any ongoing animation. 
 		 * @param complete true - complete existing animation, false - don't complete existing animation
 		 */		
@@ -149,7 +162,7 @@ package net.dndigital.components.mobile
 			{
 				if( !isNaN( frameTargetY ) )
 				{
-					list.y = frameTargetY;
+					listY = frameTargetY;
 				}
 			}
 			
@@ -171,7 +184,7 @@ package net.dndigital.components.mobile
 			listHitArea.graphics.beginFill(0x000000, 1);
 			listHitArea.graphics.drawRect(0, 0, listWidth, listHeight)
 			listHitArea.graphics.endFill();
-			
+
 			addChild(list);
 			
 			list.graphics.clear();
@@ -260,7 +273,7 @@ package net.dndigital.components.mobile
 		protected function calcScrollPercent():Number
 		{
 			// need to bound to 0 <= p <= 1 because of overshoot animation
-			return Math.min( 1, Math.max( 0, ( maxY - list.y )/(maxY - minY) ) ); 
+			return Math.min( 1, Math.max( 0, ( maxY - listY )/(maxY - minY) ) ); 
 		}
 		
 		/**
@@ -301,9 +314,7 @@ package net.dndigital.components.mobile
 			// reset list to top
 			// TODO: maintain scroll percentage
 			recalcScrollBounds();
-			list.y = maxY;
-			
-			updateScrollbarPosition();
+			listY = maxY;
 			
 			// resize each list item
 			var children:Number = list.numChildren;
@@ -323,7 +334,6 @@ package net.dndigital.components.mobile
 			
 			var listItem:DisplayObject = item as DisplayObject;
 			listItem.y = scrollListHeight;
-			
 			item.itemWidth = listWidth;
 			item.index = list.numChildren; // needs to be done before addChild()
 			
@@ -376,7 +386,7 @@ package net.dndigital.components.mobile
 			scrollListHeight = 0;
 			
 			recalcScrollBounds();
-			list.y = maxY;
+			listY = maxY;
 			
 			while(list.numChildren > 0) {
 				var item:DisplayObject = list.removeChildAt(0);
@@ -485,11 +495,11 @@ package net.dndigital.components.mobile
 			ty = e.stageY;
 			
 			// should get harder if we're dragging past the boundaries
-			if( list.y < minY || list.y > maxY )
+			if( listY < minY || listY > maxY )
 			{
-				list.y += lastMoveDY/2;
+				listY += Math.round(lastMoveDY/2);
 			}else{
-				list.y += lastMoveDY;
+				listY += Math.round(lastMoveDY);
 			}
 		}
 		
@@ -527,12 +537,12 @@ package net.dndigital.components.mobile
 			
 			// nothing was tapped
 			// that means we are dragging the list and need to switch to animation now that the user has let go
-			if( list.y < minY )
+			if( listY < minY )
 			{
 				// list was dragged down past the minimum point
 				easeToTarget( minY );
 				
-			}else if( list.y > maxY ){
+			}else if( listY > maxY ){
 				// list was dragged up past the maximum point
 				easeToTarget( maxY );
 			}else{
@@ -595,12 +605,11 @@ package net.dndigital.components.mobile
 		 */		
 		protected function toTarget( e:Event ):void
 		{
-			list.y += ( frameTargetY - list.y ) / 4;
-			updateScrollbarPosition();
+			listY += ( frameTargetY - listY ) / 4;
 			
-			if( Math.abs( list.y - frameTargetY ) < ABS_TARGET_ANIM_MARGIN )
+			if( Math.abs( listY - frameTargetY ) < ABS_TARGET_ANIM_MARGIN )
 			{
-				list.y = frameTargetY;
+				listY = frameTargetY;
 				hideScrollbar();
 				stopAnimation();
 			}
@@ -618,13 +627,10 @@ package net.dndigital.components.mobile
 			tt = getTimer();
 			
 			// update position ( distance = time * speed )
-			list.y += dt*animSpeed;
+			listY += dt*animSpeed;
 			
 			// slow down
 			animSpeed *= SPEED_MULTIPLIER;
-			
-			// list has moved - update scrollbar
-			updateScrollbarPosition();
 			
 			// if movement has become very small, then we need to stop the animation
 			if( Math.abs( dt*animSpeed ) < ABS_INERTIA_MARGIN )
@@ -632,10 +638,10 @@ package net.dndigital.components.mobile
 				stopAnimation(false);
 				
 				// if the list has overshot, go into easing animation back to list boundaries
-				if( list.y > maxY )
+				if( listY > maxY )
 				{
 					easeToTarget( maxY );
-				}else if( list.y < minY ){
+				}else if( listY < minY ){
 					easeToTarget( minY );
 				}else{
 					hideScrollbar();
@@ -645,13 +651,13 @@ package net.dndigital.components.mobile
 			
 			// animation is still ongoing
 			// if we've overshot by more than the allowed overshoot, we switch into easing animation back to list boundaries
-			if( list.y > maxY + INERTIA_OVERSHOOT )
+			if( listY > maxY + INERTIA_OVERSHOOT )
 			{
-				list.y = maxY + INERTIA_OVERSHOOT;
+				listY = maxY + INERTIA_OVERSHOOT;
 				stopAnimation(false);
 				easeToTarget( maxY );
-			}else if( list.y < minY - INERTIA_OVERSHOOT ){
-				list.y = minY - INERTIA_OVERSHOOT;
+			}else if( listY < minY - INERTIA_OVERSHOOT ){
+				listY = minY - INERTIA_OVERSHOOT;
 				stopAnimation(false);
 				easeToTarget( minY );
 			}

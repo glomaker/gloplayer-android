@@ -149,7 +149,7 @@ package net.dndigital.glo.mvcs.views
 				fileDict = new Dictionary();
 				var buffer:Vector.<IMobileListItemRenderer> = new Vector.<IMobileListItemRenderer>();
 				
-				for (var i:int = 0; i < _files.length; i ++)
+				for (var i:int = 0; i < _files.length*10; i ++)
 				{
 					var ir:IMobileListItemRenderer = new MenuListItem();
 					ir.data = _files[i % _files.length].displayName;
