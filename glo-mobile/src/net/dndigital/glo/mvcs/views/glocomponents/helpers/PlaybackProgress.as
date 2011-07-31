@@ -3,9 +3,9 @@ package net.dndigital.glo.mvcs.views.glocomponents.helpers
 	import eu.kiichigo.utils.log;
 	
 	import flash.display.Shape;
-	import flash.filters.GlowFilter;
 	
 	import net.dndigital.components.GUIComponent;
+	import net.dndigital.glo.mvcs.models.enum.ColourPalette;
 	import net.dndigital.utils.drawRectangle;
 	
 	public class PlaybackProgress extends GUIComponent
@@ -81,8 +81,6 @@ package net.dndigital.glo.mvcs.views.glocomponents.helpers
 			super.createChildren();
 			
 			addChild(background);
-			
-			indicator.filters = [new GlowFilter(0xFFFF6600, .7, 6, 6, 3, 2)];
 			addChild(indicator);
 		}
 		
@@ -93,7 +91,7 @@ package net.dndigital.glo.mvcs.views.glocomponents.helpers
 		{
 			super.resized(width, height);
 
-			drawRectangle(background, 0xAAAAAA, width, height);
+			drawRectangle(background, ColourPalette.SLATE_BLUE, width, height);
 			drawRectangle(indicator, 0xFFFFFF, width * _percentage, height);
 		}
 	}

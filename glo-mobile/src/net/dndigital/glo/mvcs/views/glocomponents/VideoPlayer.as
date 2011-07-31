@@ -369,7 +369,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 			addChild(video);
 			
 			// Setup progress
-			playbackProgress.height = ScreenMaths.mmToPixels(3) / 10;
+			playbackProgress.height = ScreenMaths.mmToPixels(0.5);
 			addChild(playbackProgress);
 			
 			// Setup play button.
