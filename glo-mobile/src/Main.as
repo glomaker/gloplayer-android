@@ -44,7 +44,7 @@ package
 		{
 			super();
 			
-			stage.frameRate = 31;
+			stage.frameRate = 24;
 			
 			// support autoOrients
 			stage.align = StageAlign.TOP_LEFT;
@@ -67,6 +67,7 @@ package
 		 */		
 		protected function handleActivate( e:Event ):void
 		{
+			stage.frameRate = 24;
 			gloContext.dispatchEvent( ApplicationEvent.ACTIVATE_EVENT );
 		}
 		
@@ -76,6 +77,7 @@ package
 		 */		
 		protected function handleDeactivate( e:Event ):void
 		{
+			stage.frameRate = 0.1;
 			gloContext.dispatchEvent( ApplicationEvent.DEACTIVATE_EVENT );
 		}
 	}

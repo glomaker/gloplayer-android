@@ -483,6 +483,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 				netStream = null
 			}
 			
+			progressTimer.stop();
 			progressTimer.removeEventListener(TimerEvent.TIMER, progressTick);
 			video.clear();
 		}

@@ -430,6 +430,7 @@ package net.dndigital.components.mobile
 			if( wasAnimating )
 			{
 				selectedItem = null;
+				removeEventListener( Event.ENTER_FRAME, delayedItemSelect );
 			}else{
 				// check which item was under the finger when tapped
 				// TODO: can this be optimised?
@@ -460,11 +461,8 @@ package net.dndigital.components.mobile
 				}else{
 					// found an item in the middle
 					selectedItem = IMobileListItemRenderer( child );
-				}
-				
-				// start item highlight loop
-				if( selectedItem )
-				{
+					
+					// start item highlight loop
 					addEventListener( Event.ENTER_FRAME, delayedItemSelect );
 				}
 			}
@@ -516,11 +514,12 @@ package net.dndigital.components.mobile
 			stage.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
 			stage.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseUp );
 			
+			// other event cleanup
+			removeEventListener( Event.ENTER_FRAME, delayedItemSelect );
+
 			// if something was tapped, we are finished
 			if( selectedItem )
 			{
-				removeEventListener( Event.ENTER_FRAME, delayedItemSelect );
-				
 				// if item hasn't been visually selected yet, we do that now
 				// and let 1 frame elapse so it can render the selected state
 				if( selectDelayCount >= 0 )
