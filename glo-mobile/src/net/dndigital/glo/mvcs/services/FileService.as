@@ -165,12 +165,16 @@ package net.dndigital.glo.mvcs.services
 		}
 		
 		/**
-		 * Event handler - IO Error occured while scanning directories. 
+		 * Event handler - IO Error occured while scanning main GLO directory. 
 		 * @param event
 		 */		
 		protected function handleIOError( event:IOErrorEvent ):void
 		{
+			// directory doesn't exist -> no GLOs 
 			trace("FileService::io error", event.text);
+			_cache = new Vector.<Glo>();
+			dispatch( completeEvent );
+			
 		}
 		
 		/**
