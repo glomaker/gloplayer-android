@@ -527,8 +527,10 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 */
 		protected function netStreamMetaData(event:NetStreamEvent):void
 		{
-			videoSize.x = video.width = event.width;
-			videoSize.y = video.height = event.height;
+			// sometimes the event will be zero but video.width / video.height will be correct
+			// logical OR will convert 0 to false, by putting the event properties first they will be used if non-zero
+			videoSize.x = ( event.width || video.width );
+			videoSize.y = ( event.height || video.height );
 			_duration = event.duration;
 			
 			invalidateDisplay();
