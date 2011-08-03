@@ -16,9 +16,9 @@ package
 	
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
-	import net.dndigital.glo.mvcs.GloContext;
-	import net.dndigital.glo.mvcs.events.ApplicationEvent;
-	import net.dndigital.glo.mvcs.views.components.MenuButton;
+	import org.glomaker.mobileplayer.mvcs.GloContext;
+	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
+	import org.glomaker.mobileplayer.mvcs.views.components.MenuButton;
 	
 	import org.robotlegs.mvcs.Context;
 	
