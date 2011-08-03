@@ -11,10 +11,7 @@ package net.dndigital.glo.mvcs.views.glocomponents
 	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.glo.mvcs.events.NetStreamEvent;
 	import net.dndigital.glo.mvcs.utils.ScreenMaths;
-	import net.dndigital.glo.mvcs.views.components.AnimatedButton;
 	import net.dndigital.glo.mvcs.views.glocomponents.helpers.PlaybackProgress;
-	
-	import org.bytearray.display.ScaleBitmap;
 
 	/**
 	 * VideoPlayer component is capable of rendering video on <code>GloPlayer</code>'s pages.
@@ -77,11 +74,6 @@ package net.dndigital.glo.mvcs.views.glocomponents
 		 * @private
 		 */
 		protected const video:Video = new Video;
-		
-		/**
-		 * @private
-		 */
-		protected const snapshot:ScaleBitmap = new ScaleBitmap;
 		
 		/**
 		 * @private
