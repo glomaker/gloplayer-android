@@ -248,7 +248,6 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		}
 	}
 }
-import com.adobe.serialization.json.JSON;
 
 import eu.kiichigo.utils.path;
 
@@ -286,7 +285,7 @@ class Mapper {
 		if ((value is Number && isNaN(value)) || value === null)
 			return;
 		
-		value = JSON.decode(value);
+		value = JSON.parse(value);
 		gloComponent[to] = value;
 	}
 }
