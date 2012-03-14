@@ -33,7 +33,7 @@ package org.glomaker.mobileplayer.mvcs.services
 		override public function get gloDir():File
 		{
 			// abstract - don't call super.gloDir()
-			return File.documentsDirectory.resolvePath( "GLO_Maker/GLOs" );
+			return File.documentsDirectory;//.resolvePath( "GLO_Maker/GLOs" );
 		}
 		
 		
