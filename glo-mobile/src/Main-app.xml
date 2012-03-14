@@ -18,7 +18,7 @@
 	<id>org.glomaker.GLOMobilePlayer</id>
 
 	<!-- Used as the filename for the application. Required. -->
-	<filename>Main</filename>
+	<filename>GLOPlayer</filename>
 
 	<!-- The name that is displayed in the AIR application installer. 
 	May have multiple values for each language. See samples or xsd schema file. Optional. -->
@@ -41,16 +41,6 @@
 
 	<!-- Publisher ID. Used if you're updating an application created prior to 1.5.3 -->
 	<!-- <publisherID></publisherID> -->
-
-	<iPhone>
-		<InfoAdditions> 
-		    <![CDATA[ 
-		        <key>UIFileSharingEnabled</key> 
-		        <string>YES</string> 
-		    ]]> 
-		</InfoAdditions>
-	</iPhone>
-
 
 	<!-- Settings for the application's initial window. Required. -->
 	<initialWindow>
@@ -185,4 +175,19 @@
 		]]>
 		</manifestAdditions> 
 	</android>
+	
+	<iPhone>
+		<InfoAdditions>
+		<![CDATA[
+			<key>UIDeviceFamily</key>
+			<array>
+				<string>1</string>
+				<string>2</string>
+			</array>
+			<key>UIFileSharingEnabled</key>
+			<string>YES</string>
+		]]>
+		</InfoAdditions>
+		<requestedDisplayResolution>high</requestedDisplayResolution>
+	</iPhone>
 </application>
