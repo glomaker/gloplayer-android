@@ -312,7 +312,7 @@ final class UnzippedCleaner extends EventDispatcher
 [Event(name="complete", type="flash.events.Event")]
 
 /**
- * Helper class for scanning directories for either zip files or directories.
+ * Helper class for unzipping files to a specific directory.
  * 
  * @author Haykel
  * 
