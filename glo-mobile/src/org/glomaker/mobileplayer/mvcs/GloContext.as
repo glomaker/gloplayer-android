@@ -34,7 +34,6 @@ package org.glomaker.mobileplayer.mvcs
 	import org.glomaker.mobileplayer.mvcs.views.*;
 	import org.glomaker.mobileplayer.mvcs.views.components.PageNumberDisplay;
 	import org.glomaker.mobileplayer.mvcs.views.components.ProgressBar;
-	
 	import org.robotlegs.base.ContextEvent;
 	import org.robotlegs.mvcs.Context;
 	
@@ -64,7 +63,7 @@ package org.glomaker.mobileplayer.mvcs
 			// Singletons
 			injector.mapSingletonOf(IProjectService, ProjectService);
 			injector.mapSingletonOf(IFileService, AppDirFileService, "appFileService");
-			injector.mapSingletonOf(IFileService, DocumentsDirFileService, "docFileService");
+			injector.mapSingletonOf(IFileService, ZippedFileService, "docFileService");
 			injector.mapSingletonOf(GloModel, GloModel);
 			
 			// Controllers and Commands
