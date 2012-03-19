@@ -43,7 +43,7 @@ package org.glomaker.mobileplayer.mvcs.services
 		override public function get gloDir():File
 		{
 			// abstract - don't call super.gloDir()
-			return File.documentsDirectory.resolvePath( "GLO_Maker/Unzipped" );
+			return File.applicationStorageDirectory.resolvePath( "unzipped" );
 		}
 		
 		/**
@@ -54,6 +54,16 @@ package org.glomaker.mobileplayer.mvcs.services
 			return File.documentsDirectory;
 		}
 		
+		private var _isSyncing:Boolean = false;
+		
+		/**
+		 * Returns whether <code>zippedDir</code> and <code>gloDir</code> are being synced.
+		 */
+		public function get isSyncing():Boolean
+		{
+			return _isSyncing;
+		}
+		
 		//--------------------------------------------------
 		// Protected functions
 		//--------------------------------------------------
@@ -61,6 +71,7 @@ package org.glomaker.mobileplayer.mvcs.services
 		protected function doScan(event:Event=null):void
 		{
 			eventMap.unmapListeners();
+			_isSyncing = false;
 			
 			super.scan();
 		}
@@ -77,10 +88,17 @@ package org.glomaker.mobileplayer.mvcs.services
 		 */
 		override public function scan():void
 		{
+			//Call parent implementation to throw an exception if completeEvent is null
 			if (completeEvent == null)
 				super.scan();
 			
-			eventMap.unmapListeners();
+			//sync operations can require much time and resources and if more than operation
+			//are running in parallel they can lead to unpredictable results as they will be working
+			//on the same files and directories, so we prevent this from happening.
+			if (isSyncing)
+				return;
+			
+			_isSyncing = true;
 			
 			var zippedScanner:DirectoryScanner = new DirectoryScanner(zippedDir, true);
 			var unzippedScanner:DirectoryScanner = new DirectoryScanner(gloDir, false);
