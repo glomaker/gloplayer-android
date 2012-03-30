@@ -23,41 +23,28 @@
 *
 * The ScaleBitmap class, released open-source under the RPL license (http://www.opensource.org/licenses/rpl.php)
 */
-package org.glomaker.mobileplayer.mvcs.commands
+package org.glomaker.mobileplayer.mvcs.events
 {
-	import net.dndigital.components.Application;
-	
-	import org.glomaker.mobileplayer.mvcs.views.GloApplication;
-	import org.glomaker.mobileplayer.mvcs.views.components.BusyIndicator;
-	import org.robotlegs.mvcs.Command;
+	import flash.events.Event;
 
-	/**
-	 * Creates the main application view.
-	 * Call once when application is ready to run. 
-	 * @author nilsmillahn
-	 */	
-	public class CreateApplicationView extends Command
+	public class BusyIndicatorEvent extends Event
 	{
+		public static const SHOW:String = "show";
+		public static const HIDE:String = "hide";
 
-		/**
-		 * @inheritDoc 
-		 */		
-		override public function execute():void
+		public function BusyIndicatorEvent(type:String)
 		{
-			// main app view
-			var application:Application = new GloApplication;
-			application.width = contextView.stage.fullScreenWidth;
-			application.height = contextView.stage.fullScreenHeight;
-			
-			var busyIndicator:BusyIndicator = new BusyIndicator();
-			busyIndicator.visible = false;
-			busyIndicator.application = application;
-			
-			//Add busy indicator first to make sure its mediator is registered and ready to handle
-			//show/hide requests, before the application is initialized.
-			contextView.addChild(busyIndicator);
-			contextView.addChildAt(application, 0);
+			super(type);
 		}
-	
+
+		public override function clone():Event
+		{
+			return new BusyIndicatorEvent(type);
+		}
+
+		public override function toString():String
+		{
+			return formatToString("BusyIndicatorEvent");
+		}
 	}
 }

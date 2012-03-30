@@ -23,41 +23,42 @@
 *
 * The ScaleBitmap class, released open-source under the RPL license (http://www.opensource.org/licenses/rpl.php)
 */
-package org.glomaker.mobileplayer.mvcs.commands
+package org.glomaker.mobileplayer.mvcs.views
 {
-	import net.dndigital.components.Application;
+	import flash.events.Event;
 	
-	import org.glomaker.mobileplayer.mvcs.views.GloApplication;
+	import org.glomaker.mobileplayer.mvcs.events.BusyIndicatorEvent;
 	import org.glomaker.mobileplayer.mvcs.views.components.BusyIndicator;
-	import org.robotlegs.mvcs.Command;
-
-	/**
-	 * Creates the main application view.
-	 * Call once when application is ready to run. 
-	 * @author nilsmillahn
-	 */	
-	public class CreateApplicationView extends Command
-	{
-
-		/**
-		 * @inheritDoc 
-		 */		
-		override public function execute():void
-		{
-			// main app view
-			var application:Application = new GloApplication;
-			application.width = contextView.stage.fullScreenWidth;
-			application.height = contextView.stage.fullScreenHeight;
-			
-			var busyIndicator:BusyIndicator = new BusyIndicator();
-			busyIndicator.visible = false;
-			busyIndicator.application = application;
-			
-			//Add busy indicator first to make sure its mediator is registered and ready to handle
-			//show/hide requests, before the application is initialized.
-			contextView.addChild(busyIndicator);
-			contextView.addChildAt(application, 0);
-		}
+	import org.robotlegs.mvcs.Mediator;
 	
+	public class BusyIndicatorMediator extends Mediator
+	{
+		[Inject]
+		public var view:BusyIndicator;
+		
+		override public function onRegister():void
+		{
+			super.onRegister();
+			
+			eventMap.mapListener(eventDispatcher, BusyIndicatorEvent.SHOW, show, BusyIndicatorEvent);
+			eventMap.mapListener(eventDispatcher, BusyIndicatorEvent.HIDE, hide, BusyIndicatorEvent);
+		}
+		
+		override public function onRemove():void
+		{
+			super.onRemove();
+			
+			eventMap.unmapListeners();
+		}
+		
+		protected function show(e:Event):void
+		{
+			view.visible = true;
+		}
+		
+		protected function hide(e:Event):void
+		{
+			view.visible = false;
+		}
 	}
 }

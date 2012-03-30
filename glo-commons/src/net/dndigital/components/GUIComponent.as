@@ -31,6 +31,11 @@ package net.dndigital.components
 	import net.dndigital.utils.Fun;
 	
 	/**
+	 * Dispatched when the component size has changed.
+	 */
+	[Event(name="resize", type="flash.events.Event")]
+	
+	/**
 	 * Represents basic visual Component instances. Instances of IGUIComponent classes can be added to <code>IContainer</code>.
 	 * 
 	 * @see		net.dndigital.glo.components.IContainer
@@ -450,6 +455,7 @@ package net.dndigital.components
 				return;
 			resizing = false;
 			resized(_width, _height);	
+			dispatchEvent(new Event(Event.RESIZE));
 		}
 		
 		/**

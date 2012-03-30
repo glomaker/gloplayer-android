@@ -27,7 +27,19 @@ package org.glomaker.mobileplayer.mvcs.services
 {
 	import flash.events.Event;
 	import flash.filesystem.File;
+	
+	import org.glomaker.mobileplayer.mvcs.events.BusyIndicatorEvent;
 
+	/**
+	 * Dispatched when a long running operation has started.
+	 */
+	[Event(name="show", type="org.glomaker.mobileplayer.mvcs.events.BusyIndicatorEvent")]
+
+	/**
+	 * Dispatched when a long running operation finished.
+	 */
+	[Event(name="hide", type="org.glomaker.mobileplayer.mvcs.events.BusyIndicatorEvent")]
+	
 	/**
 	 * A file service for GLOs provided in zip files.
 	 * 
@@ -74,6 +86,13 @@ package org.glomaker.mobileplayer.mvcs.services
 			_isSyncing = false;
 			
 			super.scan();
+			
+			dispatch(new BusyIndicatorEvent(BusyIndicatorEvent.HIDE));
+		}
+		
+		protected function showBusyIndicator(event:Event=null):void
+		{
+			dispatch(new BusyIndicatorEvent(BusyIndicatorEvent.SHOW));
 		}
 		
 		//--------------------------------------------------
@@ -108,7 +127,9 @@ package org.glomaker.mobileplayer.mvcs.services
 			eventMap.mapListener(zippedScanner, Event.COMPLETE, unzippedScanner.run, Event);
 			eventMap.mapListener(unzippedScanner, Event.COMPLETE, unzippedCleaner.run, Event);
 			eventMap.mapListener(unzippedCleaner, Event.COMPLETE, unzipper.run, Event);
+			eventMap.mapListener(unzippedCleaner, START, showBusyIndicator, Event);
 			eventMap.mapListener(unzipper, Event.COMPLETE, doScan, Event);
+			eventMap.mapListener(unzipper, START, showBusyIndicator, Event);
 			
 			zippedScanner.run();
 		}
@@ -132,6 +153,15 @@ import flash.filesystem.FileMode;
 import flash.filesystem.FileStream;
 import flash.net.URLRequest;
 import flash.utils.Dictionary;
+
+/**
+ * Constant for type of events dispatched to indicte that a long-running operation has started.
+ */
+const START:String = "start";
+
+//--------------------------------------------------
+// DirectoryScanner
+//--------------------------------------------------
 
 /**
  * Dispatched when the scan completes, either successfully or with an error.
@@ -238,6 +268,11 @@ final class DirectoryScanner extends EventDispatcher
 //--------------------------------------------------
 
 /**
+ * Dispatched to indicate that the operation of deleting directories has started.
+ */
+[Event(name="start", type="flash.events.Event")]
+
+/**
  * Dispatched when the clean operation completes, either successfully or with an error.
  */
 [Event(name="complete", type="flash.events.Event")]
@@ -281,6 +316,8 @@ final class UnzippedCleaner extends EventDispatcher
 		//delete remaining dirs
 		if (unzipped.files && unzipped.files.length > 0)
 		{
+			dispatchEvent(new Event(START));
+			
 			for each (var file:File in unzipped.files)
 			{
 				file.addEventListener(Event.COMPLETE, deleteFinishedHandler);
@@ -325,6 +362,11 @@ final class UnzippedCleaner extends EventDispatcher
 //--------------------------------------------------
 
 /**
+ * Dispatched to indicate that the operation of unzipping files has started.
+ */
+[Event(name="start", type="flash.events.Event")]
+
+/**
  * Dispatched when the unzip operation completes, either successfully or with an error.
  */
 [Event(name="complete", type="flash.events.Event")]
@@ -348,6 +390,9 @@ final class Unzipper extends EventDispatcher
 	
 	public function run(event:Event=null):void
 	{
+		if (zipped.files && zipped.files.length > 0)
+			dispatchEvent(new Event(START));
+		
 		unzipNext();
 	}
 	

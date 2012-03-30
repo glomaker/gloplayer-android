@@ -32,6 +32,7 @@ package org.glomaker.mobileplayer.mvcs
 	import org.glomaker.mobileplayer.mvcs.models.GloModel;
 	import org.glomaker.mobileplayer.mvcs.services.*;
 	import org.glomaker.mobileplayer.mvcs.views.*;
+	import org.glomaker.mobileplayer.mvcs.views.components.BusyIndicator;
 	import org.glomaker.mobileplayer.mvcs.views.components.PageNumberDisplay;
 	import org.glomaker.mobileplayer.mvcs.views.components.ProgressBar;
 	import org.robotlegs.base.ContextEvent;
@@ -89,6 +90,7 @@ package org.glomaker.mobileplayer.mvcs
 			mediatorMap.mapView(GloControls, GloControlsMediator);
 			mediatorMap.mapView(PageNumberDisplay, PageNumberDisplayMediator);
 			mediatorMap.mapView(ProgressBar, ProgressBarMediator);
+			mediatorMap.mapView(BusyIndicator, BusyIndicatorMediator);
 			
 			super.startup();
 		}
