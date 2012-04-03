@@ -141,6 +141,7 @@ package org.glomaker.mobileplayer.mvcs.services
 //--------------------------------------------------
 
 import deng.fzip.FZip;
+import deng.fzip.FZipErrorEvent;
 import deng.fzip.FZipFile;
 
 import flash.events.Event;
@@ -209,6 +210,9 @@ final class DirectoryScanner extends EventDispatcher
 		dir.getDirectoryListingAsync();
 	}
 	
+	/**
+	 * Remove data for the file at the specifed index.
+	 */
 	public function removeAt(index:uint):File
 	{
 		var file:File = files[index];
@@ -217,16 +221,25 @@ final class DirectoryScanner extends EventDispatcher
 		return file;
 	}
 	
+	/**
+	 * Remove data for the specified file.
+	 */
 	public function remove(file:File):File
 	{
 		return removeAt(files.indexOf(file));
 	}
 	
+	/**
+	 * Remove data for the file corresponding to the specified name.
+	 */
 	public function removeByName(name:String):File
 	{
 		return removeAt(names.indexOf(name));
 	}
 	
+	/**
+	 * Handle directory listing result event.
+	 */
 	private function directoryListingHandler(event:FileListEvent):void
 	{
 		File(event.target).removeEventListener(FileListEvent.DIRECTORY_LISTING, directoryListingHandler);
@@ -254,6 +267,9 @@ final class DirectoryScanner extends EventDispatcher
 		dispatchEvent(new Event(Event.COMPLETE));
 	}
 	
+	/**
+	 * Handle directory listing error event.
+	 */
 	private function ioErrorHandler(event:IOErrorEvent):void
 	{
 		File(event.target).removeEventListener(FileListEvent.DIRECTORY_LISTING, directoryListingHandler);
@@ -296,6 +312,9 @@ final class UnzippedCleaner extends EventDispatcher
 		this.unzipped = unzipped;
 	}
 	
+	/**
+	 * Start the cleaning operation.
+	 */
 	public function run(event:Event=null):void
 	{
 		//remove up-to-date files and directories
@@ -340,6 +359,9 @@ final class UnzippedCleaner extends EventDispatcher
 		}
 	}
 	
+	/**
+	 * Clean and check status after a file finished deleting.
+	 */
 	private function fileDeleted(file:File):void
 	{
 		file.removeEventListener(Event.COMPLETE, deleteFinishedHandler);
@@ -351,6 +373,9 @@ final class UnzippedCleaner extends EventDispatcher
 			dispatchEvent(new Event(Event.COMPLETE));
 	}
 	
+	/**
+	 * Handle file deletion end event, either successfully or with an error.
+	 */
 	private function deleteFinishedHandler(event:Event):void
 	{
 		fileDeleted(File(event.target));
@@ -382,12 +407,18 @@ final class Unzipper extends EventDispatcher
 	private var zipped:DirectoryScanner;
 	private var dir:File;
 	
+	private var currentTargetDir:File;
+	private var currentFiles:Vector.<FZipFile>;
+	
 	public function Unzipper(zipped:DirectoryScanner, dir:File)
 	{
 		this.zipped = zipped;
 		this.dir = dir;
 	}
 	
+	/**
+	 * Starts the unzip operation.
+	 */
 	public function run(event:Event=null):void
 	{
 		if (zipped.files && zipped.files.length > 0)
@@ -396,6 +427,10 @@ final class Unzipper extends EventDispatcher
 		unzipNext();
 	}
 	
+	/**
+	 * Unzip the next available file. A <code>complete</code> event is dispatched
+	 * when there are no more files to unzip.
+	 */
 	private function unzipNext():void
 	{
 		if (zipped.files && zipped.files.length > 0)
@@ -404,26 +439,88 @@ final class Unzipper extends EventDispatcher
 			zip.addEventListener(Event.COMPLETE, zip_completeHandler);
 			zip.addEventListener(IOErrorEvent.IO_ERROR, zip_errorHandler);
 			zip.addEventListener(SecurityErrorEvent.SECURITY_ERROR, zip_errorHandler);
+			zip.addEventListener(FZipErrorEvent.PARSE_ERROR, zip_errorHandler);
 			
-			var file:File = zipped.files[0];
-			zip.load(new URLRequest(file.url));
+			currentTargetDir = dir.resolvePath(zipped.names[0]);
+			zip.load(new URLRequest(zipped.removeAt(0).url));
 		}
 		else
 		{
+			currentTargetDir = null;
+			currentFiles = null;
+			
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
 	}
 	
+	/**
+	 * Extracts the next file from the current zip file being processed. It calls <code>unzipNext()</code>
+	 * when there are no more files to extract.
+	 */
+	private function extractNext():void
+	{
+		if (currentFiles && currentFiles.length > 0)
+		{
+			var zipFile:FZipFile = currentFiles.shift();
+			var file:File = currentTargetDir.resolvePath(zipFile.filename);
+			
+			var stream:FileStream = new FileStream();
+			stream.addEventListener(IOErrorEvent.IO_ERROR, extract_ioErrorHandler);
+			stream.addEventListener(Event.CLOSE, extract_closeHandler);
+			
+			try
+			{
+				if (!file.parent.exists)
+					file.parent.createDirectory();
+				
+				stream.openAsync(file, FileMode.WRITE);
+				stream.writeBytes(zipFile.content);
+				stream.close();
+			}
+			catch (e:Error)
+			{
+				extractFailed(stream);
+			}
+		}
+		else
+		{
+			unzipNext();
+		}
+	}
+	
+	/**
+	 * If an extract operation fails, the current zip file is skipped and its directory is deleted
+	 * to avoid having files being only partially unzipped and to make it possibe to retry
+	 * on the next scan operation.
+	 */
+	private function extractFailed(stream:FileStream):void
+	{
+		stream.removeEventListener(IOErrorEvent.IO_ERROR, extract_ioErrorHandler);
+		stream.removeEventListener(Event.CLOSE, extract_closeHandler);
+		stream.close();
+		try
+		{
+			currentTargetDir.deleteDirectory(true);
+		}
+		catch (e2:Error)
+		{}
+		
+		unzipNext();
+	}
+
+	/**
+	 * Handle zip file load completion event. Populate the list of files to be extracted
+	 * skipping directories and start the extraction process.
+	 */
 	private function zip_completeHandler(event:Event):void
 	{
 		var zip:FZip = FZip(event.target);
 		zip.removeEventListener(Event.COMPLETE, zip_completeHandler);
 		zip.removeEventListener(IOErrorEvent.IO_ERROR, zip_errorHandler);
 		zip.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, zip_errorHandler);
+		zip.removeEventListener(FZipErrorEvent.PARSE_ERROR, zip_errorHandler);
 		
-		var name:String = zipped.names[0];
-		var targetDir:File = dir.resolvePath(name);
-		var stream:FileStream = new FileStream();
+		currentFiles = new Vector.<FZipFile>();
 		
 		for (var i:uint=0; i < zip.getFileCount(); i++)
 		{
@@ -433,42 +530,44 @@ final class Unzipper extends EventDispatcher
 			if (zipFile.filename.charAt(zipFile.filename.length - 1) == '/')
 				continue;
 			
-			var file:File = targetDir.resolvePath(zipFile.filename);
-			
-			//TODO (haykel) for simplicity files are written synchronuously, should we swap to async mode??
-			try
-			{
-				file.parent.createDirectory();
-				stream.open(file, FileMode.WRITE);
-				stream.writeBytes(zipFile.content);
-				stream.close();
-			}
-			catch (e:Error)
-			{
-				stream.close();
-				try
-				{
-					targetDir.deleteDirectory(true);
-				}
-				catch (e2:Error)
-				{}
-				
-				break;
-			}
+			currentFiles.push(zipFile);
 		}
 		
-		zipped.removeAt(0);
-		unzipNext();
+		extractNext();
 	}
 	
+	/**
+	 *  Handle zip file load error event. Skips the file.
+	 */
 	private function zip_errorHandler(event:Event):void
 	{
 		var zip:FZip = FZip(event.target);
 		zip.removeEventListener(Event.COMPLETE, zip_completeHandler);
 		zip.removeEventListener(IOErrorEvent.IO_ERROR, zip_errorHandler);
 		zip.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, zip_errorHandler);
+		zip.removeEventListener(FZipErrorEvent.PARSE_ERROR, zip_errorHandler);
 		
-		zipped.removeAt(0);
 		unzipNext();
+	}
+	
+	/**
+	 * Handle close event for an extracted file. This is called after the file has been
+	 * successfully written and closed. Start extrationg the next file.
+	 */
+	protected function extract_closeHandler(event:Event):void
+	{
+		var stream:FileStream = FileStream(event.target);
+		stream.removeEventListener(IOErrorEvent.IO_ERROR, extract_ioErrorHandler);
+		stream.removeEventListener(Event.CLOSE, extract_closeHandler);
+		
+		extractNext();
+	}
+	
+	/**
+	 * Handle io error event for an extracted file. Calls <code>extracFailed()</code>.
+	 */
+	protected function extract_ioErrorHandler(event:IOErrorEvent):void
+	{
+		extractFailed(FileStream(event.target));
 	}
 }

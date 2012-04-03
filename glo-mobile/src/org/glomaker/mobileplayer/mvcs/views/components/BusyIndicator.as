@@ -25,10 +25,11 @@
 */
 package org.glomaker.mobileplayer.mvcs.views.components
 {
+	import flash.display.CapsStyle;
+	import flash.display.LineScaleMode;
 	import flash.events.Event;
 	import flash.filters.BlurFilter;
-	
-	import mx.core.MovieClipLoaderAsset;
+	import flash.geom.Point;
 	
 	import net.dndigital.components.Application;
 	import net.dndigital.components.GUIComponent;
@@ -46,15 +47,21 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		// Constants
 		//--------------------------------------------------
 		
-		[Embed(source="../assets/busy-indicator.swf")]
-		protected static const AnimAsset:Class;
+		protected static const SPINNER_WIDTH:Number = 30;
+		protected static const SPOKES_COUNT:Number = 12;
+		
+		protected const blur:BlurFilter = new BlurFilter(3, 3);
+		
+		protected const spokes:Vector.<Line> = new Vector.<Line>();
+		protected const alphaDec:Number = 1 / SPOKES_COUNT;
+		
+		protected const center:Point = new Point();
 		
 		//--------------------------------------------------
 		// Protected properties
 		//--------------------------------------------------
 		
-		protected const anim:MovieClipLoaderAsset = new AnimAsset();
-		protected const blur:BlurFilter = new BlurFilter(3, 3);
+		protected var step:uint = 0;
 		
 		//--------------------------------------------------
 		// Initialization
@@ -62,7 +69,19 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		
 		public function BusyIndicator()
 		{
-			anim.addEventListener(Event.COMPLETE, anim_completeHandler);
+			var angleStep:Number = 2 * Math.PI / SPOKES_COUNT;
+			
+			for (var i:uint=0; i < SPOKES_COUNT; i++)
+			{
+				var angle:Number = i * angleStep;
+				var vect:Point = new Point(SPINNER_WIDTH * Math.cos(angle), SPINNER_WIDTH * Math.sin(angle));
+				spokes.push(new Line(vect.x * 0.5, vect.y * 0.5, vect.x, vect.y, 0));
+			}
+			
+			spokes.fixed = true;
+			
+			if (visible)
+				addEventListener(Event.ENTER_FRAME, enterFrameHandler);
 		}
 		
 		//--------------------------------------------------
@@ -109,11 +128,38 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		}
 		
 		//--------------------------------------------------
+		// Protected functions
+		//--------------------------------------------------
+		
+		/**
+		 * Draws the spinner based on the current alpha values. 
+		 * 
+		 */
+		protected function drawSpinner():void
+		{
+			//background
+			graphics.clear();
+			graphics.beginFill(0, 0.5);
+			graphics.drawRect(0, 0, width, height);
+			graphics.endFill();
+			
+			//spinner
+			for (var i:uint=0; i < SPOKES_COUNT; i++)
+			{
+				var spoke:Line = spokes[i];
+				
+				graphics.lineStyle(2, 0xFFFFFF, spoke.alpha, false, LineScaleMode.NORMAL, CapsStyle.ROUND);
+				graphics.moveTo(center.x + spoke.x1, center.y + spoke.y1);
+				graphics.lineTo(center.x + spoke.x2, center.y + spoke.y2);
+			}
+		}
+
+		//--------------------------------------------------
 		// Overridden functions
 		//--------------------------------------------------
 		
 		/**
-		 * Overridden to add/remove the animation to prevent it from using resources when
+		 * Overridden to start/stop the animation to prevent it from using resources when
 		 * the busy indicator is not visible.
 		 * @private
 		 */
@@ -124,28 +170,17 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			
 			super.visible = value;
 			
-			if (visible && !anim.parent)
-				addChild(anim);
-			else if (!visible && anim.parent)
-				removeChild(anim);
-			
 			if (application)
 			{
 				width = application.width;
 				height = application.height;
 				application.filters = visible ? [ blur ] : null;
 			}
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		override protected function createChildren():void
-		{
-			super.createChildren();
 			
 			if (visible)
-				addChild(anim);
+				addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+			else
+				removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
 		}
 		
 		/**
@@ -155,15 +190,10 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		{
 			super.resized( width, height );
 			
-			//center anim
-			anim.x = (width - anim.measuredWidth) / 2;
-			anim.y = (height - anim.measuredHeight) / 2;
+			center.x = width / 2;
+			center.y = height / 2;
 			
-			//background
-			graphics.clear();
-			graphics.beginFill(0, 0.5);
-			graphics.drawRect(0, 0, width, height);
-			graphics.endFill();
+			drawSpinner();
 		}
 		
 		//--------------------------------------------------
@@ -171,12 +201,20 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		//--------------------------------------------------
 		
 		/**
-		 * Handle animation complete event to reposition it when it completes loading.
+		 * Handle enter frame event.
 		 */
-		protected function anim_completeHandler(event:Event):void
+		protected function enterFrameHandler(event:Event):void
 		{
-			anim.removeEventListener(Event.COMPLETE, anim_completeHandler);
-			invalidateDisplay();
+			step = (step + 1) % SPOKES_COUNT;
+			for (var i:uint=0; i < SPOKES_COUNT; i++)
+			{
+				if (i == step)
+					spokes[i].alpha = 1;
+				else
+					spokes[i].alpha = Math.max(0, spokes[i].alpha - alphaDec);
+			}
+			
+			drawSpinner();
 		}
 		
 		/**
@@ -187,5 +225,27 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			width = application.width;
 			height = application.height;
 		}
+	}
+}
+
+//--------------------------------------------------
+// Helper classes
+//--------------------------------------------------
+
+final class Line
+{
+	public var x1:Number;
+	public var y1:Number;
+	public var x2:Number;
+	public var y2:Number;
+	public var alpha:Number;
+	
+	public function Line(x1:Number, y1:Number, x2:Number, y2:Number, alpha:Number)
+	{
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
+		this.alpha = alpha;
 	}
 }
