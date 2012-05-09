@@ -1,0 +1,19 @@
+<glo version="Version 2.0" hasFullFilePaths="false">
+  <props>
+    <w>480</w>
+    <h>720</h>
+    <rgb>16777215</rgb>
+    <pattern>freestyle</pattern>
+    <stageid>swirlstage</stageid>
+  </props>
+  <nodes>
+    <page>
+      <component id="cam" x="0" y="40" width="480" height="650"/>
+      <component id="textarea" x="0" y="0" width="400" height="40">
+        <htmlText>"&lt;TEXTFORMAT LEADING=\"2\"&gt;&lt;P ALIGN=\"LEFT\"&gt;&lt;FONT FACE=\"Verdana\" SIZE=\"26\" COLOR=\"#0B333C\" LETTERSPACING=\"0\" KERNING=\"0\"&gt;Cam - Non Production Example&lt;/FONT&gt;&lt;/P&gt;&lt;/TEXTFORMAT&gt;"</htmlText>
+        <borderStyle>false</borderStyle>
+      </component>
+    </page>
+  </nodes>
+  <filehash>ignore</filehash>
+</glo>

@@ -527,6 +527,10 @@ package org.glomaker.mobileplayer.mvcs.views
 						container.addChild(component(new GPSComponent, page.components[i]));
 						break;
 					
+					case "cam":
+						container.addChild(component(new CamComponent, page.components[i]));
+						break;
+					
 					/* DISABLED in this release
 					case "swfloader":
 						container.addChild(component(new FlashAnimation, page.components[i]));

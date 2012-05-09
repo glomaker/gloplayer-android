@@ -78,6 +78,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 				image2.contentLoaderInfo.removeEventListener( Event.COMPLETE, onImageComplete );
 				image2 = null;
 			}
+			imageLoadQueue = null;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -156,14 +157,20 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 			graphics.drawRect( 0, 0, width, height);
 			graphics.endFill();
 			
-			headingLabel.x = 0;
-			headingLabel.y = height - headingLabel.height - ScreenMaths.mmToPixels(5);
+			if( headingLabel )
+			{
+				headingLabel.x = 0;
+				headingLabel.y = height - headingLabel.height - ScreenMaths.mmToPixels(5);
+			}
 			
 			// all images
 			for each( var loader:Loader in imageLoadQueue )
 			{
-				loader.x = (width - loader.width)/2;
-				loader.y = (height - loader.height)/2;
+				if( loader )
+				{
+					loader.x = (width - loader.width)/2;
+					loader.y = (height - loader.height)/2;
+				}
 			}
 		}
 		
