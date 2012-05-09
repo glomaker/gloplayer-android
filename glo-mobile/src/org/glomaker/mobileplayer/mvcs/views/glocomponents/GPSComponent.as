@@ -49,25 +49,6 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		//
 		//--------------------------------------------------------------------------
 		
-		/**
-		 * @copy	net.dndigital.glo.mvcs.views.controls.IGloComponent#activate 
-		 */		
-		override public function activate():void
-		{
-			// override in component implementation
-			super.activate();
-			trace("activate");
-		}
-		
-		/**
-		 * @copy	net.dndigital.glo.mvcs.views.controls.IGloComponent#deactivate 
-		 */		
-		override public function deactivate():void
-		{
-			// override in component implementation
-			super.deactivate();
-			trace("deactivate");
-		}
 		
 		/**
 		 * @copy	net.dndigital.glo.mvcs.views.controls.IGloComponent#destroy
@@ -75,8 +56,6 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		override public function destroy():void
 		{
 			super.destroy();
-			
-			trace("destroy");
 			
 			// cleanup
 			if( geo )
