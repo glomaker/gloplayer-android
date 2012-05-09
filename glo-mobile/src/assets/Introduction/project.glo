@@ -144,6 +144,9 @@
         <borderStyle>false</borderStyle>
       </component>
     </page>
+    <page>
+    	<component id="gps" x="32" y="65" width="422" height="480"/>
+    </page>
   </nodes>
-  <filehash>b7c2017004d9577cc8eabccbd60171ea</filehash>
+  <filehash>ignore</filehash>
 </glo>

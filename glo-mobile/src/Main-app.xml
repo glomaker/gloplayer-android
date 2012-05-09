@@ -186,6 +186,10 @@
 			</array>
 			<key>UIFileSharingEnabled</key>
 			<string>YES</string>
+			<key>location-services</key>
+            <string>YES</string>
+            <key>gps</key>
+            <string>YES</string>
 		]]>
 		</InfoAdditions>
 		<requestedDisplayResolution>high</requestedDisplayResolution>

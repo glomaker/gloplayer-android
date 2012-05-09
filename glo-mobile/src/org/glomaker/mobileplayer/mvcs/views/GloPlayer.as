@@ -36,6 +36,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import mx.utils.StringUtil;
 	
 	import net.dndigital.components.*;
+	
 	import org.glomaker.mobileplayer.mvcs.events.NotificationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.PlayerEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
@@ -518,6 +519,12 @@ package org.glomaker.mobileplayer.mvcs.views
 						break;
 					case "videoplayer":
 						container.addChild(component(new VideoPlayer, page.components[i]));
+						break;
+					
+					
+					/* aspirational controls */
+					case "gps":
+						container.addChild(component(new GPSComponent, page.components[i]));
 						break;
 					
 					/* DISABLED in this release
