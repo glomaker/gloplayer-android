@@ -107,9 +107,10 @@
 	<!-- The icon the system uses for the application. For at least one resolution,
 	specify the path to a PNG file included in the AIR package. Optional. -->
 	<icon>
-		<image57x57>icons/icon-57.png</image57x57>
-		<image72x72>icons/icon-72.png</image72x72>
-		<image114x114>icons/icon-114.png</image114x114>
+		<image29x29>icons/icon-29.png</image29x29>
+		<image57x57>icons/Icon.png</image57x57>
+		<image72x72>icons/Icon-72.png</image72x72>
+		<image114x114>icons/Icon@2x.png</image114x114>
 	</icon>
 
 	<!-- Whether the application handles the update when a user double-clicks an update version
@@ -190,6 +191,22 @@
             <string>YES</string>
             <key>gps</key>
             <string>YES</string>
+            
+			<key>CFBundleIcons</key>
+			<dict>
+			    <key>CFBundlePrimaryIcon</key>
+			    <dict>
+			        <key>CFBundleIconFiles</key>
+			        <array>
+			            <string>icons/Icon.png</string>
+			            <string>icons/Icon@2x.png</string>
+			            <string>icons/Icon-72.png</string>
+			            <string>icons/Icon-144.png</string>
+			        </array>
+			        <key>UIPrerenderedIcon</key>
+			        <true/>
+			    </dict>
+			</dict>
 		]]>
 		</InfoAdditions>
 		<requestedDisplayResolution>high</requestedDisplayResolution>
