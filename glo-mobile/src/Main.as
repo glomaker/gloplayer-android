@@ -47,6 +47,7 @@ package
 	
 	import org.robotlegs.mvcs.Context;
 	
+	[SWF(backgroundColor='#000000')]
 	public class Main extends Sprite
 	{
 		//--------------------------------------------------------------------------
