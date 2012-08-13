@@ -64,7 +64,7 @@ package org.glomaker.mobileplayer.mvcs
 			// Singletons
 			injector.mapSingletonOf(IProjectService, ProjectService);
 			injector.mapSingletonOf(IFileService, AppDirFileService, "appFileService");
-			injector.mapSingletonOf(IFileService, ZippedFileService, "docFileService");
+			injector.mapSingletonOf(IFileService, DocumentsDirFileService, "docFileService");
 			injector.mapSingletonOf(GloModel, GloModel);
 			
 			// Controllers and Commands
