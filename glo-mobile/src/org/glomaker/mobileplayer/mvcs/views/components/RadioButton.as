@@ -171,7 +171,11 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		{
 			super.commited();
 			
-			labelDisplay.text = label;
+			if (labelDisplay.text != label)
+			{
+				labelDisplay.text = label;
+				invalidateDisplay();
+			}
 		}
 		
 		/**
@@ -190,7 +194,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			labelDisplay.x = radio.x + radio.width + gap;
 			labelDisplay.width = width - labelDisplay.x;
 			
-			labelDisplay.height = Math.ceil(lm.height + lm.descent);
+			labelDisplay.height = Math.ceil(lm.height + lm.descent + 4);
 			labelDisplay.y = Math.floor((height - labelDisplay.height) / 2);
 			
 			hit.graphics.clear();
