@@ -36,6 +36,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import mx.utils.StringUtil;
 	
 	import net.dndigital.components.*;
+	
 	import org.glomaker.mobileplayer.mvcs.events.NotificationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.PlayerEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
@@ -44,6 +45,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import org.glomaker.mobileplayer.mvcs.views.components.PageNumberDisplay;
 	import org.glomaker.mobileplayer.mvcs.views.components.ProgressBar;
 	import org.glomaker.mobileplayer.mvcs.views.glocomponents.*;
+	import org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews.AccessViews;
 
 	/**
 	 * Dispatched when an instance of <code>GloPlayer</code> changed page.
@@ -518,6 +520,9 @@ package org.glomaker.mobileplayer.mvcs.views
 						break;
 					case "videoplayer":
 						container.addChild(component(new VideoPlayer, page.components[i]));
+						break;
+					case "accessviews":
+						container.addChild(component(new AccessViews, page.components[i]));
 						break;
 					
 					/* DISABLED in this release
