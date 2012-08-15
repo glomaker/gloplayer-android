@@ -163,6 +163,29 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		/**
 		 * @private
 		 */
+		protected var _rawXML:XML;
+		/**
+		 * Raw XML configuration of the component.
+		 *
+		 * @langversion 3.0
+		 * @playerversion Flash 10
+		 * @playerversion AIR 2.5
+		 * @productversion Flex 4.5
+		 */
+		public function get rawXML():XML { return _rawXML; }
+		/**
+		 * @private
+		 */
+		public function set rawXML(value:XML):void
+		{
+			if (_rawXML == value)
+				return;
+			_rawXML = value;
+		}
+		
+		/**
+		 * @private
+		 */
 		protected var _data:Object;
 		/**
 		 * Data structure to hold any additional/extra properties for current component.

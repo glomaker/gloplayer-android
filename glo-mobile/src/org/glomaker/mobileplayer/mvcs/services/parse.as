@@ -108,6 +108,11 @@ function $component(xml:XML, directory:File):Component {
 		component.height = xml.@height;
 		component.directory = directory;
 		component.data = $data(xml.children());
+		
+		//for some reason, if we assign a reference of 'xml' to 'rawXML',
+		//'rawXML' will have all its children removed when 'GloComponent::dataUpdated()'
+		//is called, so we make a copy.
+		component.rawXML = new XML(xml.toXMLString());
 	return component;
 }
 
