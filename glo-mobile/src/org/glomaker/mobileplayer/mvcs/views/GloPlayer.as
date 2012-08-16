@@ -358,7 +358,7 @@ package org.glomaker.mobileplayer.mvcs.views
 				const container:Sprite = current as Sprite;
 				
 				for (var i:int = 0; i < container.numChildren; i ++)
-					if (container.getChildAt(0) is IGloComponent)
+					if (container.getChildAt(i) is IGloComponent)
 						resize(container.getChildAt(i) as IGloComponent, cooficient, offset);
 			}
 			
