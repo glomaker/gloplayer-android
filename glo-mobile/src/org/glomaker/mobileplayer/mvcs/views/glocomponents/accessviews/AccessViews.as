@@ -38,12 +38,23 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 	public class AccessViews extends GloComponent
 	{
 		//--------------------------------------------------
+		// Instance constants
+		//--------------------------------------------------
+		
+		protected static const SPEAKERS_HEIGHT:uint = 145;
+		protected static const DEFAULT_GAP:uint = ScreenMaths.mmToPixels(1);
+
+		//--------------------------------------------------
 		// Instance variables
 		//--------------------------------------------------
 		
 		[Embed(source="files/noface.png")]
 		protected var noface:Class;
 
+		//container to hold components with otiginal size then scaled
+		//based on coeficient between orginal and current component size.
+		protected var container:Sprite = new Sprite();
+		
 		protected var instructionsDisplay:TextField = new TextField();
 		protected var speakers:Vector.<Sprite> = new Vector.<Sprite>();
 		protected var topics:Vector.<RadioButton> = new Vector.<RadioButton>();
@@ -146,12 +157,12 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			
 			for each (speakerDisplay in speakers)
 			{
-				removeChild(speakerDisplay);
+				container.removeChild(speakerDisplay);
 			}
 			
 			for each (topicDisplay in topics)
 			{
-				removeChild(topicDisplay);
+				container.removeChild(topicDisplay);
 				topicDisplay.removeEventListener(Event.CHANGE, topicDisplay_changeHandler);
 			}
 			
@@ -170,7 +181,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 					//TODO load image
 					
 					speakers.push(speakerDisplay);
-					addChild(speakerDisplay);
+					container.addChild(speakerDisplay);
 				}
 				
 				for each (topic in accessVDP.topics)
@@ -180,7 +191,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 					topicDisplay.addEventListener(Event.CHANGE, topicDisplay_changeHandler);
 					
 					topics.push(topicDisplay);
-					addChild(topicDisplay);
+					container.addChild(topicDisplay);
 				}
 			}
 			
@@ -215,7 +226,9 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			instructionsDisplay.multiline = true;
 			instructionsDisplay.wordWrap = true;
 			instructionsDisplay.autoSize = TextFieldAutoSize.LEFT;
-			addChild(instructionsDisplay);
+			container.addChild(instructionsDisplay);
+			
+			addChild(container);
 		}
 		
 		override protected function dataUpdated(data:Object):void
@@ -241,28 +254,29 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			}
 		}
 		
+		// use original component size for laying out the items in 'container',
+		// then scale 'container' based on coeficient between orginal and current component size.
 		override protected function resized(width:Number, height:Number):void
 		{
-			var scale:Number = width / component.width;
-			var speakersHeight:uint = Math.ceil(145 * scale);
-			var defaultGap:uint = ScreenMaths.mmToPixels(1);
+			super.resized(width, height);
+			
+			const w:Number = component.width;
+			const h:Number = component.height;
 			
 			var x:Number;
 			var y:Number;
 			
-			super.resized(width, height);
-			
 			//instructions
-			instructionsDisplay.width = width;
+			instructionsDisplay.width = w;
 			
 			//speakers
 			if (speakers.length > 0)
 			{
-				var speakerSize:Number = (width - (defaultGap * (speakers.length + 1))) / speakers.length;
-				speakerSize = Math.min(speakerSize, speakersHeight);
-				var speakerGap:uint = Math.floor((width - Math.ceil(speakerSize * speakers.length)) / (speakers.length + 1));
+				var speakerSize:Number = (w - (DEFAULT_GAP * (speakers.length + 1))) / speakers.length;
+				speakerSize = Math.min(speakerSize, SPEAKERS_HEIGHT);
+				var speakerGap:uint = Math.floor((w - Math.ceil(speakerSize * speakers.length)) / (speakers.length + 1));
 				x = speakerGap;
-				y = instructionsDisplay.height + Math.floor((speakersHeight - speakerSize) / 2);
+				y = instructionsDisplay.height + Math.floor((SPEAKERS_HEIGHT - speakerSize) / 2);
 				for each (var speaker:Sprite in speakers)
 				{
 					var image:ScaleBitmap = speaker.getChildAt(0) as ScaleBitmap;
@@ -279,10 +293,10 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			//topics
 			if (topics.length > 0)
 			{
-				x = dividerWidth * scale + defaultGap;
-				y = instructionsDisplay.height + speakersHeight;
-				var topicWidth:Number = width - x;
-				var topicHeight:Number = (height - y) / topics.length;
+				x = dividerWidth + DEFAULT_GAP;
+				y = instructionsDisplay.height + SPEAKERS_HEIGHT;
+				var topicWidth:Number = w - x;
+				var topicHeight:Number = (h - y) / topics.length;
 				for each (var topic:RadioButton in topics)
 				{
 					topic.x = x;
@@ -293,6 +307,10 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 					y += topicHeight;
 				}
 			}
+			
+			//scale container
+			container.scaleX = width / w;
+			container.scaleY = height / h;
 		}
 	}
 }
