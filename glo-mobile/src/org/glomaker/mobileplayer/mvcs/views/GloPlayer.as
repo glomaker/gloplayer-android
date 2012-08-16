@@ -35,16 +35,25 @@ package org.glomaker.mobileplayer.mvcs.views
 	
 	import mx.utils.StringUtil;
 	
-	import net.dndigital.components.*;
+	import net.dndigital.components.Container;
+	import net.dndigital.components.GUIComponent;
+	import net.dndigital.components.IGUIComponent;
 	
 	import org.glomaker.mobileplayer.mvcs.events.NotificationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.PlayerEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
-	import org.glomaker.mobileplayer.mvcs.models.vo.*;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Component;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Page;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Project;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	import org.glomaker.mobileplayer.mvcs.views.components.PageNumberDisplay;
 	import org.glomaker.mobileplayer.mvcs.views.components.ProgressBar;
-	import org.glomaker.mobileplayer.mvcs.views.glocomponents.*;
+	import org.glomaker.mobileplayer.mvcs.views.glocomponents.IFullscreenable;
+	import org.glomaker.mobileplayer.mvcs.views.glocomponents.IGloComponent;
+	import org.glomaker.mobileplayer.mvcs.views.glocomponents.Image;
+	import org.glomaker.mobileplayer.mvcs.views.glocomponents.Rectangle;
+	import org.glomaker.mobileplayer.mvcs.views.glocomponents.TextArea;
+	import org.glomaker.mobileplayer.mvcs.views.glocomponents.VideoPlayer;
 	import org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews.AccessViews;
 
 	/**
