@@ -25,6 +25,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	
@@ -35,6 +36,12 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 	import org.glomaker.mobileplayer.mvcs.views.components.RadioButton;
 	import org.glomaker.mobileplayer.mvcs.views.glocomponents.GloComponent;
 	
+	/**
+	 * AccessViews component.
+	 * 
+	 * @author haykel
+	 * 
+	 */
 	public class AccessViews extends GloComponent
 	{
 		//--------------------------------------------------
@@ -58,6 +65,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 		protected var instructionsDisplay:TextField = new TextField();
 		protected var speakers:Vector.<Sprite> = new Vector.<Sprite>();
 		protected var topics:Vector.<RadioButton> = new Vector.<RadioButton>();
+		protected var speakerPopup:SpeakerPopup = new SpeakerPopup();
 		
 		protected var selectedTopic:int = -1;
 		
@@ -147,6 +155,9 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 		// Protected functions
 		//--------------------------------------------------
 		
+		/**
+		 * Recreates UI elements (topics, speakers) based on current content of 'accessVDP'.
+		 */
 		protected function updateUI():void
 		{
 			var speaker:SpeakerData;
@@ -158,6 +169,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			for each (speakerDisplay in speakers)
 			{
 				container.removeChild(speakerDisplay);
+				speakerDisplay.removeEventListener(MouseEvent.CLICK, speakerDisplay_clickHandler);
 			}
 			
 			for each (topicDisplay in topics)
@@ -169,7 +181,6 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			selectedTopic = -1;
 			speakers.length = 0;
 			topics.length = 0;
-			
 			
 			if (accessVDP)
 			{
@@ -185,6 +196,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 					
 					speakerDisplay = new Sprite();
 					speakerDisplay.addChild(img);
+					speakerDisplay.addEventListener(MouseEvent.CLICK, speakerDisplay_clickHandler);
 					
 					speakers.push(speakerDisplay);
 					container.addChild(speakerDisplay);
@@ -201,30 +213,80 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 				}
 			}
 			
+			//put speaker popup on top
+			if (speakerPopup.parent == container)
+				container.setChildIndex(speakerPopup, container.numChildren - 1);
+			
 			invalidateDisplay();
 		}
 		
-		protected function topicDisplay_changeHandler(event:Event):void
+		/**
+		 * Shows the speaker popup if not visible.
+		 */
+		protected function showSpeakerPopup():void
 		{
-			if (selectedTopic >= 0)
-				topics[selectedTopic].selected = false;
-			
-			selectedTopic = topics.indexOf(event.currentTarget);
-			topics[selectedTopic].selected = true;
+			if (!speakerPopup.visible)
+			{
+				speakerPopup.visible = true;
+				speakerPopup.addEventListener(Event.CLOSE, speakerPopup_closeHandler);
+			}
+		}
+		
+
+		/**
+		 * Hides the speaker popup if visible.
+		 */
+		protected function hideSpeakerPopup():void
+		{
+			if (speakerPopup.visible)
+			{
+				speakerPopup.stop();
+				speakerPopup.visible = false;
+				speakerPopup.removeEventListener(Event.CLOSE, speakerPopup_closeHandler);
+			}
 		}
 		
 		//--------------------------------------------------
 		// Overrides
 		//--------------------------------------------------
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function initialize():IGUIComponent
 		{
 			mapProperty("instructions");
 			mapProperty("DividerWidth", "dividerWidth");
 			
+			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler, false, 0, true);
+			
 			return super.initialize();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function deactivate():void
+		{
+			super.deactivate();
+			
+			speakerPopup.stop();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function destroy():void
+		{
+			super.destroy();
+			
+			speakerPopup.topic = null;
+			speakerPopup.speaker = null;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function createChildren():void
 		{
 			super.createChildren();
@@ -234,9 +296,15 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			instructionsDisplay.autoSize = TextFieldAutoSize.LEFT;
 			container.addChild(instructionsDisplay);
 			
+			speakerPopup.visible = false;
+			container.addChild(speakerPopup);
+			
 			addChild(container);
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function dataUpdated(data:Object):void
 		{
 			super.dataUpdated(data);
@@ -249,6 +317,9 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			accessVDP = vdp;
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function commited():void
 		{
 			super.commited();
@@ -260,10 +331,14 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			}
 		}
 		
-		// use original component size for laying out the items in 'container',
-		// then scale 'container' based on coeficient between orginal and current component size.
+		/**
+		 * @inheritDoc
+		 */
 		override protected function resized(width:Number, height:Number):void
 		{
+			// use original component size for laying out the items in 'container',
+			// then scale 'container' based on coeficient between orginal and current component size.
+			
 			super.resized(width, height);
 			
 			const w:Number = component.width;
@@ -314,9 +389,60 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 				}
 			}
 			
+			//speaker popup
+			speakerPopup.y = instructionsDisplay.height;
+			speakerPopup.width = w;
+			speakerPopup.height = SPEAKERS_HEIGHT;
+			
 			//scale container
 			container.scaleX = width / w;
 			container.scaleY = height / h;
+		}
+		
+		//--------------------------------------------------
+		// Event handlers
+		//--------------------------------------------------
+		
+		/**
+		 * Handler for REMOVED_FROM_STAGE event. Hide speaker popup.
+		 */
+		protected function removedFromStageHandler(event:Event):void
+		{
+			hideSpeakerPopup();
+		}
+
+		/**
+		 * Handler for topic change event.
+		 */
+		protected function topicDisplay_changeHandler(event:Event):void
+		{
+			if (selectedTopic >= 0)
+				topics[selectedTopic].selected = false;
+			
+			selectedTopic = topics.indexOf(event.currentTarget);
+			speakerPopup.topic = accessVDP.topics[selectedTopic];
+			topics[selectedTopic].selected = true;
+		}
+		
+		/**
+		 * Handler for speaker click event.
+		 */
+		protected function speakerDisplay_clickHandler(event:MouseEvent):void
+		{
+			if (selectedTopic < 0)
+				return;
+			
+			var selectedSpeaker:int = speakers.indexOf(event.currentTarget);
+			speakerPopup.speaker = accessVDP.speakers[selectedSpeaker];
+			showSpeakerPopup();
+		}
+		
+		/**
+		 * Handler for speaker popup close event.
+		 */
+		protected function speakerPopup_closeHandler(event:Event):void
+		{
+			hideSpeakerPopup();
 		}
 	}
 }
