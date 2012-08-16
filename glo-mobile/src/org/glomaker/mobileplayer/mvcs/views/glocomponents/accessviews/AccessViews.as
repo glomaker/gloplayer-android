@@ -29,8 +29,8 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 	import flash.text.TextFieldAutoSize;
 	
 	import net.dndigital.components.IGUIComponent;
+	import net.dndigital.components.Image;
 	
-	import org.bytearray.display.ScaleBitmap;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	import org.glomaker.mobileplayer.mvcs.views.components.RadioButton;
 	import org.glomaker.mobileplayer.mvcs.views.glocomponents.GloComponent;
@@ -176,9 +176,15 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 				var nofaceBmp:Bitmap = new noface();
 				for each (speaker in accessVDP.speakers)
 				{
+					var img:Image = new Image();
+					img.maintainRatio = false;
+					if (speaker.imageSource)
+						img.source = speaker.imageSource;
+					else
+						img.bitmapData = nofaceBmp.bitmapData;
+					
 					speakerDisplay = new Sprite();
-					speakerDisplay.addChild(new ScaleBitmap(nofaceBmp.bitmapData));
-					//TODO load image
+					speakerDisplay.addChild(img);
 					
 					speakers.push(speakerDisplay);
 					container.addChild(speakerDisplay);
@@ -279,7 +285,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 				y = instructionsDisplay.height + Math.floor((SPEAKERS_HEIGHT - speakerSize) / 2);
 				for each (var speaker:Sprite in speakers)
 				{
-					var image:ScaleBitmap = speaker.getChildAt(0) as ScaleBitmap;
+					var image:Image = speaker.getChildAt(0) as Image;
 					image.width = speakerSize;
 					image.height = speakerSize;
 					
