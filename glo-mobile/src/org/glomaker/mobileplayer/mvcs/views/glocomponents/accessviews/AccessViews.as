@@ -243,6 +243,10 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 		
 		override protected function resized(width:Number, height:Number):void
 		{
+			var scale:Number = width / component.width;
+			var speakersHeight:uint = Math.ceil(145 * scale);
+			var defaultGap:uint = ScreenMaths.mmToPixels(1);
+			
 			var x:Number;
 			var y:Number;
 			
@@ -254,12 +258,11 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			//speakers
 			if (speakers.length > 0)
 			{
-				var speakerGap:uint = ScreenMaths.mmToPixels(1);
-				var speakerSize:Number = (width - (speakerGap * (speakers.length + 1))) / speakers.length;
-				speakerSize = Math.min(speakerSize, 145);
-				speakerGap = Math.floor((width - Math.ceil(speakerSize * speakers.length)) / (speakers.length + 1));
+				var speakerSize:Number = (width - (defaultGap * (speakers.length + 1))) / speakers.length;
+				speakerSize = Math.min(speakerSize, speakersHeight);
+				var speakerGap:uint = Math.floor((width - Math.ceil(speakerSize * speakers.length)) / (speakers.length + 1));
 				x = speakerGap;
-				y = instructionsDisplay.height + Math.floor((145 - speakerSize) / 2);
+				y = instructionsDisplay.height + Math.floor((speakersHeight - speakerSize) / 2);
 				for each (var speaker:Sprite in speakers)
 				{
 					var image:ScaleBitmap = speaker.getChildAt(0) as ScaleBitmap;
@@ -276,13 +279,15 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			//topics
 			if (topics.length > 0)
 			{
-				y = instructionsDisplay.height + 145;
+				x = dividerWidth * scale + defaultGap;
+				y = instructionsDisplay.height + speakersHeight;
+				var topicWidth:Number = width - x;
 				var topicHeight:Number = (height - y) / topics.length;
 				for each (var topic:RadioButton in topics)
 				{
-					topic.x = dividerWidth;
+					topic.x = x;
 					topic.y = y;
-					topic.width = width - topic.x;
+					topic.width = topicWidth;
 					topic.height = topicHeight;
 					
 					y += topicHeight;
