@@ -194,6 +194,11 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected var fullscreened:IFullscreenable;
 		
+		/**
+		 * @private
+		 */
+		protected var popups:Vector.<IGUIComponent> = new Vector.<IGUIComponent>();
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Properties
@@ -273,6 +278,37 @@ package org.glomaker.mobileplayer.mvcs.views
 				target.isFullScreened = true;
 			}
 			invalidateDisplay();
+		}
+		
+		/**
+		 * Attempts to show a component as a popup over the page area.
+		 *
+		 * @param	target	<code>IGUIComponent</code> instance, that should be displayed as a popup.
+		 */
+		public function addPopup(target:IGUIComponent):void
+		{
+			if (target)
+			{
+				add(target);
+				invalidateDisplay();
+				if (popups.indexOf(target) < 0)
+					popups.push(target);
+			}
+		}
+		
+		/**
+		 * Attempts to remove a popup that was previously added with 'addPopup'.
+		 *
+		 * @param	target	<code>IGUIComponent</code> instance, that should be removed.
+		 */
+		public function removePopup(target:IGUIComponent):void
+		{
+			var i:int = target ? popups.indexOf(target) : -1;
+			if (i >= 0)
+			{
+				remove(target);
+				popups.splice(i, 1);
+			}
 		}
 		
 		/**
@@ -376,6 +412,15 @@ package org.glomaker.mobileplayer.mvcs.views
 			pageNumber.visible = fullscreened == null;
 			progress.visible = fullscreened == null;
 
+			// resize popups
+			for each (var popup:IGUIComponent in popups)
+			{
+				popup.x = 0;
+				popup.y = 0;
+				popup.width = width;
+				popup.height = height - controls.height;
+			}
+			
 			// draw background
 			graphics.clear();
 			if (project) {
