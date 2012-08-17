@@ -32,6 +32,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 	import net.dndigital.components.IGUIComponent;
 	import net.dndigital.components.Image;
 	
+	import org.glomaker.mobileplayer.mvcs.events.NotificationEvent;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	import org.glomaker.mobileplayer.mvcs.views.components.RadioButton;
 	import org.glomaker.mobileplayer.mvcs.views.glocomponents.GloComponent;
@@ -66,6 +67,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 		protected var speakers:Vector.<Sprite> = new Vector.<Sprite>();
 		protected var topics:Vector.<RadioButton> = new Vector.<RadioButton>();
 		protected var speakerPopup:SpeakerPopup = new SpeakerPopup();
+		protected var scriptPopup:ScriptPopup = new ScriptPopup();
 		
 		protected var selectedTopic:int = -1;
 		
@@ -229,9 +231,9 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			{
 				speakerPopup.visible = true;
 				speakerPopup.addEventListener(Event.CLOSE, speakerPopup_closeHandler);
+				speakerPopup.addEventListener(ShowScriptEvent.SHOW_SCRIPT, speakerPopup_showScriptHandler);
 			}
 		}
-		
 
 		/**
 		 * Hides the speaker popup if visible.
@@ -243,9 +245,45 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 				speakerPopup.stop();
 				speakerPopup.visible = false;
 				speakerPopup.removeEventListener(Event.CLOSE, speakerPopup_closeHandler);
+				speakerPopup.removeEventListener(ShowScriptEvent.SHOW_SCRIPT, speakerPopup_showScriptHandler);
 			}
 		}
 		
+		/**
+		 * Shows the script popup if not visible.
+		 */
+		protected function showScriptPopup(file:String):void
+		{
+			if (!scriptPopup.parent)
+			{
+				scriptPopup.file = file;
+				player.addPopup(scriptPopup);
+				scriptPopup.addEventListener(Event.CLOSE, scriptPopup_closeHandler);
+			}
+		}
+		
+		/**
+		 * Hides the script popup if visible.
+		 */
+		protected function hideScriptPopup():void
+		{
+			if (scriptPopup.parent)
+			{
+				player.removePopup(scriptPopup);
+				scriptPopup.removeEventListener(Event.CLOSE, scriptPopup_closeHandler);
+			}
+		}
+		
+		/**
+		 * Displays a notification when a user clicks on speaker and with no topic selected.
+		 * Call the function with 'delay(showWarning)' in mouse handlers to avoid a case where
+		 * the notification is immediately removed.
+		 */
+		protected function showWarning():void
+		{
+			player.dispatchEvent(new NotificationEvent(NotificationEvent.NOTIFICATION, "Please choose a topic first!"));
+		}
+
 		//--------------------------------------------------
 		// Overrides
 		//--------------------------------------------------
@@ -408,6 +446,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 		 */
 		protected function removedFromStageHandler(event:Event):void
 		{
+			hideScriptPopup();
 			hideSpeakerPopup();
 		}
 
@@ -430,7 +469,10 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 		protected function speakerDisplay_clickHandler(event:MouseEvent):void
 		{
 			if (selectedTopic < 0)
+			{
+				delay(showWarning);
 				return;
+			}
 			
 			var selectedSpeaker:int = speakers.indexOf(event.currentTarget);
 			speakerPopup.speaker = accessVDP.speakers[selectedSpeaker];
@@ -443,6 +485,22 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 		protected function speakerPopup_closeHandler(event:Event):void
 		{
 			hideSpeakerPopup();
+		}
+		
+		/**
+		 * Handler for speaker popup show script event.
+		 */
+		protected function speakerPopup_showScriptHandler(event:ShowScriptEvent):void
+		{
+			showScriptPopup(event.file);
+		}		
+		
+		/**
+		 * Handler for script popup close event.
+		 */
+		protected function scriptPopup_closeHandler(event:Event):void
+		{
+			hideScriptPopup();
 		}
 	}
 }

@@ -38,6 +38,11 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 	 * Dispatched when the user clicks the 'close' button.
 	 */
 	[Event(name="close", type="flash.events.Event")]
+
+	/**
+	 * Dispatched when the user clicks the 'script' button.
+	 */
+	[Event(name="showScript", type="org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews.ShowScriptEvent")]
 	
 	/**
 	 * Popup that displays buttons for playing the aduio and displaying the script
@@ -286,6 +291,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 					break;
 				
 				case scriptButton:
+					dispatchEvent(ShowScriptEvent.create(script));
 					break;
 				
 				case closeButton:
