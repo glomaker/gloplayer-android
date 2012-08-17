@@ -28,6 +28,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
+	import flash.text.TextLineMetrics;
 	
 	import net.dndigital.components.GUIComponent;
 	
@@ -169,8 +170,6 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 		 */
 		override protected function createChildren():void
 		{
-			const buttonSize:uint = ScreenMaths.mmToPixels(12);
-			
 			super.createChildren();
 			
 			titleDisplay.defaultTextFormat = new TextFormat("Verdana", 26, 0x0B333C);
@@ -179,23 +178,15 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			titleDisplay.autoSize = TextFieldAutoSize.LEFT;
 			addChild(titleDisplay);
 			
-			playButton.width = buttonSize;
-			playButton.height = buttonSize;
 			playButton.visible = false;
 			addChild(playButton);
 			
-			stopButton.width = buttonSize;
-			stopButton.height = buttonSize;
 			stopButton.visible = false;
 			addChild(stopButton);
 			
-			scriptButton.width = buttonSize;
-			scriptButton.height = buttonSize;
 			scriptButton.visible = false;
 			addChild(scriptButton);
 			
-			closeButton.width = buttonSize;
-			closeButton.height = buttonSize;
 			addChild(closeButton);
 		}
 		
@@ -233,7 +224,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 		{
 			super.resized(width, height);
 			
-			const padding:uint = ScreenMaths.mmToPixels(1);
+			const padding:uint = 0; //ScreenMaths.mmToPixels(1);
 			const buttonGap:uint = ScreenMaths.mmToPixels(3);
 			
 			// prepare drawing
@@ -241,7 +232,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			g.clear();
 			
 			// background
-			g.beginFill( 0xFFFFFF, 0.8 );
+			g.beginFill(0xFFFFFF, 0.8);
 			g.drawRect(0, 0, width, height);
 			g.endFill();
 			
@@ -251,17 +242,28 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 			titleDisplay.width = width - padding - padding;
 			
 			//buttons
+			var tm:TextLineMetrics = titleDisplay.getLineMetrics(0);
+			var buttonSize:uint = Math.min(ScreenMaths.mmToPixels(12), height - (tm.height + tm.descent + 4));
+			
 			playButton.x = padding;
-			playButton.y = height - padding - playButton.height;
+			playButton.y = height - padding - buttonSize;
+			playButton.width = buttonSize;
+			playButton.height = buttonSize;
 			
 			stopButton.x = playButton.x;
 			stopButton.y = playButton.y;
+			stopButton.width = buttonSize;
+			stopButton.height = buttonSize;
 			
-			scriptButton.x = playButton.x + playButton.width + buttonGap;
+			scriptButton.x = playButton.x + buttonSize + buttonGap;
 			scriptButton.y = playButton.y;
+			scriptButton.width = buttonSize;
+			scriptButton.height = buttonSize;
 			
-			closeButton.x = width - padding - stopButton.width;
+			closeButton.x = width - padding - buttonSize;
 			closeButton.y = playButton.y;
+			closeButton.width = buttonSize;
+			closeButton.height = buttonSize;
 		}
 		
 		//--------------------------------------------------
