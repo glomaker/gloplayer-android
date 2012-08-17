@@ -136,7 +136,6 @@ package net.dndigital.components
 			
 			addEventListener(MouseEvent.MOUSE_DOWN, handleMouse);
 			addEventListener(MouseEvent.MOUSE_UP, handleMouse);
-			addEventListener(MouseEvent.CLICK, handleMouse);
 			
 			return super.initialize();
 		}
@@ -154,15 +153,30 @@ package net.dndigital.components
 			{
 				case MouseEvent.MOUSE_DOWN:
 					down = true;
+					addEventListener(MouseEvent.MOUSE_OUT, handleMouse);
+					addEventListener(MouseEvent.MOUSE_OVER, handleMouse);
+					stage.addEventListener(MouseEvent.MOUSE_UP, handleMouse);
 					break;
 				
 				case MouseEvent.MOUSE_UP:
 					down = false;
+					removeEventListener(MouseEvent.MOUSE_OUT, handleMouse);
+					removeEventListener(MouseEvent.MOUSE_OVER, handleMouse);
+					stage.removeEventListener(MouseEvent.MOUSE_UP, handleMouse);
+					
+					if (event.currentTarget == this)
+					{
+						selected = !selected;
+						dispatchEvent(new Event(Event.CHANGE));
+					}
 					break;
 				
-				case MouseEvent.CLICK:
-					selected = !selected;
-					dispatchEvent(new Event(Event.CHANGE));
+				case MouseEvent.MOUSE_OUT:
+					down = false;
+					break;
+				
+				case MouseEvent.MOUSE_OVER:
+					down = true;
 					break;
 			}
 		}
