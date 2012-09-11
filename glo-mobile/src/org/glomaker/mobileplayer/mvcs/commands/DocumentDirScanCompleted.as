@@ -25,10 +25,8 @@
 */
 package org.glomaker.mobileplayer.mvcs.commands
 {
-	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
-	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
 	import org.glomaker.mobileplayer.mvcs.services.IFileService;
-	
+	import org.glomaker.mobileplayer.mvcs.services.PrepareGLOsService;
 	import org.robotlegs.mvcs.Command;
 
 	/**
@@ -44,6 +42,8 @@ package org.glomaker.mobileplayer.mvcs.commands
 		[Inject(name="docFileService")]
 		public var docsDirService:IFileService;
 		
+		[Inject]
+		public var prepareGLOsService:PrepareGLOsService;
 		
 		/**
 		 * @inheritDoc 
@@ -52,37 +52,8 @@ package org.glomaker.mobileplayer.mvcs.commands
 		{
 			super.execute();
 			
-			// get glos
-			var glos:Vector.<Glo> = appDirService.glos.concat( docsDirService.glos );
-			
-			// alphabetical sort
-			// unfortunately no sortOn for vectors - but this should be a fast approach with small arrays
-			glos.sort( sortF ); 
-			
-			// pass on to application
-			dispatch(new GloMenuEvent(GloMenuEvent.DIRECTORY_LISTED, null, glos));
-		}
-		
-		
-		/**
-		 * Sort function to carry out an alphabetical comparison.
-		 * @param g1
-		 * @param g2
-		 * @return 0 if equal, 1 if g1 > g2, -1 if g2 < g1
-		 */		
-		protected function sortF( g1:Glo, g2:Glo ):int
-		{
-			var n1:String = g1.displayName.toLowerCase();
-			var n2:String = g2.displayName.toLowerCase();
-			
-			if( n1 > n2 )
-			{
-				return 1;
-			}else if( n1 < n2 ){
-				return -1;
-			}
-			
-			return 0;
+			// prepare glos
+			prepareGLOsService.glos = appDirService.glos.concat( docsDirService.glos );
 		}
 	}
 }
