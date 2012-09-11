@@ -178,6 +178,31 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		/**
 		 * @private
 		 */
+		private var _journey:JourneySettings;
+
+		/**
+		 * Journey settings.
+		 */
+		public function get journey():JourneySettings
+		{
+			return _journey;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set journey(value:JourneySettings):void
+		{
+			if (value == journey)
+				return;
+			
+			_journey = value;
+		}
+		
+		
+		/**
+		 * @private
+		 */
 		private var _pages:Vector.<Page>;
 		
 		/**

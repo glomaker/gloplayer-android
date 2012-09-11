@@ -76,9 +76,31 @@ function $project(xml:XML, directory:File):Project {
 		project.width 			= xml.props.w;
 		project.height 			= xml.props.h;
 		project.background 		= xml.props.rgb;
+		project.journey 		= xml.hasOwnProperty("journey") ? $journey(xml.journey[0]) : null;
 		project.pages 			= $list(xml.nodes.page, new Vector.<Page>, curry($page, true, directory));
 		project.directory 		= directory;
 	return project;
+}
+
+/**
+ * Parses <code>xml</code> into an instance of <code>JourneySettings</code>.
+ * 
+ * @param xml 		<code>XML</code> to be parsed.
+ * @return 			<code>JourneySettings</code> instance parsed from <code>xml</code> or <code>null</code> if the journey data is not valid (empty name or index is 0).
+ */
+function $journey(xml:XML):JourneySettings
+{
+	var settings:JourneySettings = new JourneySettings();
+	settings.name = (xml.name != "null" ? xml.name : "");
+	settings.location = (xml.location != "null" ? xml.location : "");
+	settings.index = parseInt(xml.index);
+	settings.gpsLat = parseFloat(xml.gps.@lat);
+	settings.gpsLong = parseFloat(xml.gps.@long);
+	settings.gpsEnabled = (xml.gps.@enabled == "true");
+	settings.qrCode = (xml.qr.@code != "null" ? xml.qr.@code : "");
+	settings.qrEnabled = (xml.qr.@enabled == "true");
+	
+	return (settings.name.length > 0 && settings.index > 0) ? settings : null;
 }
 
 /**
