@@ -35,6 +35,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
+	import org.glomaker.mobileplayer.mvcs.models.vo.MenuItem;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	import org.glomaker.mobileplayer.mvcs.views.components.GTouchList;
 	import org.glomaker.mobileplayer.mvcs.views.components.MenuListItem;
@@ -69,9 +70,9 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected const list:GTouchList = new GTouchList; 
 		
 		/**
-		 * maps IMobileListItemRenderer instances ot their Glo value objects. 
+		 * maps IMobileListItemRenderer instances to their ItemMenu value objects. 
 		 */		
-		protected var fileDict:Dictionary = new Dictionary();
+		protected var itemDict:Dictionary = new Dictionary();
 		
 		
 		//--------------------------------------------------------------------------
@@ -83,33 +84,33 @@ package org.glomaker.mobileplayer.mvcs.views
 		/**
 		 * @private
 		 */
-		protected var filesChanged:Boolean = false;
+		protected var itemsChanged:Boolean = false;
 
 		/**
 		 * @private
 		 */
-		protected var _files:Vector.<Glo>;
+		protected var _items:Vector.<MenuItem>;
 		
 		/**
-		 * files.
+		 * items.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get files():Vector.<Glo> { return _files; }
+		public function get items():Vector.<MenuItem> { return _items; }
 		
 		/**
 		 * @private
 		 */
-		public function set files(value:Vector.<Glo>):void
+		public function set items(value:Vector.<MenuItem>):void
 		{
-			if (_files == value)
+			if (_items == value)
 				return;
 			
-			_files = value;
-			filesChanged = true;
+			_items = value;
+			itemsChanged = true;
 			invalidateData();
 		}
 		
@@ -169,24 +170,24 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.commited();
 			
-			if (filesChanged)
+			if (itemsChanged)
 			{
 				list.touchList.removeListItems();
-				fileDict = new Dictionary();
+				itemDict = new Dictionary();
 				var buffer:Vector.<IMobileListItemRenderer> = new Vector.<IMobileListItemRenderer>();
 				
-				for (var i:int = 0; i < _files.length; i ++)
+				for (var i:int = 0; i < _items.length; i ++)
 				{
 					var ir:IMobileListItemRenderer = new MenuListItem();
-					ir.data = _files[i % _files.length].displayName;
+					ir.data = _items[i % _items.length].displayName;
 					ir.itemHeight = Math.round( ScreenMaths.mmToPixels(15) );
 					buffer.push( ir );
 					
-					fileDict[ ir ] = _files[ i % _files.length ];
+					itemDict[ ir ] = _items[ i % _items.length ];
 				}
 				
 				list.touchList.addListItems( buffer );
-				filesChanged = false;
+				itemsChanged = false;
 				invalidateDisplay();
 			}
 		}
@@ -197,7 +198,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function handleButton(event:MobileListEvent):void
 		{
-			var glo:Glo = fileDict[ event.item ];
+			var glo:Glo = itemDict[ event.item ];
 			if( glo )
 				dispatchEvent(new LoadProjectEvent(LoadProjectEvent.SHOW, glo));
 		}

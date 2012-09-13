@@ -29,6 +29,7 @@ package org.glomaker.mobileplayer.mvcs.services
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
+	import org.glomaker.mobileplayer.mvcs.models.vo.MenuItem;
 	import org.robotlegs.mvcs.Actor;
 	
 	/**
@@ -77,12 +78,12 @@ package org.glomaker.mobileplayer.mvcs.services
 		// result
 		//--------------------------------------------------
 		
-		private var _result:Vector.<Glo>;
+		private var _result:Vector.<MenuItem>;
 
 		/**
-		 * The result of the processing. Contains the GLOs to display in the menu.
+		 * The result of the processing. Contains the items to display in the menu.
 		 */
-		public function get result():Vector.<Glo>
+		public function get result():Vector.<MenuItem>
 		{
 			return _result;
 		}
@@ -96,10 +97,10 @@ package org.glomaker.mobileplayer.mvcs.services
 		 */
 		protected function start():void
 		{
-			_result = new Vector.<Glo>();
+			_result = new Vector.<MenuItem>();
 			currentIndex = -1;
 			
-			eventMap.mapListener(eventDispatcher, LoadProjectEvent.COMPLETE, projectHandler, LoadProjectEvent);
+			eventMap.mapListener(eventDispatcher, LoadProjectEvent.COMPLETE, completeHandler, LoadProjectEvent);
 			loadNext();
 		}
 		
@@ -110,13 +111,13 @@ package org.glomaker.mobileplayer.mvcs.services
 		{
 			if (!glos || (currentIndex + 1) >= glos.length)
 			{
-				eventMap.unmapListener(eventDispatcher, LoadProjectEvent.COMPLETE, projectHandler, LoadProjectEvent);
+				eventMap.unmapListener(eventDispatcher, LoadProjectEvent.COMPLETE, completeHandler, LoadProjectEvent);
 				
 				// alphabetical sort
 				_result.sort( sortF ); 
 				
 				// pass on to application
-				dispatch(new GloMenuEvent(GloMenuEvent.DIRECTORY_LISTED, null, _result));
+				dispatch(new GloMenuEvent(GloMenuEvent.ITEMS_LISTED, _result));
 				
 				return;
 			}
@@ -131,19 +132,17 @@ package org.glomaker.mobileplayer.mvcs.services
 		 * @param g2
 		 * @return 0 if equal, 1 if g1 > g2, -1 if g2 < g1
 		 */		
-		protected function sortF( g1:Glo, g2:Glo ):int
+		protected function sortF( g1:MenuItem, g2:MenuItem ):int
 		{
 			var n1:String = g1.displayName.toLowerCase();
 			var n2:String = g2.displayName.toLowerCase();
 			
-			if( n1 > n2 )
-			{
+			if (n1 > n2)
 				return 1;
-			}else if( n1 < n2 ){
+			else if (n1 < n2)
 				return -1;
-			}
-			
-			return 0;
+			else
+				return 0;
 		}
 		
 		//--------------------------------------------------
@@ -153,7 +152,7 @@ package org.glomaker.mobileplayer.mvcs.services
 		/**
 		 * Called when a project is loaded.
 		 */
-		protected function projectHandler(event:LoadProjectEvent):void
+		protected function completeHandler(event:LoadProjectEvent):void
 		{
 			_result.push(glos[currentIndex]);
 			
