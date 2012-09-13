@@ -180,7 +180,7 @@ package org.glomaker.mobileplayer.mvcs.services
 					_pendingDirs.push( f );
 				}else if( f.extension == GLO_FILE_EXTENSION ){
 					// this is already a GLO, store it
-					_cache.push( new Glo( f, getDisplayName( f ) ) );
+					_cache.push( new Glo( getDisplayName( f ), f ) );
 				}
 			}
 			
@@ -217,7 +217,7 @@ package org.glomaker.mobileplayer.mvcs.services
 				if( !f.isDirectory && f.extension == GLO_FILE_EXTENSION )
 				{
 					// this is a GLO, store it
-					_cache.push( new Glo( f, getDisplayName( f ) ) );
+					_cache.push( new Glo( getDisplayName( f ), f ) );
 				}
 			}
 			

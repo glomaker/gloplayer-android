@@ -25,47 +25,30 @@
 */
 package org.glomaker.mobileplayer.mvcs.models.vo
 {
-	import flash.filesystem.File;
-
 	/**
-	 * Value object
-	 * Represents data about a GLO available in the file system.
-	 * Not to be confused with Project which represent an actual loaded GLO.
-	 * @author nilsmillahn
-	 */	
-	public class Glo extends MenuItem
+	 * Represents data about an element to display in the main menu.
+	 * 
+	 * @author haykel
+	 */
+	public class MenuItem
 	{
-		/**
-		 * GLO XML file.
-		 */
-		public var file:File;
+		public var displayName:String;
 		
 		/**
-		 * Journey to which the GLO belongs, <code>null</code> if it is not part of a journey.
+		 * Constructor.
 		 */
-		public var journey:Journey;
-
-		/**
-		 * @constructor 
-		 * @param file
-		 * @param displayName
-		 */		
-		public function Glo(displayName:String, file:File, journey:Journey=null)
+		public function MenuItem(displayName:String)
 		{
-			super(displayName);
-			
-			this.file = file;
-			this.journey = journey;
-		}
-
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function toString():String
-		{
-			return "Glo Value Object - " + displayName;
+			this.displayName = displayName;
 		}
 		
+		/**
+		 * Returns a string containing some of instance's properties.
+		 * @return	Class name and some of instance properties and values.
+		 */
+		public function toString():String
+		{
+			return "MenuItem Value Object - " + displayName;
+		}
 	}
 }

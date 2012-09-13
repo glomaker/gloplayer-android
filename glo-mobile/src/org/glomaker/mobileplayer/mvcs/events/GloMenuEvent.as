@@ -26,9 +26,9 @@
 package org.glomaker.mobileplayer.mvcs.events
 {
 	import flash.events.Event;
-	import flash.filesystem.File;
 	
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
+	import org.glomaker.mobileplayer.mvcs.models.vo.MenuItem;
 
 	public class GloMenuEvent extends Event
 	{
@@ -38,8 +38,8 @@ package org.glomaker.mobileplayer.mvcs.events
 		//
 		//--------------------------------------------------------------------------
 		
-		public static const LIST_FILES:String = "listFiles";
-		public static const DIRECTORY_LISTED:String = "directoryListed";
+		public static const LIST_ITEMS:String = "listItems";
+		public static const ITEMS_LISTED:String = "itemsListed";
 		
 		//--------------------------------------------------------------------------
 		//
@@ -47,12 +47,11 @@ package org.glomaker.mobileplayer.mvcs.events
 		//
 		//--------------------------------------------------------------------------
 
-		public function GloMenuEvent(type:String, file:File = null, files:Vector.<Glo> = null)
+		public function GloMenuEvent(type:String, items:Vector.<MenuItem> = null)
 		{
 			super(type);
 
-			_file = file;
-			_files = files;
+			_items = items;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -64,27 +63,16 @@ package org.glomaker.mobileplayer.mvcs.events
 		/**
 		 * @private
 		 */
-		protected var _file:File;
+		protected var _items:Vector.<MenuItem>;
 		/**
-		 * File selected via <code>GloMenu</code>.
-		 * 
-		 * @see		net.dndigital.glo.mvcs.view.GloMenu
-		 */
-		public function get file():File { return _file }
-		
-		/**
-		 * @private
-		 */
-		protected var _files:Vector.<Glo>;
-		/**
-		 * Collection of files.
+		 * Collection of items.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get files():Vector.<Glo> { return _files; }
+		public function get items():Vector.<MenuItem> { return _items; }
 		
 		//--------------------------------------------------------------------------
 		//
@@ -97,7 +85,7 @@ package org.glomaker.mobileplayer.mvcs.events
 		 */
 		public override function clone():Event
 		{
-			return new GloMenuEvent(type, _file, _files);
+			return new GloMenuEvent(type, _items);
 		}
 		
 		/**
@@ -105,7 +93,7 @@ package org.glomaker.mobileplayer.mvcs.events
 		 */
 		public override function toString():String
 		{
-			return formatToString("GloMenuEvent", "file", "files");
+			return formatToString("GloMenuEvent", "items");
 		}
 	}
 }

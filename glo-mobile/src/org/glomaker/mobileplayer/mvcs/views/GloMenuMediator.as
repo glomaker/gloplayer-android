@@ -68,15 +68,20 @@ package org.glomaker.mobileplayer.mvcs.views
 		{	
 			super.onRegister();
 			
-			eventMap.mapListener(eventDispatcher, GloMenuEvent.DIRECTORY_LISTED, directoryListed);
+			eventMap.mapListener(eventDispatcher, GloMenuEvent.ITEMS_LISTED, itemsListed);
 			eventMap.mapListener(view, LoadProjectEvent.SHOW, dispatch);
+			
+			// Only re-scan the documents directory automatically the first time or when menu is empty
+			// Other scan reuests must be started by the user manually
+			if (view.items == null)
+				dispatch(new GloMenuEvent(GloMenuEvent.LIST_ITEMS));
 		}
 		
 		override public function onRemove():void
 		{
 			super.onRemove();
 			
-			eventMap.unmapListener(eventDispatcher, GloMenuEvent.DIRECTORY_LISTED, directoryListed);
+			eventMap.unmapListener(eventDispatcher, GloMenuEvent.ITEMS_LISTED, itemsListed);
 			eventMap.unmapListener(view, LoadProjectEvent.SHOW, dispatch);
 		}
 		
@@ -90,16 +95,9 @@ package org.glomaker.mobileplayer.mvcs.views
 		 * @private
 		 * 
 		 */
-		protected function directoryListed(event:GloMenuEvent):void
+		protected function itemsListed(event:GloMenuEvent):void
 		{
-			// each time the app switches to the menu, the system re-scans the documents directory
-			// that in turn results in an update call here and when the menu is updated, the scroll position is lost
-			// to avoid this, we only update if the length of the files list has changed - so you can still test by adding new GLOs but don't lose out during normal use
-			// it would of course be more correct to check if there are any new files but that would be too expensive
-			if( view.files == null || event.files.length != view.files.length )
-			{
-				view.files = event.files;
-			}
+			view.items = event.items;
 		}
 	}
 }
