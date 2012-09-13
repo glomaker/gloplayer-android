@@ -28,9 +28,8 @@ package org.glomaker.mobileplayer.mvcs.commands
 	import eu.kiichigo.utils.log;
 	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
-	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
+	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.GloModel;
-	
 	import org.robotlegs.mvcs.Command;
 	
 	public final class ShowProject extends Command
@@ -55,9 +54,9 @@ package org.glomaker.mobileplayer.mvcs.commands
 		[Inject]
 		/**
 		 * @private
-		 * Project event, containing reference to received instance of <code>Project</code>.
+		 * LoadProject event, containing reference to received instance of <code>Project</code>.
 		 */
-		public var event:ProjectEvent;
+		public var event:LoadProjectEvent;
 		
 		[Inject]
 		/**

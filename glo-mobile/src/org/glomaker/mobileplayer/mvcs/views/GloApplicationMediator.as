@@ -28,10 +28,9 @@ package org.glomaker.mobileplayer.mvcs.views
 	import flash.events.Event;
 	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
-	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
+	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.events.NotificationEvent;
 	import org.glomaker.mobileplayer.mvcs.views.components.Notification;
-	
 	import org.robotlegs.mvcs.Mediator;
 	
 	public final class GloApplicationMediator extends Mediator
@@ -82,7 +81,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, showPlayer);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_MENU, showMenu);
 			eventMap.mapListener(eventDispatcher, NotificationEvent.NOTIFICATION, notify);
-			eventMap.mapListener(eventDispatcher, GloMenuEvent.LOAD_FILE, clear);
+			eventMap.mapListener(eventDispatcher, LoadProjectEvent.SHOW, clear);
 			
 			eventMap.mapListener(view, ApplicationEvent.INITIALIZED, showMenu);
 			

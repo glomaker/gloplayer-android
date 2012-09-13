@@ -79,8 +79,9 @@ package org.glomaker.mobileplayer.mvcs
 			commandMap.mapEvent(GloMenuEvent.LIST_FILES, ScanDocumentDirectory, GloMenuEvent);
 			commandMap.mapEvent(FileServiceEvent.DOCUMENTS_SCAN_COMPLETED, DocumentDirScanCompleted, FileServiceEvent);
 			
-			commandMap.mapEvent(GloMenuEvent.LOAD_FILE, LoadProject, GloMenuEvent);
-			commandMap.mapEvent(ProjectEvent.PROJECT, ShowProject, ProjectEvent);
+			commandMap.mapEvent(LoadProjectEvent.LOAD, LoadProject, LoadProjectEvent);
+			commandMap.mapEvent(LoadProjectEvent.SHOW, LoadProject, LoadProjectEvent);
+			commandMap.mapEvent(LoadProjectEvent.READY, ShowProject, LoadProjectEvent);
 			commandMap.mapEvent(ProjectEvent.NEXT_PAGE, Paginate, ProjectEvent);
 			commandMap.mapEvent(ProjectEvent.PREV_PAGE, Paginate, ProjectEvent);
 			

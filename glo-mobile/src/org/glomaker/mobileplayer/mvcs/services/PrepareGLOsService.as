@@ -26,9 +26,8 @@
 
 package org.glomaker.mobileplayer.mvcs.services
 {
-	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
-	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
+	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
 	import org.robotlegs.mvcs.Actor;
 	
@@ -100,7 +99,7 @@ package org.glomaker.mobileplayer.mvcs.services
 			_result = new Vector.<Glo>();
 			currentIndex = -1;
 			
-			eventMap.mapListener(eventDispatcher, ProjectEvent.PROJECT, projectHandler, ProjectEvent);
+			eventMap.mapListener(eventDispatcher, LoadProjectEvent.COMPLETE, projectHandler, LoadProjectEvent);
 			loadNext();
 		}
 		
@@ -111,7 +110,7 @@ package org.glomaker.mobileplayer.mvcs.services
 		{
 			if (!glos || (currentIndex + 1) >= glos.length)
 			{
-				eventMap.unmapListener(eventDispatcher, ProjectEvent.PROJECT, projectHandler, ProjectEvent);
+				eventMap.unmapListener(eventDispatcher, LoadProjectEvent.COMPLETE, projectHandler, LoadProjectEvent);
 				
 				// alphabetical sort
 				_result.sort( sortF ); 
@@ -119,15 +118,11 @@ package org.glomaker.mobileplayer.mvcs.services
 				// pass on to application
 				dispatch(new GloMenuEvent(GloMenuEvent.DIRECTORY_LISTED, null, _result));
 				
-				// force app to show menu as dispatched ProjectEvent.PROJECT events make the app clear
-				// the screen and prepare for displaying a GLO
-				dispatch(ApplicationEvent.SHOW_MENU_EVENT);
-				
 				return;
 			}
 			
 			currentIndex++;
-			dispatch(new GloMenuEvent(GloMenuEvent.LOAD_FILE, glos[currentIndex].file));
+			dispatch(new LoadProjectEvent(LoadProjectEvent.LOAD, glos[currentIndex]));
 		}
 		
 		/**
@@ -158,7 +153,7 @@ package org.glomaker.mobileplayer.mvcs.services
 		/**
 		 * Called when a project is loaded.
 		 */
-		protected function projectHandler(event:ProjectEvent):void
+		protected function projectHandler(event:LoadProjectEvent):void
 		{
 			_result.push(glos[currentIndex]);
 			

@@ -34,21 +34,12 @@ package org.glomaker.mobileplayer.mvcs.events
 	{
 		//--------------------------------------------------------------------------
 		//
-		//  Cached Events
-		//
-		//--------------------------------------------------------------------------
-		
-		public static const LIST_FILES_EVENT:GloMenuEvent = new GloMenuEvent(GloMenuEvent.LIST_FILES);
-		
-		//--------------------------------------------------------------------------
-		//
 		//  Event Types Constants
 		//
 		//--------------------------------------------------------------------------
 		
 		public static const LIST_FILES:String = "listFiles";
 		public static const DIRECTORY_LISTED:String = "directoryListed";
-		public static const LOAD_FILE:String = "loadFile";
 		
 		//--------------------------------------------------------------------------
 		//

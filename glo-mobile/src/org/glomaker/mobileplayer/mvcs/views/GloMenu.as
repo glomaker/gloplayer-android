@@ -32,7 +32,8 @@ package org.glomaker.mobileplayer.mvcs.views
 	import net.dndigital.components.Container;
 	import net.dndigital.components.mobile.IMobileListItemRenderer;
 	import net.dndigital.components.mobile.MobileListEvent;
-	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
+	
+	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	import org.glomaker.mobileplayer.mvcs.views.components.GTouchList;
@@ -198,7 +199,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			var glo:Glo = fileDict[ event.item ];
 			if( glo )
-				dispatchEvent(new GloMenuEvent(GloMenuEvent.LOAD_FILE, glo.file));
+				dispatchEvent(new LoadProjectEvent(LoadProjectEvent.SHOW, glo));
 		}
 	}
 }

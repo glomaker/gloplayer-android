@@ -25,8 +25,7 @@
 */
 package org.glomaker.mobileplayer.mvcs.services
 {
-	import flash.filesystem.File;
-	
+	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Project;
 	
 	/**
@@ -42,6 +41,12 @@ package org.glomaker.mobileplayer.mvcs.services
 	public interface IProjectService
 	{
 		/**
+		 * Name to use for the event dispatched when the project has been loaded
+		 * and validated successfully.
+		 */
+		function set completeEventName(value:String):void;
+		
+		/**
 		 * Parsed instance of <code>Project</code> can be accessed through this property.
 		 * 
 		 * @see		net.dndigital.glo.mvcs.models.vo.Project
@@ -54,20 +59,19 @@ package org.glomaker.mobileplayer.mvcs.services
 		function get project():Project;
 
 		/**
-		 * Indicates file that should be loaded and parsed by service.
+		 * Indicates glo that should be loaded and parsed by service.
 		 * 
 		 * @see		net.dndigital.glo.mvcs.models.vo.Project
-		 * @see		flash.filesystem.File
 		 * 
 		 * @langversion 3.0
 		 * @playerversion Flash 10
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		function get file():File;
+		function get glo():Glo;
 		/**
 		 * @private
 		 */
-		function set file(value:File):void;
+		function set glo(value:Glo):void;
 	}
 }

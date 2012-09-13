@@ -26,16 +26,15 @@
 package org.glomaker.mobileplayer.mvcs.services
 {
 	import flash.events.Event;
-	import flash.filesystem.File;
 	import flash.filesystem.FileMode;
 	import flash.filesystem.FileStream;
 	import flash.net.FileFilter;
 	import flash.system.System;
 	
-	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
+	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Project;
 	import org.glomaker.mobileplayer.mvcs.utils.validateGlo;
-	
 	import org.robotlegs.mvcs.Actor;
 	
 	/**
@@ -86,6 +85,25 @@ package org.glomaker.mobileplayer.mvcs.services
 		/**
 		 * @private
 		 */
+		private var _completeEventName:String = LoadProjectEvent.COMPLETE;
+		/**
+		 * @copy	net.dndigital.glo.mvcs.services.IProjectService#completeEventName
+		 */
+		public function get completeEventName():String
+		{
+			return _completeEventName;
+		}
+		/**
+		 * @private
+		 */
+		public function set completeEventName(value:String):void
+		{
+			_completeEventName = value;
+		}
+
+		/**
+		 * @private
+		 */
 		protected var _project:Project;
 		/**
 		 * @copy	net.dndigital.glo.mvcs.services.IProjectService#project
@@ -102,23 +120,23 @@ package org.glomaker.mobileplayer.mvcs.services
 		/**
 		 * @private
 		 */
-		protected var _file:File;
+		protected var _glo:Glo;
 		/**
-		 * file.
+		 * glo.
 		 *
 		 * @langversion 3.0
 		 * @playerversion Flash 10
 		 * @playerversion AIR 2.5
 		 * @productversion Flex 4.5
 		 */
-		public function get file():File { return _file; }
+		public function get glo():Glo { return _glo; }
 		/**
 		 * @private
 		 */
-		public function set file(value:File):void
+		public function set glo(value:Glo):void
 		{
-			_file = value;
-			loadFile(value);
+			_glo = value;
+			load(value);
 		}
 		
 		/**
@@ -128,33 +146,52 @@ package org.glomaker.mobileplayer.mvcs.services
 
 		//--------------------------------------------------------------------------
 		//
+		//  Public Methods
+		//
+		//--------------------------------------------------------------------------
+		
+		public function cancel():void
+		{
+			if (_stream)
+			{
+				clean();
+				dispatch(new LoadProjectEvent(LoadProjectEvent.CANCELED, glo));
+			}
+		}
+		
+		//--------------------------------------------------------------------------
+		//
 		//  Private Method
 		//
 		//--------------------------------------------------------------------------
 		
-		
-		/**
-		 * Loads GLO project XML from a file reference.
-		 * @param file
-		 * @returns The file object if load completed successfully, null otherwise.
-		 */		
-		protected function loadFile(file:File):void
+		protected function clean():void
 		{
-			if(file == null)
-				return;
-			
-			// cleanup previous stream
-			if( _stream )
+			if (_stream)
 			{
 				_stream.close();
 				_stream.removeEventListener( Event.COMPLETE, fileCompleteHandler );
+				_stream = null;
 			}
+		}
+		
+		/**
+		 * Loads project XML for a GLO.
+		 * @param glo
+		 */		
+		protected function load(glo:Glo):void
+		{
+			if(!glo || !(glo.file))
+				return;
+			
+			// cancel any ongoing load operation
+			cancel();
 			
 			// new stream
 			// async reading makes the app more responsive on mobile devices
 			_stream = new FileStream();
 			_stream.addEventListener(Event.COMPLETE, fileCompleteHandler)
-			_stream.openAsync(file, FileMode.READ);
+			_stream.openAsync(glo.file, FileMode.READ);
 		}
 		
 		/**
@@ -168,22 +205,21 @@ package org.glomaker.mobileplayer.mvcs.services
 			var xml:XML = XML(_stream.readUTFBytes(_stream.bytesAvailable));
 				
 			// cleanup
-			_stream.close();
-			_stream.removeEventListener( Event.COMPLETE, fileCompleteHandler );
+			clean();
 			
 			// Validate project's integrity.
 			if(!validateGlo(xml))
 			{
-				dispatch( new ProjectEvent( ProjectEvent.GLO_VALIDATE_ERROR ) );
+				dispatch( new LoadProjectEvent( LoadProjectEvent.VALIDATE_ERROR, glo ) );
 				return;
 			}
 			
 			// Parse project
-			const project:Project = org.glomaker.mobileplayer.mvcs.services.parse(xml, file.parent);
+			const project:Project = org.glomaker.mobileplayer.mvcs.services.parse(xml, glo.file.parent);
 			_project = project;
 			
 			// Notify application that project is parsed.
-			eventDispatcher.dispatchEvent(new ProjectEvent(ProjectEvent.PROJECT, _project));
+			dispatch(new LoadProjectEvent(completeEventName, glo, project));
 			
 			// Clean up xml.
 			System.disposeXML(xml);

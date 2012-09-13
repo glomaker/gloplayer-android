@@ -25,9 +25,8 @@
 */
 package org.glomaker.mobileplayer.mvcs.commands
 {
-	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
+	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.services.IProjectService;
-	
 	import org.robotlegs.mvcs.Command;
 	
 	public class LoadProject extends Command
@@ -44,7 +43,7 @@ package org.glomaker.mobileplayer.mvcs.commands
 		 * @private
 		 * Event
 		 */
-		public var event:GloMenuEvent;
+		public var event:LoadProjectEvent;
 		
 		/**
 		 * @inheritDoc
@@ -53,7 +52,8 @@ package org.glomaker.mobileplayer.mvcs.commands
 		{
 			super.execute();
 			
-			projectService.file = event.file;
+			projectService.completeEventName = (event.type == LoadProjectEvent.SHOW) ? LoadProjectEvent.READY : LoadProjectEvent.COMPLETE;
+			projectService.glo = event.glo;
 		}
 	}
 }

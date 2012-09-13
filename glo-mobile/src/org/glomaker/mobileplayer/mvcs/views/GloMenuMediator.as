@@ -25,8 +25,8 @@
 */
 package org.glomaker.mobileplayer.mvcs.views
 {
-	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
+	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.robotlegs.mvcs.Mediator;
 	
 	public class GloMenuMediator extends Mediator
@@ -68,20 +68,16 @@ package org.glomaker.mobileplayer.mvcs.views
 		{	
 			super.onRegister();
 			
-			eventMap.mapListener(eventDispatcher, ApplicationEvent.ACTIVATE, activateHandler);
 			eventMap.mapListener(eventDispatcher, GloMenuEvent.DIRECTORY_LISTED, directoryListed);
-			eventMap.mapListener(view, GloMenuEvent.LOAD_FILE, dispatch);
-			
-			dispatch(new GloMenuEvent(GloMenuEvent.LIST_FILES));
+			eventMap.mapListener(view, LoadProjectEvent.SHOW, dispatch);
 		}
 		
 		override public function onRemove():void
 		{
 			super.onRemove();
 			
-			eventMap.unmapListener(eventDispatcher, ApplicationEvent.ACTIVATE, activateHandler);
 			eventMap.unmapListener(eventDispatcher, GloMenuEvent.DIRECTORY_LISTED, directoryListed);
-			eventMap.unmapListener(view, GloMenuEvent.LOAD_FILE, dispatch);
+			eventMap.unmapListener(view, LoadProjectEvent.SHOW, dispatch);
 		}
 		
 		//--------------------------------------------------------------------------
@@ -89,19 +85,6 @@ package org.glomaker.mobileplayer.mvcs.views
 		//  Event Handlers
 		//
 		//--------------------------------------------------------------------------
-		
-		/**
-		 * @private
-		 * 
-		 * Update file list when the app is activated. Required when the user updates the zip files
-		 * in the documents dir and the app is running and displaying the file list. On activation
-		 * these changes get automatically applied.
-		 * 
-		 */
-		protected function activateHandler(event:ApplicationEvent):void
-		{
-			dispatch(new GloMenuEvent(GloMenuEvent.LIST_FILES));
-		}
 		
 		/**
 		 * @private
