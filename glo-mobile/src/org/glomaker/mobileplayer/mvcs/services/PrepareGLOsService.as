@@ -26,9 +26,14 @@
 
 package org.glomaker.mobileplayer.mvcs.services
 {
+	import flash.utils.Dictionary;
+	
+	import mx.utils.StringUtil;
+	
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Journey;
 	import org.glomaker.mobileplayer.mvcs.models.vo.MenuItem;
 	import org.robotlegs.mvcs.Actor;
 	
@@ -46,6 +51,7 @@ package org.glomaker.mobileplayer.mvcs.services
 		//--------------------------------------------------
 		
 		protected var currentIndex:int = -1;
+		protected var journeys:Dictionary;
 		
 		//--------------------------------------------------
 		// glos
@@ -99,6 +105,7 @@ package org.glomaker.mobileplayer.mvcs.services
 		{
 			_result = new Vector.<MenuItem>();
 			currentIndex = -1;
+			journeys = new Dictionary();
 			
 			eventMap.mapListener(eventDispatcher, LoadProjectEvent.COMPLETE, completeHandler, LoadProjectEvent);
 			loadNext();
@@ -112,6 +119,7 @@ package org.glomaker.mobileplayer.mvcs.services
 			if (!glos || (currentIndex + 1) >= glos.length)
 			{
 				eventMap.unmapListener(eventDispatcher, LoadProjectEvent.COMPLETE, completeHandler, LoadProjectEvent);
+				journeys = null;
 				
 				// alphabetical sort
 				_result.sort( sortF ); 
@@ -154,7 +162,32 @@ package org.glomaker.mobileplayer.mvcs.services
 		 */
 		protected function completeHandler(event:LoadProjectEvent):void
 		{
-			_result.push(glos[currentIndex]);
+			if (event.glo != glos[currentIndex])
+				return;
+			
+			var menuItem:MenuItem;
+			var journeyName:String = event.project.journey ? StringUtil.trim(event.project.journey.name) : null;
+			var journeyIndex:uint = event.project.journey ? event.project.journey.index : 0;
+			
+			if (journeyName && journeyIndex > 0)
+			{
+				var journey:Journey = journeys[journeyName];
+				if (!journey)
+				{
+					journey = new Journey(journeyName);
+					journeys[journeyName] = journey;
+					menuItem = journey;
+				}
+				
+				journey.add(event.glo, journeyIndex);
+			}
+			else
+			{
+				menuItem = event.glo;
+			}
+			
+			if (menuItem)
+				_result.push(menuItem);
 			
 			loadNext();
 		}

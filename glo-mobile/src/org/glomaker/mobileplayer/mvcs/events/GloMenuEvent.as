@@ -40,6 +40,7 @@ package org.glomaker.mobileplayer.mvcs.events
 		
 		public static const LIST_ITEMS:String = "listItems";
 		public static const ITEMS_LISTED:String = "itemsListed";
+		public static const SHOW_ITEM:String = "showItem";
 		
 		//--------------------------------------------------------------------------
 		//

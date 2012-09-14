@@ -33,8 +33,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import net.dndigital.components.mobile.IMobileListItemRenderer;
 	import net.dndigital.components.mobile.MobileListEvent;
 	
-	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
-	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
+	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
 	import org.glomaker.mobileplayer.mvcs.models.vo.MenuItem;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	import org.glomaker.mobileplayer.mvcs.views.components.GTouchList;
@@ -179,7 +178,7 @@ package org.glomaker.mobileplayer.mvcs.views
 				for (var i:int = 0; i < _items.length; i ++)
 				{
 					var ir:IMobileListItemRenderer = new MenuListItem();
-					ir.data = _items[i % _items.length].displayName;
+					ir.data = _items[i % _items.length];
 					ir.itemHeight = Math.round( ScreenMaths.mmToPixels(15) );
 					buffer.push( ir );
 					
@@ -198,9 +197,9 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function handleButton(event:MobileListEvent):void
 		{
-			var glo:Glo = itemDict[ event.item ];
-			if( glo )
-				dispatchEvent(new LoadProjectEvent(LoadProjectEvent.SHOW, glo));
+			var item:MenuItem = itemDict[ event.item ] as MenuItem;
+			if (item)
+				dispatchEvent(new GloMenuEvent(GloMenuEvent.SHOW_ITEM, Vector.<MenuItem>([item])));
 		}
 	}
 }

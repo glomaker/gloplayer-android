@@ -25,15 +25,21 @@
 */
 package org.glomaker.mobileplayer.mvcs.views.components
 {
+	import flash.display.GradientType;
 	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
 	import flash.filters.DropShadowFilter;
+	import flash.geom.Matrix;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.text.TextLineMetrics;
 	
 	import net.dndigital.components.mobile.IMobileListItemRenderer;
+	
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Journey;
+	import org.glomaker.mobileplayer.mvcs.models.vo.MenuItem;
+	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 
 	/**
 	 * List item for the menu list.
@@ -42,12 +48,18 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	 */	
 	public class MenuListItem extends Sprite implements IMobileListItemRenderer
 	{
+		protected static const MARKER:uint = ScreenMaths.mmToPixels(3);
+		protected static const MARKER_STROKE:uint = ScreenMaths.mmToPixels(0.5);
+		protected static const MARKER_GLOW:uint = ScreenMaths.mmToPixels(0.5);
+		
 		protected var _data:Object;
 		protected var _index:Number = 0;
 		protected var _itemWidth:Number = 0;
 		protected var _itemHeight:Number = 0;
 		
 		protected var initialized:Boolean = false;
+		protected var label:String = "";
+		protected var isJourney:Boolean;
 		protected var textField:TextField;
 		protected var shadowFilter:DropShadowFilter;
 		
@@ -80,6 +92,13 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		public function set data(value:Object):void
 		{
 			_data = value;
+			
+			label = (value is MenuItem) ? (value as MenuItem).displayName : String(value);
+			if (label == null)
+				label = "";
+			
+			isJourney = value is Journey;
+			
 			draw();
 		}
 		
@@ -129,6 +148,9 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			// text and shadow
 			this.textField.textColor = 0x000000;
 			this.filters = [shadowFilter];
+			
+			// journey marker
+			drawMarker();
 		}
 		
 		public function destroy():void
@@ -173,12 +195,48 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			shadowFilter = new DropShadowFilter(3, 90, 0x000000, .6, 8, 8, 1, 2, true);
 		}
 		
+		protected function drawMarker():void
+		{
+			if (isJourney)
+			{
+				var mx:Number = 5;
+				var my:Number = (_itemHeight - MARKER) / 2;
+				var size:uint = MARKER;
+				
+				// reset line style
+				graphics.lineStyle();
+				
+				// glow
+				var m:Matrix = new Matrix();
+				m.createGradientBox(size, size, 0, mx, my);
+				graphics.beginGradientFill(GradientType.RADIAL, [0xffffff, 0xffffff], [1, 0.2], [0, 255], m);
+				graphics.drawEllipse(mx, my, size, size);
+				graphics.endFill();
+				
+				// stroke
+				mx += MARKER_GLOW;
+				my += MARKER_GLOW;
+				size -= 2 * MARKER_GLOW;
+				graphics.beginFill(0x9bafce);
+				graphics.drawEllipse(mx, my, size, size);
+				graphics.endFill();
+				
+				// fill
+				mx += MARKER_STROKE;
+				my += MARKER_STROKE;
+				size -= 2 * MARKER_STROKE;
+				graphics.beginFill(0xffffff);
+				graphics.drawEllipse(mx, my, size, size);
+				graphics.endFill();
+			}
+		}
+		
 		protected function draw():void
 		{
-			if(!initialized) return 
-				
-			textField.x = 5;
-			textField.text = String(data);
+			if(!initialized) return; 
+			
+			textField.x = isJourney ? (10 + MARKER) : 5;
+			textField.text = label;
 			textField.textColor = 0xffffff;
 			
 			var lm:TextLineMetrics = textField.getLineMetrics(0);
@@ -197,6 +255,9 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			graphics.lineStyle( 1, 0x757575, 1, true, LineScaleMode.NONE );
 			graphics.moveTo( 0, _itemHeight - 2 );
 			graphics.lineTo( _itemWidth, _itemHeight - 2 );
+			
+			// journey marker
+			drawMarker();
 			
 			this.filters = [];
 		}

@@ -23,80 +23,72 @@
 *
 * The ScaleBitmap class, released open-source under the RPL license (http://www.opensource.org/licenses/rpl.php)
 */
-package org.glomaker.mobileplayer.mvcs.views
+package org.glomaker.mobileplayer.mvcs.commands
 {
-	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
-	import org.robotlegs.mvcs.Mediator;
+	import eu.kiichigo.utils.log;
 	
-	public class GloMenuMediator extends Mediator
+	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
+	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
+	import org.glomaker.mobileplayer.mvcs.models.GloModel;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
+	import org.glomaker.mobileplayer.mvcs.models.vo.MenuItem;
+	import org.robotlegs.mvcs.Command;
+	
+	public final class ShowItem extends Command
 	{
 		//--------------------------------------------------------------------------
 		//
 		//  Log
 		//
 		//--------------------------------------------------------------------------
-		import eu.kiichigo.utils.log;
+		
 		/**
 		 * @private
 		 */
-		protected static var log:Function = eu.kiichigo.utils.log(GloMenuMediator);
+		protected static var log:Function = eu.kiichigo.utils.log(ShowItem);
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Properties
+		//  Injections
 		//
 		//--------------------------------------------------------------------------
 		
 		[Inject]
 		/**
 		 * @private
-		 * An instance of GloMenu view.
+		 * GloMenuEvent event, containing reference to received instance of <code>MenuItem</code>.
 		 */
-		public var view:GloMenu;
+		public var event:GloMenuEvent;
+		
+		[Inject]
+		/**
+		 * @private
+		 * Reference to the Model.
+		 */
+		public var model:GloModel;
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Overridden API
+		//  Overriden API
 		//
 		//--------------------------------------------------------------------------
 		
 		/**
 		 * @inheritDoc
 		 */
-		override public function onRegister():void
-		{	
-			super.onRegister();
-			
-			eventMap.mapListener(eventDispatcher, GloMenuEvent.ITEMS_LISTED, itemsListed);
-			eventMap.mapListener(view, GloMenuEvent.SHOW_ITEM, dispatch);
-			
-			// Only re-scan the documents directory automatically the first time or when menu is empty
-			// Other scan reuests must be started by the user manually
-			if (view.items == null)
-				dispatch(new GloMenuEvent(GloMenuEvent.LIST_ITEMS));
-		}
-		
-		override public function onRemove():void
+		override public function execute():void
 		{
-			super.onRemove();
+			super.execute();
 			
-			eventMap.unmapListener(eventDispatcher, GloMenuEvent.ITEMS_LISTED, itemsListed);
-			eventMap.unmapListener(view, GloMenuEvent.SHOW_ITEM, dispatch);
-		}
-		
-		//--------------------------------------------------------------------------
-		//
-		//  Event Handlers
-		//
-		//--------------------------------------------------------------------------
-		
-		/**
-		 * @private
-		 * 
-		 */
-		protected function itemsListed(event:GloMenuEvent):void
-		{
-			view.items = event.items;
+			var item:MenuItem = (event.items && event.items.length > 0) ? event.items[0] : null;
+			if (!item)
+				return;
+			
+			if (item is Glo)
+			{
+				dispatch(new LoadProjectEvent(LoadProjectEvent.SHOW, item as Glo));
+				return;
+			}
 		}
 	}
 }

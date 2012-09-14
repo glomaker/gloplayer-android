@@ -69,6 +69,11 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		 */
 		public function clear():void
 		{
+			for each (var glo:Glo in glos)
+			{
+				glo.journey = null;
+			}
+			
 			glos = [];
 			indices.length = 0;
 		}
@@ -80,6 +85,7 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		{
 			if (glo && index > 0)
 			{
+				glo.journey = this;
 				glos[index] = glo;
 				if (indices.indexOf(index) < 0)
 				{
