@@ -32,9 +32,11 @@ package org.glomaker.mobileplayer.mvcs.services
 	
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
+	import org.glomaker.mobileplayer.mvcs.models.GloModel;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Journey;
 	import org.glomaker.mobileplayer.mvcs.models.vo.MenuItem;
+	import org.glomaker.mobileplayer.mvcs.models.vo.QRCodeList;
 	import org.robotlegs.mvcs.Actor;
 	
 	/**
@@ -50,8 +52,12 @@ package org.glomaker.mobileplayer.mvcs.services
 		// Instance variables
 		//--------------------------------------------------
 		
+		[Inject]
+		public var model:GloModel;
+		
 		protected var currentIndex:int = -1;
 		protected var journeys:Dictionary;
+		protected var qrCodes:QRCodeList;
 		
 		//--------------------------------------------------
 		// glos
@@ -106,6 +112,7 @@ package org.glomaker.mobileplayer.mvcs.services
 			_result = new Vector.<MenuItem>();
 			currentIndex = -1;
 			journeys = new Dictionary();
+			qrCodes = new QRCodeList();
 			
 			eventMap.mapListener(eventDispatcher, LoadProjectEvent.COMPLETE, completeHandler, LoadProjectEvent);
 			loadNext();
@@ -119,13 +126,16 @@ package org.glomaker.mobileplayer.mvcs.services
 			if (!glos || (currentIndex + 1) >= glos.length)
 			{
 				eventMap.unmapListener(eventDispatcher, LoadProjectEvent.COMPLETE, completeHandler, LoadProjectEvent);
-				journeys = null;
 				
 				// alphabetical sort
 				_result.sort( sortF ); 
 				
 				// pass on to application
 				dispatch(new GloMenuEvent(GloMenuEvent.ITEMS_LISTED, _result));
+				model.qrCodes = qrCodes;
+				
+				journeys = null;
+				qrCodes = null;
 				
 				return;
 			}
@@ -168,6 +178,14 @@ package org.glomaker.mobileplayer.mvcs.services
 			var menuItem:MenuItem;
 			var journeyName:String = event.project.journey ? StringUtil.trim(event.project.journey.name) : null;
 			var journeyIndex:uint = event.project.journey ? event.project.journey.index : 0;
+			
+			if (event.project.journey)
+			{
+				journeyName = StringUtil.trim(event.project.journey.name);
+				journeyIndex = event.project.journey.index;
+				if (event.project.journey.qrEnabled)
+					qrCodes.add(event.project.journey.qrCode, event.glo);
+			}
 			
 			if (journeyName && journeyIndex > 0)
 			{

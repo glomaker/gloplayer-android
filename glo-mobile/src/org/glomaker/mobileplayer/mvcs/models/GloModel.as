@@ -29,10 +29,11 @@ package org.glomaker.mobileplayer.mvcs.models
 	
 	import flash.events.Event;
 	
+	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Page;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Project;
-	
+	import org.glomaker.mobileplayer.mvcs.models.vo.QRCodeList;
 	import org.robotlegs.mvcs.Actor;
 
 	public class GloModel extends Actor
@@ -83,6 +84,31 @@ package org.glomaker.mobileplayer.mvcs.models
 				return;
 			_length = value;
 		}
+		
+		/**
+		 * @private
+		 */
+		private var _qrCodes:QRCodeList;
+		/**
+		 * List of available QR codes.
+		 */
+		public function get qrCodes():QRCodeList
+		{
+			return _qrCodes;
+		}
+		/**
+		 * @private
+		 */
+		public function set qrCodes(value:QRCodeList):void
+		{
+			if (value == _qrCodes)
+				return
+				
+			_qrCodes = value;
+			
+			dispatch(new GloModelEvent(GloModelEvent.QR_CODES_LISTED));
+		}
+
 		
 		//--------------------------------------------------------------------------
 		//
