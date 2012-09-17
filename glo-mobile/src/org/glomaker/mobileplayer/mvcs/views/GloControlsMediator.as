@@ -32,7 +32,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
-	
+	import org.glomaker.mobileplayer.mvcs.models.GloModel;
 	import org.robotlegs.mvcs.Mediator;
 	
 	public final class GloControlsMediator extends Mediator
@@ -58,6 +58,12 @@ package org.glomaker.mobileplayer.mvcs.views
 		/**
 		 * @private
 		 */
+		public var model:GloModel;
+		
+		[Inject]
+		/**
+		 * @private
+		 */
 		public var view:GloControls;
 		
 		/**
@@ -65,6 +71,8 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		override public function onRegister():void
 		{
+			eventMap.mapListener(eventDispatcher, ProjectEvent.PAGE, handlePage);
+			
 			eventMap.mapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.MENU, handleMenuClick);
@@ -75,6 +83,8 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		override public function onRemove():void
 		{
+			eventMap.unmapListener(eventDispatcher, ProjectEvent.PAGE, handlePage);
+			
 			eventMap.unmapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.MENU, handleMenuClick);
@@ -89,5 +99,12 @@ package org.glomaker.mobileplayer.mvcs.views
 			dispatch(ApplicationEvent.SHOW_MENU_EVENT);
 		}
 		
+		/**
+		 * Handles page change event.
+		 */
+		protected function handlePage(event:ProjectEvent):void
+		{
+			view.lock(model.index == 0, model.index >= model.length - 1);
+		}
 	}
 }

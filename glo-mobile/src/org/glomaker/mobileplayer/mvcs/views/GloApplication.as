@@ -29,6 +29,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	
 	import net.dndigital.components.Application;
 	import net.dndigital.components.IGUIComponent;
+	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	import org.glomaker.mobileplayer.mvcs.views.components.LogoHeader;
@@ -65,6 +66,12 @@ package org.glomaker.mobileplayer.mvcs.views
 		
 		/**
 		 * @private
+		 * Reference to toolbar.
+		 */
+		protected const controls:GloControls = new GloControls;
+		
+		/**
+		 * @private
 		 * Reference to an instance of GloPlayer. This is constant since we need to initialize it only once.
 		 */
 		protected const player:GloPlayer = new GloPlayer;
@@ -88,6 +95,33 @@ package org.glomaker.mobileplayer.mvcs.views
 		 * Indicates current view.
 		 */
 		protected var current:IGloView = null;
+		
+		//--------------------------------------------------
+		// fullScreen
+		//--------------------------------------------------
+		
+		private var _fullScreen:Boolean;
+
+		/**
+		 * Defines whether to display the main view in fullscreen (true) or not (false).
+		 */
+		public function get fullScreen():Boolean
+		{
+			return _fullScreen;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set fullScreen(value:Boolean):void
+		{
+			if (value == fullScreen)
+				return;
+			
+			_fullScreen = value;
+			
+			invalidateDisplay();
+		}
 		
 		//--------------------------------------------------------------------------
 		//
@@ -149,9 +183,12 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.createChildren();
 			
-			// the logo is the only item always on screen
+			controls.height = Math.ceil( ScreenMaths.mmToPixels(10) );
+			
+			// the following items are always on screen
 			// the other elements will be swapped out via the 'replace' function
 			add( logo );
+			add( controls );
 			
 			// initialise menu subview
 			menu.padding = 0; // ScreenMaths.mmToPixels( 3 );
@@ -164,9 +201,13 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.resized(width, height);
 			
+			controls.width = width;
+			controls.y = height - controls.height;
+			controls.visible = !fullScreen;
+			
 			if (current) {
 				current.width = width;
-				current.height = height;
+				current.height = fullScreen ? height : (height - controls.height);
 			}
 			
 			logo.width = width;
@@ -174,7 +215,7 @@ package org.glomaker.mobileplayer.mvcs.views
 
 			menu.y = logo.height + 1;
 			menu.width = width;
-			menu.height = height - menu.y;
+			menu.height = fullScreen ? (height - menu.y) : (height - menu.y - controls.height);
 			
 			// black background
 			graphics.clear();
@@ -200,8 +241,10 @@ package org.glomaker.mobileplayer.mvcs.views
 			// remove current view if any.
 			if(current != null)
 				remove(current);
+			
 			// add new view, and update current reference.
 			current = add(view as IGUIComponent) as IGloView;
+			bringToFront(controls);
 			
 			return current;
 		}

@@ -39,6 +39,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
 	
+	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.NotificationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.PlayerEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
@@ -138,14 +139,6 @@ package org.glomaker.mobileplayer.mvcs.views
 		 * Collection of component that displayed in a GloPlayer.
 		 */
 		protected const components:Vector.<IGloComponent> = new Vector.<IGloComponent>;
-		
-		
-		/**
-		 * @private
-		 * Reference to Controls that manipulate next/previous slides and other aspects of player.
-		 */
-		protected const controls:GloControls = new GloControls;
-
 		
 		/**
 		 * @private
@@ -273,9 +266,11 @@ package org.glomaker.mobileplayer.mvcs.views
 			{
 				target.isFullScreened = false;
 				fullscreened = null;
+				dispatchEvent(ApplicationEvent.LEAVE_FULL_SCREEN_EVENT);
 			}else{
 				fullscreened = target;
 				target.isFullScreened = true;
+				dispatchEvent(ApplicationEvent.ENTER_FULL_SCREEN_EVENT);
 			}
 			invalidateDisplay();
 		}
@@ -360,7 +355,6 @@ package org.glomaker.mobileplayer.mvcs.views
 			super.createChildren();
 
 			// sizing and other initialisation
-			controls.height = Math.ceil( ScreenMaths.mmToPixels(10) );
 			pageNumber.height = Math.ceil( ScreenMaths.mmToPixels( 8 ) );
 
 			progress.height = Math.ceil( ScreenMaths.mmToPixels(1.5) );
@@ -371,7 +365,6 @@ package org.glomaker.mobileplayer.mvcs.views
 			// add to screen - order is important!
 			add(pageNumber);
 			add(progress);
-			add(controls);
 		}
 		/**
 		 * @inheritDoc
@@ -380,11 +373,8 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.resized(width, height);
 			
-			controls.width = width;
-			controls.y = height - controls.height;
-
 			progress.width = width;
-			progress.y = controls.y - progress.height;
+			progress.y = height - progress.height;
 			
 			// repositioning pageNumber will cause it to stop animating
 			// so we have to be careful
@@ -397,7 +387,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			
 			if (current) {
 				// FIXME 41 is a height of control bar in GloMaker v2. It seems that there is no data about this height in project file, so I had to hardcode it. It would be recommended to move this parameter to project.glo or xml config in future versions.
-				const h:int = height - controls.height + 41; // We need to calculate new height.
+				const h:int = height + 41; // We need to calculate new height.
 				const cooficient:Number = Math.min(width / project.width, h / project.height);
 				const offset:Point = new Point((width - project.width * cooficient) / 2, (h - project.height * cooficient) / 2);
 				const container:Sprite = current as Sprite;
@@ -408,7 +398,6 @@ package org.glomaker.mobileplayer.mvcs.views
 			}
 			
 			// UI not visible in full-screen mode
-			controls.visible = fullscreened == null;
 			pageNumber.visible = fullscreened == null;
 			progress.visible = fullscreened == null;
 
@@ -418,14 +407,14 @@ package org.glomaker.mobileplayer.mvcs.views
 				popup.x = 0;
 				popup.y = 0;
 				popup.width = width;
-				popup.height = height - controls.height;
+				popup.height = height;
 			}
 			
 			// draw background
 			graphics.clear();
 			if (project) {
 				graphics.beginFill(project.background);
-				graphics.drawRect(0, 0, width, height - controls.height);
+				graphics.drawRect(0, 0, width, height);
 				graphics.endFill();
 			}
 			
@@ -457,10 +446,6 @@ package org.glomaker.mobileplayer.mvcs.views
 				replace(index);
 				invalidateDisplay();
 			}
-			
-			// Decide whether Navigation Buttons needs to be locked or not
-			controls.lock(_index == 0,
-						  _index == _project.length - 1);
 		}
 		
 		//--------------------------------------------------------------------------
@@ -486,7 +471,6 @@ package org.glomaker.mobileplayer.mvcs.views
 			// raise UI above content (order is important!)
 			bringToFront(pageNumber);
 			bringToFront(progress);
-			bringToFront(controls);
 			
 			if (_index != index)
 				_index = index;

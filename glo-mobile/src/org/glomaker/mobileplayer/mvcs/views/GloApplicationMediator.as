@@ -80,6 +80,8 @@ package org.glomaker.mobileplayer.mvcs.views
 			super.onRegister();			
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, showPlayer);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_MENU, showMenu);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.ENTER_FULL_SCREEN, fullScreen);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.LEAVE_FULL_SCREEN, fullScreen);
 			eventMap.mapListener(eventDispatcher, NotificationEvent.NOTIFICATION, notify);
 			eventMap.mapListener(eventDispatcher, LoadProjectEvent.SHOW, clear);
 			
@@ -140,6 +142,24 @@ package org.glomaker.mobileplayer.mvcs.views
 			view.width = contextView.stage.fullScreenWidth;
 			view.height = contextView.stage.fullScreenHeight;
 			//view.validate();
+		}
+		
+		/**
+		 * @private
+		 * Handles fullscreen display.
+		 */
+		protected function fullScreen(event:ApplicationEvent):void
+		{
+			switch(event.type)
+			{
+				case ApplicationEvent.ENTER_FULL_SCREEN:
+					view.fullScreen = true;
+					break;
+					
+				case ApplicationEvent.LEAVE_FULL_SCREEN:
+					view.fullScreen = false;
+					break;
+			}
 		}
 		
 		/**

@@ -32,7 +32,6 @@ package org.glomaker.mobileplayer.mvcs.views
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Project;
 	import org.glomaker.mobileplayer.mvcs.services.IProjectService;
-	
 	import org.robotlegs.core.IMediator;
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -87,6 +86,8 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.mapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.PAGE_CHANGED, dispatch);
 			eventMap.mapListener(view, NotificationEvent.NOTIFICATION, dispatch);
+			eventMap.mapListener(view, ApplicationEvent.ENTER_FULL_SCREEN, dispatch);
+			eventMap.mapListener(view, ApplicationEvent.LEAVE_FULL_SCREEN, dispatch);
 		}
 		
 		/**
@@ -101,6 +102,8 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.unmapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.PAGE_CHANGED, dispatch);
 			eventMap.unmapListener(view, NotificationEvent.NOTIFICATION, dispatch);
+			eventMap.unmapListener(view, ApplicationEvent.ENTER_FULL_SCREEN, dispatch);
+			eventMap.unmapListener(view, ApplicationEvent.LEAVE_FULL_SCREEN, dispatch);
 		}
 		
 		//--------------------------------------------------------------------------
