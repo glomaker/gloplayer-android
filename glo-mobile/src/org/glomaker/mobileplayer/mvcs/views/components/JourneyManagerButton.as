@@ -25,33 +25,21 @@
 */
 package org.glomaker.mobileplayer.mvcs.views.components
 {
-	import flash.display.CapsStyle;
-	import flash.display.JointStyle;
-	import flash.display.LineScaleMode;
-	
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
 
 	/**
-	 * View component - button to go back to Menu from Player. 
-	 * @author nilsmillahn
+	 * Btton to open the journey manager.
+	 *  
+	 * @author haykel
 	 */	
-	public class BackToMenuButton extends ShapeButton
+	public class JourneyManagerButton extends ShapeButton
 	{
 		override protected function drawShape():void
 		{
 			shape.graphics.clear();
-			shape.graphics.lineStyle(4, ColourPalette.BUTTON_UP_BLUE, 1, false, LineScaleMode.NORMAL, CapsStyle.SQUARE, JointStyle.MITER);
-			shape.graphics.moveTo(-26, 23);
-			shape.graphics.lineTo(3, 23);
-			shape.graphics.lineTo(3, 7);
-			shape.graphics.lineTo(13, 7);
-			shape.graphics.lineTo(13, 23);
-			shape.graphics.lineTo(26, 23);
-			shape.graphics.lineTo(26, -1);
-			shape.graphics.lineTo(0, -26);
-			shape.graphics.lineTo(-26, -1);
-			shape.graphics.lineTo(-26, 23);
-			shape.graphics.lineStyle();
+			shape.graphics.beginFill( ColourPalette.BUTTON_UP_BLUE, 1 );
+			shape.graphics.drawCircle(0, 0, 10);
+			shape.graphics.endFill();
 		}
 	}
 }

@@ -31,6 +31,7 @@ package org.glomaker.mobileplayer.mvcs.models
 	
 	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Journey;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Page;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Project;
 	import org.glomaker.mobileplayer.mvcs.models.vo.QRCodeList;
@@ -109,6 +110,30 @@ package org.glomaker.mobileplayer.mvcs.models
 			dispatch(new GloModelEvent(GloModelEvent.QR_CODES_LISTED));
 		}
 
+		/**
+		 * @private
+		 */
+		private var _journey:Journey;
+		/**
+		 * Current journey. Can be either the journey currently managed by the
+		 * journey manager or a journey to which belongs the currently displayed GLO.
+		 */
+		public function get journey():Journey
+		{
+			return _journey;
+		}
+		/**
+		 * @private
+		 */
+		public function set journey(value:Journey):void
+		{
+			if (value == _journey)
+				return;
+			
+			_journey = value;
+			
+			dispatch(new GloModelEvent(GloModelEvent.JOURNEY_CHANGED));
+		}
 		
 		//--------------------------------------------------------------------------
 		//

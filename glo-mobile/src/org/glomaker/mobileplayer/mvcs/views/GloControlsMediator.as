@@ -31,6 +31,8 @@ package org.glomaker.mobileplayer.mvcs.views
 	import flash.events.MouseEvent;
 	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
+	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
+	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.GloModel;
 	import org.robotlegs.mvcs.Mediator;
@@ -72,10 +74,17 @@ package org.glomaker.mobileplayer.mvcs.views
 		override public function onRegister():void
 		{
 			eventMap.mapListener(eventDispatcher, ProjectEvent.PAGE, handlePage);
+			eventMap.mapListener(eventDispatcher, GloModelEvent.QR_CODES_LISTED, handleQrCodesListed);
+			eventMap.mapListener(eventDispatcher, GloModelEvent.JOURNEY_CHANGED, handleJourneyChanged);
 			
 			eventMap.mapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.MENU, handleMenuClick);
+			
+			eventMap.mapListener(view, GloMenuEvent.LIST_ITEMS, dispatch);
+			
+			handleQrCodesListed();
+			handleJourneyChanged();
 		}
 
 		/**
@@ -84,10 +93,14 @@ package org.glomaker.mobileplayer.mvcs.views
 		override public function onRemove():void
 		{
 			eventMap.unmapListener(eventDispatcher, ProjectEvent.PAGE, handlePage);
+			eventMap.unmapListener(eventDispatcher, GloModelEvent.QR_CODES_LISTED, handleQrCodesListed);
+			eventMap.unmapListener(eventDispatcher, GloModelEvent.JOURNEY_CHANGED, handleJourneyChanged);
 			
 			eventMap.unmapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.MENU, handleMenuClick);
+			
+			eventMap.unmapListener(view, GloMenuEvent.LIST_ITEMS, dispatch);
 		}
 		
 		/**
@@ -100,11 +113,27 @@ package org.glomaker.mobileplayer.mvcs.views
 		}
 		
 		/**
-		 * Handles page change event.
+		 * Event handler - current page has changed.
 		 */
 		protected function handlePage(event:ProjectEvent):void
 		{
 			view.lock(model.index == 0, model.index >= model.length - 1);
+		}
+		
+		/**
+		 * Event handler - list of QR Codes was updated.
+		 */
+		protected function handleQrCodesListed(event:GloModelEvent=null):void
+		{
+			view.qrCodeEnabled = (model.qrCodes && model.qrCodes.length > 0);
+		}
+		
+		/**
+		 * Event handler - current journey changed.
+		 */
+		protected function handleJourneyChanged(event:GloModelEvent=null):void
+		{
+			view.journeyManagerEnabled = model.journey != null;
 		}
 	}
 }

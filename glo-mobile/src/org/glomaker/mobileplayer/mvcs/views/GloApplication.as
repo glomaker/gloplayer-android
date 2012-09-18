@@ -136,6 +136,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			replace(player);
 			logo.visible = false;
+			controls.state = GloControls.PLAYER;
 		}
 		
 		/**
@@ -145,6 +146,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			replace(menu);
 			logo.visible = true;
+			controls.state = GloControls.HOME;
 		}
 		
 		/**
@@ -212,7 +214,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			
 			logo.width = width;
 			logo.height = Math.max( 95, ScreenMaths.mmToPixels( 15 ) ); // max because we need a bit of space for the logo which is about 60px high
-
+			
 			menu.y = logo.height + 1;
 			menu.width = width;
 			menu.height = fullScreen ? (height - menu.y) : (height - menu.y - controls.height);

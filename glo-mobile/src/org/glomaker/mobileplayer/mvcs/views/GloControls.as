@@ -28,13 +28,22 @@ package org.glomaker.mobileplayer.mvcs.views
 	import eu.kiichigo.utils.log;
 	
 	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
 	
+	import net.dndigital.components.Button;
 	import net.dndigital.components.Container;
 	import net.dndigital.components.IGUIComponent;
+	
+	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
+	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
+	import org.glomaker.mobileplayer.mvcs.utils.DrawingUtils;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	import org.glomaker.mobileplayer.mvcs.views.components.BackToMenuButton;
+	import org.glomaker.mobileplayer.mvcs.views.components.JourneyManagerButton;
 	import org.glomaker.mobileplayer.mvcs.views.components.NavButton;
+	import org.glomaker.mobileplayer.mvcs.views.components.QRCodeButton;
+	import org.glomaker.mobileplayer.mvcs.views.components.RefreshButton;
 	
 	/**
 	 * View controls flow and playback of the <code>GloPlayer</code> view, and handles page swaping.
@@ -66,6 +75,16 @@ package org.glomaker.mobileplayer.mvcs.views
 		
 		//--------------------------------------------------------------------------
 		//
+		//  Constants
+		//
+		//--------------------------------------------------------------------------
+		
+		// states
+		public static const HOME:String = "home";
+		public static const PLAYER:String = "player";
+		
+		//--------------------------------------------------------------------------
+		//
 		//  Instance Fields
 		//
 		//--------------------------------------------------------------------------
@@ -88,13 +107,45 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */		
 		protected const menuLink:BackToMenuButton = new BackToMenuButton;
 		
+		/**
+		 * @private
+		 * Refresh GLOs button.
+		 */
+		protected const refresh:RefreshButton = new RefreshButton;
 
+		/**
+		 * @private
+		 * Button to open QR code reader.
+		 */
+		protected const qrCode:QRCodeButton = new QRCodeButton;
+		
+		/**
+		 * @private
+		 * Button to open journey manager.
+		 */
+		protected const journeyManager:JourneyManagerButton = new JourneyManagerButton;
+		
 		//--------------------------------------------------------------------------
 		//
-		//  Properties
+		//  qrCodeEnabled
 		//
 		//--------------------------------------------------------------------------
 		
+		/**
+		 * Set enabled state of the QR Code button.
+		 */
+		public function set qrCodeEnabled(value:Boolean):void
+		{
+			qrCode.enabled = value;
+		}
+		
+		/**
+		 * Set enabled state of the journey button.
+		 */
+		public function set journeyManagerEnabled(value:Boolean):void
+		{
+			journeyManager.enabled = value;
+		}
 		
 		//--------------------------------------------------------------------------
 		//
@@ -131,6 +182,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		override public function initialize():IGUIComponent
 		{
 			addEventListener(MouseEvent.CLICK, handleClick);
+			state = HOME;
 			
 			return super.initialize();
 		}
@@ -142,6 +194,9 @@ package org.glomaker.mobileplayer.mvcs.views
 			super.createChildren();
 	
 			add( menuLink );
+			add(refresh);
+			add(qrCode);
+			add(journeyManager);
 			
 			next.direction = NavButton.RIGHT;
 			add(next);
@@ -154,6 +209,13 @@ package org.glomaker.mobileplayer.mvcs.views
 		}
 
 		
+		override protected function stateChanged(newState:String):void
+		{
+			super.stateChanged(newState);
+			
+			invalidateDisplay();
+		}
+		
 		/**
 		 * @inheritDoc
 		 */
@@ -161,29 +223,79 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.resized(width, height);
 
-			if (!isNaN(width+height)) {
-				graphics.clear();
-				
-				// background
-				graphics.beginFill( 0x000000, 1 );
-				graphics.drawRect( 0, 0, width, height );
-				graphics.endFill();
-			}
-
-			// square nav buttons with menu button and two gaps in between
-			var gap:Number = ScreenMaths.mmToPixels( 1 );
+			// sizes
+			var gap:Number = ScreenMaths.mmToPixels(0.5);
+			var minButtons:Number = 3 * height + 4 * gap;
+			var navWidth:Number = Math.min(height, (width - minButtons) / 2);
+			var buttonWidth:Number = (width - 2 * navWidth - 4 * gap) / 3;
 
 			prev.height = height;
 			next.height = height;
 			menuLink.height = height;
+			refresh.height = height;
+			qrCode.height = height;
+			journeyManager.height = height;
 			
-			prev.width = height;
-			next.width = height;
-			menuLink.width = width - 2*height - 2*gap;
+			prev.width = navWidth;
+			next.width = navWidth;
+			menuLink.width = buttonWidth;
+			refresh.width = buttonWidth;
+			qrCode.width = buttonWidth;
+			journeyManager.width = buttonWidth;
 
-			// positioning
+			// positioning && visible buttons
+			var firstButton:Button;
+			var lastButton:Button;
+			
+			prev.x = 0;
 			next.x = width - next.width;
-			menuLink.x = ( width - menuLink.width ) / 2;
+			
+			switch (state)
+			{
+				case PLAYER:
+					prev.visible = true;
+					next.visible = true;
+					qrCode.visible = true;
+					menuLink.visible = true;
+					journeyManager.visible = true;
+					refresh.visible = false;
+					
+					qrCode.x = navWidth + gap;
+					menuLink.x = qrCode.x + buttonWidth + gap;
+					journeyManager.x = menuLink.x + buttonWidth + gap;
+					
+					firstButton = qrCode;
+					lastButton = journeyManager;
+					break;
+				
+				default: //HOME
+					prev.visible = false;
+					next.visible = false;
+					qrCode.visible = true;
+					menuLink.visible = false;
+					journeyManager.visible = false;
+					refresh.visible = true;
+					
+					qrCode.x = (width - gap) / 2 - buttonWidth;
+					refresh.x = qrCode.x + buttonWidth + gap;
+					
+					firstButton = qrCode;
+					lastButton = refresh;
+					break;
+			}
+			
+			if (!isNaN(width+height))
+			{
+				graphics.clear();
+				
+				// background
+				DrawingUtils.drawStandardGradient( graphics, width, height );
+				
+				// gaps
+				graphics.beginFill(ColourPalette.DISABLED_BLUE);
+				graphics.drawRect(firstButton.x - gap, 0, lastButton.x + lastButton.width + gap - (firstButton.x - gap), height);
+				graphics.endFill();
+			}
 		}
 		
 		/**
@@ -212,6 +324,8 @@ package org.glomaker.mobileplayer.mvcs.views
 				dispatchEvent(ProjectEvent.PREV_PAGE_EVENT);
 			else if(event.target == menuLink)
 				dispatchEvent(ProjectEvent.MENU_EVENT);
+			else if(event.target == refresh)
+				dispatchEvent(GloMenuEvent.LIST_ITEMS_EVENT);
 		}
 	}
 }

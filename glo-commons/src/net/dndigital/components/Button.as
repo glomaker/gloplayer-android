@@ -56,6 +56,27 @@ package net.dndigital.components
 		
 		//--------------------------------------------------------------------------
 		//
+		//  State Constants
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		public static const UP:String = "up";
+		
+		/**
+		 * @private
+		 */
+		public static const DOWN:String = "down";
+		
+		/**
+		 * @private
+		 */
+		public static const DISABLED:String = "disabled";
+		
+		//--------------------------------------------------------------------------
+		//
 		//  Properties
 		//
 		//--------------------------------------------------------------------------
@@ -101,7 +122,7 @@ package net.dndigital.components
 		override public function initialize():IGUIComponent
 		{
 			// Set IUIComponent.defaultState to be "up".
-			_defaultState = "up";
+			_defaultState = UP;
 			// Usual button UI nasties.
 			buttonMode = mouseEnabled = useHandCursor = true;
 			mouseChildren = false;
@@ -125,7 +146,7 @@ package net.dndigital.components
 				if (_enabled)
 					state = _defaultState;
 				else
-					state = "disabled";
+					state = DISABLED;
 				mouseEnabled = _enabled;
 				enabledChanged = false;
 			}
@@ -145,13 +166,13 @@ package net.dndigital.components
 			//log("handleMouse({0})", event);
 			switch (event.type) {
 				case MouseEvent.MOUSE_DOWN:
-					state = "down";
+					state = DOWN;
 					break;
 				case MouseEvent.MOUSE_UP:
-					state = "up";
+					state = UP;
 					break;
 				default:
-					state = "up";
+					state = UP;
 					break;
 			}
 		}

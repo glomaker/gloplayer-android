@@ -32,26 +32,27 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
 
 	/**
-	 * View component - button to go back to Menu from Player. 
-	 * @author nilsmillahn
+	 * Button to open the QR code reader.
+	 * 
+	 * @author haykel
 	 */	
-	public class BackToMenuButton extends ShapeButton
+	public class QRCodeButton extends ShapeButton
 	{
 		override protected function drawShape():void
 		{
 			shape.graphics.clear();
+			
 			shape.graphics.lineStyle(4, ColourPalette.BUTTON_UP_BLUE, 1, false, LineScaleMode.NORMAL, CapsStyle.SQUARE, JointStyle.MITER);
-			shape.graphics.moveTo(-26, 23);
-			shape.graphics.lineTo(3, 23);
-			shape.graphics.lineTo(3, 7);
-			shape.graphics.lineTo(13, 7);
-			shape.graphics.lineTo(13, 23);
-			shape.graphics.lineTo(26, 23);
-			shape.graphics.lineTo(26, -1);
-			shape.graphics.lineTo(0, -26);
-			shape.graphics.lineTo(-26, -1);
-			shape.graphics.lineTo(-26, 23);
+			shape.graphics.drawRect(-25, -25, 20, 20);
+			shape.graphics.drawRect(5, -25, 20, 20);
+			shape.graphics.drawRect(-25, 5, 20, 20);
 			shape.graphics.lineStyle();
+			
+			shape.graphics.beginFill(ColourPalette.BUTTON_UP_BLUE);
+			shape.graphics.drawRect(-19, -19, 8, 8);
+			shape.graphics.drawRect(11, -19, 8, 8);
+			shape.graphics.drawRect(-19, 11, 8, 8);
+			shape.graphics.endFill();
 		}
 	}
 }

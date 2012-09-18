@@ -82,6 +82,7 @@ package org.glomaker.mobileplayer.mvcs.commands
 			
 			model.length = event.project.length;
 			model.index = 0;
+			model.journey = event.glo.journey;
 		}
 	}
 }

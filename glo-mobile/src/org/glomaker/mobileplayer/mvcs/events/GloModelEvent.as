@@ -34,6 +34,7 @@ package org.glomaker.mobileplayer.mvcs.events
 		//--------------------------------------------------
 		
 		public static const QR_CODES_LISTED:String = "qrCodesListed";
+		public static const JOURNEY_CHANGED:String = "journeyChanged";
 		
 		//--------------------------------------------------
 		// Initialization

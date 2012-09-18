@@ -27,9 +27,21 @@ package org.glomaker.mobileplayer.mvcs.views.components
 {
 	import eu.kiichigo.utils.log;
 	
-	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
+	import flash.display.Shape;
+	import flash.display.Sprite;
+	import flash.geom.ColorTransform;
 	
-	public final class NavButton extends ShapeButton
+	import net.dndigital.components.Button;
+	
+	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
+	import org.glomaker.mobileplayer.mvcs.utils.DrawingUtils;
+	
+	/**
+	 * Base class for buttons that use a shape to draw their icons through actionscript.
+	 * 
+	 * @author haykel
+	 */
+	public class ShapeButton extends Button
 	{
 		//--------------------------------------------------------------------------
 		//
@@ -40,16 +52,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		/**
 		 * @private
 		 */
-		protected static var log:Function = eu.kiichigo.utils.log(NavButton);
-		
-		//--------------------------------------------------------------------------
-		//
-		//  State Constants
-		//
-		//--------------------------------------------------------------------------
-		
-		public static const LEFT:String = "pointLeft";
-		public static const RIGHT:String = "pointRight";
+		protected static var log:Function = eu.kiichigo.utils.log(ShapeButton);
 		
 		//--------------------------------------------------------------------------
 		//
@@ -57,21 +60,27 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		//
 		//--------------------------------------------------------------------------
 		
-		protected var _direction:String = RIGHT;
+		/**
+		 * @private
+		 * Shape
+		 */
+		protected const shape:Shape = new Shape;
+		protected const hit:Sprite = new Sprite;
+		
+		protected var downColour:uint = ColourPalette.HIGHLIGHT_BLUE;
+		protected var disabledColour:uint = ColourPalette.DISABLED_BLUE;
 		
 		//--------------------------------------------------------------------------
 		//
-		//  Properties
+		//  Protected Functions
 		//
 		//--------------------------------------------------------------------------
 		
-		public function set direction( value:String ):void
+		/**
+		 * Draw shape. Override by subclasses.
+		 */
+		protected function drawShape():void
 		{
-			if( value != _direction )
-			{
-				_direction = value;
-				invalidateDisplay();
-			}
 		}
 		
 		//--------------------------------------------------------------------------
@@ -83,15 +92,27 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		/**
 		 * @inheritDoc
 		 */
-		override protected function drawShape():void
+		override protected function createChildren():void
 		{
-			shape.graphics.clear();
-			shape.graphics.beginFill( ColourPalette.BUTTON_UP_BLUE, 1 );
-			shape.graphics.moveTo( -15, -10 );
-			shape.graphics.lineTo( 15, 0 );
-			shape.graphics.lineTo( -15, 10 );
-			shape.graphics.lineTo( -15, -10 );
-			shape.graphics.endFill();
+			super.createChildren();
+			
+			// hit area
+			addChild( hit );
+			hitArea = hit;
+			hit.visible = false;
+
+			// shape shape - always the same size, centred around origin
+			drawShape();
+			addChild(shape);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function stateChanged(newState:String):void
+		{
+			super.stateChanged(newState);
+			setShapeColour();
 		}
 		
 		/**
@@ -101,8 +122,42 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		{
 			super.resized(width, height);
 			
-			// rotate arrow
-			_direction == LEFT ? shape.scaleX = -1 : shape.scaleX = 1;
+			// hit area
+			hit.graphics.clear();
+			hit.graphics.beginFill( 0xff0000, 1 );
+			hit.graphics.drawRect( 0, 0, width, height );
+			
+			// gradient background
+			DrawingUtils.drawStandardGradient( graphics, width, height );
+			
+			// centre shape
+			shape.x = width / 2;
+			shape.y = height / 2;
+		}
+		
+		/**
+		 * Changes shape colour. 
+		 */		
+		protected function setShapeColour():void
+		{
+			var t:ColorTransform = new ColorTransform();
+			
+			switch( state )
+			{
+				case DOWN:
+					t.color = downColour;
+					break;
+				
+				case DISABLED:
+					t.color = disabledColour;
+					break;
+				
+				default: // UP : no color transfoms
+					break;
+			}
+
+			// apply
+			shape.transform.colorTransform = t;
 		}
 	}
 }
