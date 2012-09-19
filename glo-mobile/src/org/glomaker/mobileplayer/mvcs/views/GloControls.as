@@ -34,6 +34,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import net.dndigital.components.Container;
 	import net.dndigital.components.IGUIComponent;
 	
+	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
@@ -326,6 +327,8 @@ package org.glomaker.mobileplayer.mvcs.views
 				dispatchEvent(ProjectEvent.MENU_EVENT);
 			else if(event.target == refresh)
 				dispatchEvent(GloMenuEvent.LIST_ITEMS_EVENT);
+			else if(event.target == qrCode)
+				dispatchEvent(ApplicationEvent.SHOW_QR_CODE_READER_EVENT);
 		}
 	}
 }

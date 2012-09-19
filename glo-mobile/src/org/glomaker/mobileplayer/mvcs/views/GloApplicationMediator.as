@@ -80,6 +80,8 @@ package org.glomaker.mobileplayer.mvcs.views
 			super.onRegister();			
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, showPlayer);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_MENU, showMenu);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_QR_CODE_READER, showQRCodeReader);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.HIDE_QR_CODE_READER, hideQRCodeReader);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.ENTER_FULL_SCREEN, fullScreen);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.LEAVE_FULL_SCREEN, fullScreen);
 			eventMap.mapListener(eventDispatcher, NotificationEvent.NOTIFICATION, notify);
@@ -121,6 +123,24 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected function showMenu(event:Event = null):void
 		{
 			view.showMenu();
+		}
+		
+		/**
+		 * @private
+		 * Invokes showQRCodeReader on view.
+		 */
+		protected function showQRCodeReader(event:Event = null):void
+		{
+			view.showQRCodeReader();
+		}
+		
+		/**
+		 * @private
+		 * Invokes hideQRCodeReader on view.
+		 */
+		protected function hideQRCodeReader(event:Event = null):void
+		{
+			view.hideQRCodeReader();
 		}
 		
 		/**

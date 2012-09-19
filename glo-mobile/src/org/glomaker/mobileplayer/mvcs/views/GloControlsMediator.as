@@ -27,9 +27,6 @@ package org.glomaker.mobileplayer.mvcs.views
 {
 	import eu.kiichigo.utils.log;
 	
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
 	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
@@ -81,6 +78,8 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.mapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.MENU, handleMenuClick);
 			
+			eventMap.mapListener(view, ApplicationEvent.SHOW_QR_CODE_READER, dispatch);
+			
 			eventMap.mapListener(view, GloMenuEvent.LIST_ITEMS, dispatch);
 			
 			handleQrCodesListed();
@@ -99,6 +98,8 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.unmapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.PREV_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.MENU, handleMenuClick);
+			
+			eventMap.unmapListener(view, ApplicationEvent.SHOW_QR_CODE_READER, dispatch);
 			
 			eventMap.unmapListener(view, GloMenuEvent.LIST_ITEMS, dispatch);
 		}
@@ -125,7 +126,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function handleQrCodesListed(event:GloModelEvent=null):void
 		{
-			view.qrCodeEnabled = (model.qrCodes && model.qrCodes.length > 0);
+			view.qrCodeEnabled = (QRCodeReader.isSupported && model.qrCodes && model.qrCodes.length > 0);
 		}
 		
 		/**

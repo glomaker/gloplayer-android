@@ -90,6 +90,7 @@ package org.glomaker.mobileplayer.mvcs
 			mediatorMap.mapView(GloApplication, GloApplicationMediator);
 			mediatorMap.mapView(GloPlayer, GloPlayerMediator);
 			mediatorMap.mapView(GloMenu, GloMenuMediator);
+			mediatorMap.mapView(QRCodeReader, QRCodeReaderMediator);
 			mediatorMap.mapView(GloControls, GloControlsMediator);
 			mediatorMap.mapView(PageNumberDisplay, PageNumberDisplayMediator);
 			mediatorMap.mapView(ProgressBar, ProgressBarMediator);

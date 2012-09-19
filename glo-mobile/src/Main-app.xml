@@ -157,12 +157,21 @@
 		<uses-feature android:required="true" android:name="android.hardware.touchscreen.multitouch"/>
 	 -->
 	<android> 
+        <colorDepth>16bit</colorDepth>
 		<manifestAdditions>
 		<![CDATA[
 			<manifest android:installLocation="auto">
 				<uses-permission android:name="android.permission.INTERNET"/>
 				<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-				<supports-screens android:normalScreens="true"/>
+				<uses-permission android:name="android.permission.CAMERA" /> 
+                
+			    <!-- Make all camera features optional to allow installation of the app on devices without these features. -->
+			    <!-- Related functionality will be disabled in the app for these devices. -->
+                <uses-feature android:name="android.hardware.camera" android:required="false"/> 
+                <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/> 
+                <uses-feature android:name="android.hardware.camera.flash" android:required="false"/> 
+                
+                <supports-screens android:normalScreens="true"/>
 				<application android:enabled="true">
 					<activity android:excludeFromRecents="false">
 						<intent-filter>

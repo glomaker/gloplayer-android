@@ -82,6 +82,11 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected const menu:GloMenu = new GloMenu;
 		
+		/**
+		 * @private
+		 * Reference to an instance of QRCodeReader. This is constant since we need to initialize it only once.
+		 */
+		protected const qrCodeReader:QRCodeReader = new QRCodeReader();
 		
 		/**
 		 * @private
@@ -150,6 +155,24 @@ package org.glomaker.mobileplayer.mvcs.views
 		}
 		
 		/**
+		 * Displays the QR code reader. It is overlayed over the current view
+		 * so that when it is removed the user returns to the view as it was
+		 * when the QR code reader was dislayed.
+		 */
+		public function showQRCodeReader():void
+		{
+			add(qrCodeReader);
+		}
+		
+		/**
+		 * Hides the QR code reader.
+		 */
+		public function hideQRCodeReader():void
+		{
+			remove(qrCodeReader);
+		}
+		
+		/**
 		 * Removes current view. 
 		 */		
 		public function clear():void
@@ -185,7 +208,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.createChildren();
 			
-			controls.height = Math.ceil( ScreenMaths.mmToPixels(10) );
+			controls.height = Math.max(72, ScreenMaths.mmToPixels(10)); //max to make space for button icons with heights up to 56 pixels
 			
 			// the following items are always on screen
 			// the other elements will be swapped out via the 'replace' function
@@ -218,6 +241,10 @@ package org.glomaker.mobileplayer.mvcs.views
 			menu.y = logo.height + 1;
 			menu.width = width;
 			menu.height = fullScreen ? (height - menu.y) : (height - menu.y - controls.height);
+			
+			// QR Code reader is displayed as an overlay so it must be handled separately
+			qrCodeReader.width = width;
+			qrCodeReader.height = height;
 			
 			// black background
 			graphics.clear();

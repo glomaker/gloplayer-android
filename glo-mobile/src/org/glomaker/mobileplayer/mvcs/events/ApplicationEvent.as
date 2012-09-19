@@ -37,6 +37,8 @@ package org.glomaker.mobileplayer.mvcs.events
 		public static const DEACTIVATE_EVENT:ApplicationEvent = new ApplicationEvent(DEACTIVATE);
 		public static const SHOW_PLAYER_EVENT:ApplicationEvent = new ApplicationEvent(SHOW_PLAYER);
 		public static const SHOW_MENU_EVENT:ApplicationEvent = new ApplicationEvent(SHOW_MENU);
+		public static const SHOW_QR_CODE_READER_EVENT:ApplicationEvent = new ApplicationEvent(SHOW_QR_CODE_READER);
+		public static const HIDE_QR_CODE_READER_EVENT:ApplicationEvent = new ApplicationEvent(HIDE_QR_CODE_READER);
 		public static const ENTER_FULL_SCREEN_EVENT:ApplicationEvent = new ApplicationEvent(ENTER_FULL_SCREEN);
 		public static const LEAVE_FULL_SCREEN_EVENT:ApplicationEvent = new ApplicationEvent(LEAVE_FULL_SCREEN);
 
@@ -45,6 +47,8 @@ package org.glomaker.mobileplayer.mvcs.events
 		public static const DEACTIVATE:String = "ApplicationEvent.Deactivate";
 		public static const SHOW_PLAYER:String = "showPlayer";
 		public static const SHOW_MENU:String = "showMenu";
+		public static const SHOW_QR_CODE_READER:String = "showQRCodeReader";
+		public static const HIDE_QR_CODE_READER:String = "hideQRCodeReader";
 		public static const ENTER_FULL_SCREEN:String = "enterFullScreen";
 		public static const LEAVE_FULL_SCREEN:String = "leaveFullScreen";
 		
