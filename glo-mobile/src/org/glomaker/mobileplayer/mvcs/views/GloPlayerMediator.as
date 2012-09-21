@@ -25,12 +25,9 @@
 */
 package org.glomaker.mobileplayer.mvcs.views
 {
-	import flash.events.TransformGestureEvent;
-	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.NotificationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
-	import org.glomaker.mobileplayer.mvcs.models.vo.Project;
 	import org.glomaker.mobileplayer.mvcs.services.IProjectService;
 	import org.robotlegs.core.IMediator;
 	import org.robotlegs.mvcs.Mediator;
@@ -79,6 +76,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			view.project = service.project;
 			
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, applyProject);
 			eventMap.mapListener(eventDispatcher, ProjectEvent.PAGE, changePage);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.ACTIVATE, handleActivate);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.DEACTIVATE, handleDeactivate);
@@ -95,6 +93,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		override public function onRemove():void
 		{
+			eventMap.unmapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, applyProject);
 			eventMap.unmapListener(eventDispatcher, ProjectEvent.PAGE, changePage);
 			eventMap.unmapListener(eventDispatcher, ApplicationEvent.ACTIVATE, handleActivate);
 			eventMap.unmapListener(eventDispatcher, ApplicationEvent.DEACTIVATE, handleDeactivate);
@@ -116,9 +115,9 @@ package org.glomaker.mobileplayer.mvcs.views
 		 * @private
 		 * Applies project to current instance of player.
 		 */
-		protected final function applyProject(event:ProjectEvent):void
+		protected final function applyProject(event:ApplicationEvent):void
 		{
-			view.project = event.project
+			view.project = service.project;
 		}
 		
 		/**
