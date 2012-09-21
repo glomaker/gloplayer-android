@@ -41,8 +41,9 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	import flash.utils.setTimeout;
 	
 	import net.dndigital.components.*;
-	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	import net.dndigital.utils.drawRectangle;
+	
+	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	
 	/**
 	 * Notifications are used by Application to notify user.
@@ -84,6 +85,17 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		
 		/**
 		 * @private
+		 * If set 'true', the notification will be closed automatically on one of these events:
+		 *   1. After a timeout of 10 seconds
+		 *   2. The user clicks anywhere in the app
+		 *   3. The size of the stage changes (i.e. user rotates device)
+		 * 
+		 * If set to 'false', the dialog must closed programmatically by calling 'destoy()'.
+		 */
+		protected var autoClose:Boolean = true;
+		
+		/**
+		 * @private
 		 * Timeout Id.
 		 */
 		protected var timeoutId:uint;
@@ -97,7 +109,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		/**
 		 * @private
 		 */
-		protected var _text:String;
+		protected var _text:String = "";
 		/**
 		 * Text that will be shown in notification.
 		 *
@@ -112,6 +124,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		 */
 		public function set text(value:String):void
 		{
+			value = value ? value : "";
 			if (_text == value)
 				return;
 			_text = value;
@@ -151,10 +164,13 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		{
 			height = ScreenMaths.mmToPixels(14);
 			
-			stage.addEventListener(Event.RESIZE, destroy);
-			stage.addEventListener(MouseEvent.CLICK, destroy);
+			stage.addEventListener(Event.RESIZE, stage_resizeHandler);
 			
-			timeoutId = setTimeout(destroy, 10000);
+			if (autoClose)
+			{
+				stage.addEventListener(MouseEvent.CLICK, destroy);
+				timeoutId = setTimeout(destroy, 10000);
+			}
 			
 			blendMode = BlendMode.LAYER;
 			filters = [ new DropShadowFilter(3, 90, 0x000000, .6, 8, 8, 1, 2) ];
@@ -211,11 +227,29 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		
 		/**
 		 * @private
+		 * Reposition on stage resize.
+		 */
+		protected function stage_resizeHandler(event:Event):void
+		{
+			if (autoClose)
+				destroy();
+			else
+				invalidateDisplay();
+		}
+		
+		/**
+		 * @private
 		 * Removes notification from screen.
 		 */
 		protected function destroy(event:Event = null):void
 		{
-			clearTimeout(timeoutId);
+			stage.removeEventListener(Event.RESIZE, stage_resizeHandler);
+			
+			if (autoClose)
+			{
+				stage.removeEventListener(MouseEvent.CLICK, destroy);
+				clearTimeout(timeoutId);
+			}
 			
 			invalidateDisplay();
 			validateDisplay();
@@ -228,9 +262,6 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		 */
 		protected function completed():void
 		{
-			stage.removeEventListener(Event.RESIZE, destroy);
-			stage.removeEventListener(MouseEvent.CLICK, destroy);
-			
 			if (parent)
 				parent.removeChild(this);
 		}

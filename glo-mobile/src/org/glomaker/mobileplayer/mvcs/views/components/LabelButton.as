@@ -42,7 +42,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	 * @author haykel
 	 * 
 	 */
-	public class TextButton extends Button
+	public class LabelButton extends Button
 	{
 		
 		//--------------------------------------------------
