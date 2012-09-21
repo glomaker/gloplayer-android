@@ -176,15 +176,17 @@ package org.glomaker.mobileplayer.mvcs.services
 				return;
 			
 			var menuItem:MenuItem;
-			var journeyName:String = event.project.journey ? StringUtil.trim(event.project.journey.name) : null;
-			var journeyIndex:uint = event.project.journey ? event.project.journey.index : 0;
+			var journeyName:String;
+			var journeyIndex:uint;
 			
-			if (event.project.journey)
+			event.glo.journeySettings = event.project.journey;
+			
+			if (event.glo.journeySettings)
 			{
-				journeyName = StringUtil.trim(event.project.journey.name);
-				journeyIndex = event.project.journey.index;
-				if (event.project.journey.qrEnabled)
-					qrCodes.add(event.project.journey.qrCode, event.glo);
+				journeyName = StringUtil.trim(event.glo.journeySettings.name);
+				journeyIndex = event.glo.journeySettings.index;
+				if (event.glo.journeySettings.qrEnabled)
+					qrCodes.add(event.glo.journeySettings.qrCode, event.glo);
 			}
 			
 			if (journeyName && journeyIndex > 0)

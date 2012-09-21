@@ -44,6 +44,11 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		 * Journey to which the GLO belongs, <code>null</code> if it is not part of a journey.
 		 */
 		public var journey:Journey;
+		
+		/**
+		 * Journey settings for this GLO.
+		 */
+		public var journeySettings:JourneySettings;
 
 		/**
 		 * @constructor 
