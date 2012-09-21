@@ -29,9 +29,16 @@ package org.glomaker.mobileplayer.mvcs.views
 	import flash.desktop.SystemIdleMode;
 	import flash.display.Stage;
 	import flash.display.StageOrientation;
+	import flash.events.DataEvent;
+	import flash.events.Event;
+	import flash.filters.BlurFilter;
 	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
+	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.events.NotificationEvent;
+	import org.glomaker.mobileplayer.mvcs.models.GloModel;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
+	import org.glomaker.mobileplayer.mvcs.views.components.ConfirmationDialog;
 	import org.robotlegs.core.IMediator;
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -58,6 +65,12 @@ package org.glomaker.mobileplayer.mvcs.views
 		/**
 		 * @private
 		 */
+		public var model:GloModel;
+		
+		[Inject]
+		/**
+		 * @private
+		 */
 		public var view:QRCodeReader;
 		
 		/**
@@ -65,6 +78,11 @@ package org.glomaker.mobileplayer.mvcs.views
 		 * where the stage is not available through the view anymore.
 		 */
 		protected var stage:Stage;
+		
+		/**
+		 * Glo whose QR code has been scanned.
+		 */
+		protected var glo:Glo
 		
 		//--------------------------------------------------------------------------
 		//
@@ -81,7 +99,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.DEACTIVATE, handleDeactivate, ApplicationEvent);
 			
 			eventMap.mapListener(view, ApplicationEvent.HIDE_QR_CODE_READER, dispatch, ApplicationEvent);
-			eventMap.mapListener(view, NotificationEvent.NOTIFICATION, handleViewNotification, NotificationEvent);
+			eventMap.mapListener(view, DataEvent.DATA, handleViewData, DataEvent);
 			
 			stage = view.stage;
 			stage.autoOrients = false;
@@ -98,6 +116,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		override public function onRemove():void
 		{
+			glo = null;
 			view.stop();
 			view.dispose();
 			
@@ -105,7 +124,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.unmapListener(eventDispatcher, ApplicationEvent.DEACTIVATE, handleDeactivate, ApplicationEvent);
 			
 			eventMap.unmapListener(view, ApplicationEvent.HIDE_QR_CODE_READER, dispatch, ApplicationEvent);
-			eventMap.unmapListener(view, NotificationEvent.NOTIFICATION, handleViewNotification, NotificationEvent);
+			eventMap.unmapListener(view, DataEvent.DATA, handleViewData, DataEvent);
 			
 			stage.autoOrients = true;
 			NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.NORMAL;
@@ -139,10 +158,53 @@ package org.glomaker.mobileplayer.mvcs.views
 		/**
 		 * Event handler - reader detected a QR code.
 		 */
-		protected function handleViewNotification(event:NotificationEvent):void
+		protected function handleViewData(event:DataEvent):void
 		{
-			view.stop();
-			dispatch(event);
+			glo = model.qrCodes.get(event.data);
+			if (glo)
+			{
+				var message:String = "Open the following GLO?\n";
+				if (glo.journeySettings.location)
+					message += "Name: " + glo.journeySettings.location + "\n";
+				message += "Journey: " + glo.journeySettings.name + "\n";
+				message += "Step: " + glo.journeySettings.index + "\n";
+				
+				view.mouseEnabled = false;
+				view.mouseChildren = false;
+				view.filters = [ new BlurFilter(3, 3) ];
+				
+				var dialog:ConfirmationDialog = new ConfirmationDialog();
+				dialog.text = message;
+				dialog.addEventListener(Event.CLOSE, dialog_closeHandler);
+				view.stage.addChild(dialog);
+			}
+			else
+			{
+				dispatch(new NotificationEvent(NotificationEvent.NOTIFICATION, "Unkown QR Code."));
+				
+				view.resume();
+			}
+		}
+		
+		protected function dialog_closeHandler(event:Event):void
+		{
+			var dialog:ConfirmationDialog = event.target as ConfirmationDialog;
+			dialog.removeEventListener(Event.CLOSE, dialog_closeHandler);
+			
+			view.mouseEnabled = true;
+			view.mouseChildren = true;
+			view.filters = null;
+			
+			if (dialog.response)
+			{
+				view.stop();
+				dispatch(new LoadProjectEvent(LoadProjectEvent.SHOW, glo));
+				dispatch(ApplicationEvent.HIDE_QR_CODE_READER_EVENT);
+			}
+			else
+			{
+				view.resume();
+			}
 		}
 	}
 }

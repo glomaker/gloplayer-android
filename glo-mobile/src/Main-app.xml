@@ -157,7 +157,7 @@
 		<uses-feature android:required="true" android:name="android.hardware.touchscreen.multitouch"/>
 	 -->
 	<android> 
-        <colorDepth>16bit</colorDepth>
+		<!-- <colorDepth>16bit</colorDepth> -->
 		<manifestAdditions>
 		<![CDATA[
 			<manifest android:installLocation="auto">

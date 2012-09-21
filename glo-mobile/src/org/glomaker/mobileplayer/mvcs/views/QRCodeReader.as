@@ -40,6 +40,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import flash.display.BitmapData;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.events.DataEvent;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
@@ -49,14 +50,12 @@ package org.glomaker.mobileplayer.mvcs.views
 	import flash.system.System;
 	import flash.utils.Timer;
 	
-	import net.dndigital.components.Button;
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
 	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
-	import org.glomaker.mobileplayer.mvcs.events.NotificationEvent;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
-	import org.glomaker.mobileplayer.mvcs.views.components.TextButton;
+	import org.glomaker.mobileplayer.mvcs.views.components.LabelButton;
 	
 	/**
 	 * View component for launching a GLO through its QR Code.
@@ -110,7 +109,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected var videoBitmap:Bitmap;
 		protected var videoContainer:Sprite;
 		protected var snapRegion:Shape;
-		protected var closeButton:TextButton;
+		protected var closeButton:LabelButton;
 		
 		//--------------------------------------------------
 		// Public functions
@@ -121,12 +120,21 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		public function start():void
 		{
-			if (camera)
+			if (snapTimer)
+			{
+				resume();
 				return;
-			
-			dispose();
+			}
 			
 			camera = Camera.getCamera();
+			
+			if (!camera)
+			{
+				log("Failed to get camera!");
+				return;
+			}
+			
+			dispose();
 			
 			snapTimer = new Timer(1000);
 			snapTimer.addEventListener(TimerEvent.TIMER, snapTimer_timerHandler);
@@ -161,6 +169,34 @@ package org.glomaker.mobileplayer.mvcs.views
 		}
 		
 		/**
+		 * Pauses decoding and hides live video making the last snapshot visible.
+		 */
+		public function pause():void
+		{
+			if (!snapTimer)
+				return;
+			
+			snapTimer.stop();
+			
+			if (videoDisplay)
+				videoDisplay.visible = false;
+		}
+		
+		/**
+		 * Resumes decoding.
+		 */
+		public function resume():void
+		{
+			if (!snapTimer || snapTimer.running)
+				return;
+			
+			if (videoDisplay)
+				videoDisplay.visible = true;
+			
+			snapTimer.start();
+		}
+		
+		/**
 		 * Frees memory that is used by the video bitmap data.
 		 */
 		public function dispose():void
@@ -176,16 +212,35 @@ package org.glomaker.mobileplayer.mvcs.views
 		// Protected functions
 		//--------------------------------------------------
 		
+		/**
+		 * Updates the snapshot with current video content.
+		 */
+		protected function updateSnapshot():Boolean
+		{
+			if (!videoBitmap || !videoContainer)
+				return false;
+			
+			if (!videoBitmap.bitmapData || videoBitmap.bitmapData.width != width || videoBitmap.bitmapData.height != height)
+			{
+				dispose();
+				videoBitmap.bitmapData = new BitmapData(videoContainer.width, videoContainer.height);
+			}
+			
+			videoBitmap.bitmapData.draw(videoContainer, null, null, null, null, true);
+			
+			return true;
+		}
+		
+		/**
+		 * Takes a snapshot of the video and scans it for a presence of a QR code.
+		 */
 		protected function decodeSnapshot():void
 		{
-			if (!snapRect)
+			if (!snapRect || !updateSnapshot())
 				return;
 			
-			var bmpd:BitmapData = new BitmapData(videoContainer.width, videoContainer.height);
-			bmpd.draw(videoContainer, null, null, null, null, true);
-			
 			var snapBmpd:BitmapData = new BitmapData(SNAP_SIZE, SNAP_SIZE);
-			snapBmpd.copyPixels(bmpd, snapRect, new Point());
+			snapBmpd.copyPixels(videoBitmap.bitmapData, snapRect, new Point());
 			
 			var lsource:BufferedImageLuminanceSource = new BufferedImageLuminanceSource(snapBmpd);
 			var bitmap:BinaryBitmap = new BinaryBitmap(new GlobalHistogramBinarizer(lsource));
@@ -202,11 +257,17 @@ package org.glomaker.mobileplayer.mvcs.views
 			
 			if (res != null)
 			{
+				pause();
+				
 				var parsedResult:ParsedResult = ResultParser.parseResult(res);
 				var code:String = parsedResult.getDisplayResult();
 				
-				videoBitmap.bitmapData = bmpd;
-				dispatchEvent(new NotificationEvent(NotificationEvent.NOTIFICATION, code));
+				dispatchEvent(new DataEvent(DataEvent.DATA, false, false, code));
+			}
+			else
+			{
+				// reattach to autofocus for next try
+				videoDisplay.attachCamera(camera);
 			}
 			
 			snapBmpd.dispose();
@@ -255,7 +316,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			snapRegion.graphics.lineStyle();
 			addChild(snapRegion);
 			
-			closeButton = new TextButton();
+			closeButton = new LabelButton();
 			closeButton.label = "CLOSE";
 			closeButton.addEventListener(MouseEvent.CLICK, closeButton_clickHandler);
 			addChild(closeButton);
