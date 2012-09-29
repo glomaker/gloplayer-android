@@ -28,7 +28,6 @@ package org.glomaker.mobileplayer.mvcs.views
 	import eu.kiichigo.utils.log;
 	
 	import flash.events.MouseEvent;
-	import flash.geom.Rectangle;
 	
 	import net.dndigital.components.Button;
 	import net.dndigital.components.Container;
@@ -83,6 +82,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		// states
 		public static const HOME:String = "home";
 		public static const PLAYER:String = "player";
+		public static const JOURNEY:String = "journey";
 		
 		//--------------------------------------------------------------------------
 		//
@@ -140,12 +140,22 @@ package org.glomaker.mobileplayer.mvcs.views
 			qrCode.enabled = value;
 		}
 		
+		//--------------------------------------------------------------------------
+		//
+		//  journeyManagerEnabled
+		//
+		//--------------------------------------------------------------------------
+		
+		private var _journeyManagerEnabled:Boolean;
+		
 		/**
 		 * Set enabled state of the journey button.
 		 */
 		public function set journeyManagerEnabled(value:Boolean):void
 		{
-			journeyManager.enabled = value;
+			_journeyManagerEnabled = value;
+			
+			journeyManager.enabled = _journeyManagerEnabled && (state != JOURNEY);
 		}
 		
 		//--------------------------------------------------------------------------
@@ -214,6 +224,8 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.stateChanged(newState);
 			
+			journeyManager.enabled = _journeyManagerEnabled && (newState != JOURNEY);
+			
 			invalidateDisplay();
 		}
 		
@@ -254,6 +266,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			switch (state)
 			{
 				case PLAYER:
+				case JOURNEY:
 					prev.visible = true;
 					next.visible = true;
 					qrCode.visible = true;
@@ -329,6 +342,8 @@ package org.glomaker.mobileplayer.mvcs.views
 				dispatchEvent(GloMenuEvent.LIST_ITEMS_EVENT);
 			else if(event.target == qrCode)
 				dispatchEvent(ApplicationEvent.SHOW_QR_CODE_READER_EVENT);
+			else if(event.target == journeyManager)
+				dispatchEvent(ApplicationEvent.SHOW_JOURNEY_MANAGER_EVENT);
 		}
 	}
 }

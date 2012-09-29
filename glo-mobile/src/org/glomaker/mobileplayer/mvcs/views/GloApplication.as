@@ -84,6 +84,12 @@ package org.glomaker.mobileplayer.mvcs.views
 		
 		/**
 		 * @private
+		 * Reference to an instance of JourneyManager. This is constant since we need to initialize it only once.
+		 */
+		protected const journeyManager:JourneyManager = new JourneyManager();
+		
+		/**
+		 * @private
 		 * Reference to an instance of QRCodeReader. This is constant since we need to initialize it only once.
 		 */
 		protected const qrCodeReader:QRCodeReader = new QRCodeReader();
@@ -135,6 +141,16 @@ package org.glomaker.mobileplayer.mvcs.views
 		//--------------------------------------------------------------------------
 		
 		/**
+		 * Activates <code>GloMenu</code> as it's current view.
+		 */
+		public function showMenu():void
+		{
+			replace(menu);
+			logo.visible = true;
+			controls.state = GloControls.HOME;
+		}
+		
+		/**
 		 * Activates <code>GloPlayer</code> as it's current view.
 		 */
 		public function showPlayer():void
@@ -145,13 +161,13 @@ package org.glomaker.mobileplayer.mvcs.views
 		}
 		
 		/**
-		 * Activates <code>GloMenu</code> as it's current view.
+		 * Activates <code>JourneyManager</code> as it's current view.
 		 */
-		public function showMenu():void
+		public function showJourneyManager():void
 		{
-			replace(menu);
+			replace(journeyManager);
 			logo.visible = true;
-			controls.state = GloControls.HOME;
+			controls.state = GloControls.JOURNEY;
 		}
 		
 		/**

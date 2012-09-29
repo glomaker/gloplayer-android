@@ -39,5 +39,8 @@ package org.glomaker.mobileplayer.mvcs.models.enum
 		public static const BUTTON_UP_BLUE:uint = 0x9aaecd;
 		public static const GRADIENT_START:uint = 0x424449;
 		public static const GRADIENT_END:uint = 0x000000;
+		
+		public static const JOURNEY_DARK_BLUE:uint = 0x586784;
+		public static const JOURNEY_LIGHT_BLUE:uint = 0x9aaecd;
 	}
 }

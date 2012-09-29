@@ -27,10 +27,12 @@ package org.glomaker.mobileplayer.mvcs.commands
 {
 	import eu.kiichigo.utils.log;
 	
+	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.GloModel;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Journey;
 	import org.glomaker.mobileplayer.mvcs.models.vo.MenuItem;
 	import org.robotlegs.mvcs.Command;
 	
@@ -87,7 +89,16 @@ package org.glomaker.mobileplayer.mvcs.commands
 			if (item is Glo)
 			{
 				dispatch(new LoadProjectEvent(LoadProjectEvent.SHOW, item as Glo));
-				return;
+			}
+			else if (item is Journey)
+			{
+				model.journey = item as Journey;
+				
+				// either show the journey manager if it has a current GLO, or launch the first GLO of the journey
+				if (model.journey.currentIndex > 0)
+					dispatch(ApplicationEvent.SHOW_JOURNEY_MANAGER_EVENT);
+				else
+					dispatch(new LoadProjectEvent(LoadProjectEvent.SHOW, model.journey.first()));
 			}
 		}
 	}

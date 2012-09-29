@@ -48,6 +48,11 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		 */
 		protected var indices:Vector.<uint> = new Vector.<uint>();
 		
+		/**
+		 * Indices of visited journeys.
+		 */
+		protected var visited:Vector.<uint> = new Vector.<uint>();
+		
 		//--------------------------------------------------
 		// Initialization
 		//--------------------------------------------------
@@ -58,6 +63,31 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		public function Journey(displayName:String)
 		{
 			super(displayName);
+		}
+		
+		//--------------------------------------------------
+		// current
+		//--------------------------------------------------
+		
+		private var _currentIndex:uint;
+
+		/**
+		 * Index of currently viewed Glo, either in the journey manager or in the player.
+		 * 
+		 * If an unkown index is assigned to this property, it is set to 0, which
+		 * means that no Glo is currently selected.
+		 */
+		public function get currentIndex():uint
+		{
+			return _currentIndex;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set currentIndex(value:uint):void
+		{
+			_currentIndex = indices.indexOf(value) >= 0 ? value : 0;
 		}
 		
 		//--------------------------------------------------
@@ -76,17 +106,20 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 			
 			glos = [];
 			indices.length = 0;
+			visited.length = 0;
+			currentIndex = 0;
 		}
 		
 		/**
 		 * Adds the specified Glo with the specified journey index.
 		 */
-		public function add(glo:Glo, index:uint):void
+		public function add(glo:Glo, index:uint, visited:Boolean=false):void
 		{
 			if (glo && index > 0)
 			{
 				glo.journey = this;
 				glos[index] = glo;
+				
 				if (indices.indexOf(index) < 0)
 				{
 					indices.push(index);
@@ -99,6 +132,8 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 							return 0;
 					});
 				}
+				
+				setVisited(index, visited);
 			}
 		}
 		
@@ -146,6 +181,30 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 			return (nextIndex > 0) ? glos[nextIndex] : null;
 		}
 		
+		/**
+		 * Sets the 'visited' state of the Glo with the specified index to the specified value.
+		 */
+		public function setVisited(index:uint, visited:Boolean):void
+		{
+			if (indices.indexOf(index) >= 0)
+			{
+				var i:int = this.visited.indexOf(index);
+				
+				if (visited && i < 0)
+					this.visited.push(index);
+				else if (!visited && i >= 0)
+					this.visited.splice(i, 1);
+			}
+		}
+		
+		/**
+		 * Returns the 'visited' state of the Glo with the specified index.
+		 */
+		public function isVisited(index:uint):Boolean
+		{
+			return visited.indexOf(index) >= 0;
+		}
+
 		//--------------------------------------------------
 		// Overrides
 		//--------------------------------------------------

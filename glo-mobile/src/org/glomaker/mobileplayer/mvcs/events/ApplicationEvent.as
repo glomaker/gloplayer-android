@@ -26,17 +26,15 @@
 package org.glomaker.mobileplayer.mvcs.events
 {
 	import flash.events.Event;
-	
-	import org.glomaker.mobileplayer.mvcs.views.GloApplication;
-	import org.glomaker.mobileplayer.mvcs.views.GloApplicationMediator;
 
 	public final class ApplicationEvent extends Event
 	{
 		// Cached pre-allocated events.
 		public static const ACTIVATE_EVENT:ApplicationEvent = new ApplicationEvent(ACTIVATE);
 		public static const DEACTIVATE_EVENT:ApplicationEvent = new ApplicationEvent(DEACTIVATE);
-		public static const SHOW_PLAYER_EVENT:ApplicationEvent = new ApplicationEvent(SHOW_PLAYER);
 		public static const SHOW_MENU_EVENT:ApplicationEvent = new ApplicationEvent(SHOW_MENU);
+		public static const SHOW_PLAYER_EVENT:ApplicationEvent = new ApplicationEvent(SHOW_PLAYER);
+		public static const SHOW_JOURNEY_MANAGER_EVENT:ApplicationEvent = new ApplicationEvent(SHOW_JOURNEY_MANAGER);
 		public static const SHOW_QR_CODE_READER_EVENT:ApplicationEvent = new ApplicationEvent(SHOW_QR_CODE_READER);
 		public static const HIDE_QR_CODE_READER_EVENT:ApplicationEvent = new ApplicationEvent(HIDE_QR_CODE_READER);
 		public static const ENTER_FULL_SCREEN_EVENT:ApplicationEvent = new ApplicationEvent(ENTER_FULL_SCREEN);
@@ -45,8 +43,9 @@ package org.glomaker.mobileplayer.mvcs.events
 		// Event constants, per ActionScript Event Model best practices
 		public static const ACTIVATE:String = "ApplicationEvent.Activate";
 		public static const DEACTIVATE:String = "ApplicationEvent.Deactivate";
-		public static const SHOW_PLAYER:String = "showPlayer";
 		public static const SHOW_MENU:String = "showMenu";
+		public static const SHOW_PLAYER:String = "showPlayer";
+		public static const SHOW_JOURNEY_MANAGER:String = "showJourneyManager";
 		public static const SHOW_QR_CODE_READER:String = "showQRCodeReader";
 		public static const HIDE_QR_CODE_READER:String = "hideQRCodeReader";
 		public static const ENTER_FULL_SCREEN:String = "enterFullScreen";

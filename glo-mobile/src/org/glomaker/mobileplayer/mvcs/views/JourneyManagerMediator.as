@@ -23,73 +23,63 @@
 *
 * The ScaleBitmap class, released open-source under the RPL license (http://www.opensource.org/licenses/rpl.php)
 */
-package org.glomaker.mobileplayer.mvcs.commands
+package org.glomaker.mobileplayer.mvcs.views
 {
-	import eu.kiichigo.utils.log;
-	
-	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
+	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.GloModel;
-	import org.robotlegs.mvcs.Command;
+	import org.robotlegs.mvcs.Mediator;
 	
-	public final class ShowProject extends Command
+	public class JourneyManagerMediator extends Mediator
 	{
-		//--------------------------------------------------------------------------
-		//
-		//  Log
-		//
-		//--------------------------------------------------------------------------
-		
-		/**
-		 * @private
-		 */
-		protected static var log:Function = eu.kiichigo.utils.log(ShowProject);
-		
-		//--------------------------------------------------------------------------
-		//
-		//  Injections
-		//
-		//--------------------------------------------------------------------------
+		//--------------------------------------------------
+		// Instance variables
+		//--------------------------------------------------
 		
 		[Inject]
 		/**
 		 * @private
-		 * LoadProject event, containing reference to received instance of <code>Project</code>.
 		 */
-		public var event:LoadProjectEvent;
+		public var view:JourneyManager;
 		
 		[Inject]
 		/**
 		 * @private
-		 * Reference to the Model.
 		 */
 		public var model:GloModel;
 		
-		//--------------------------------------------------------------------------
-		//
-		//  Overriden API
-		//
-		//--------------------------------------------------------------------------
+		//--------------------------------------------------
+		// Overrides
+		//--------------------------------------------------
 		
-		/**
-		 * @inheritDoc
-		 */
-		override public function execute():void
+		override public function onRegister():void
 		{
-			super.execute();
+			super.onRegister();
 			
-			dispatch(ApplicationEvent.SHOW_PLAYER_EVENT);
+			applyJourney();
 			
-			model.length = event.project.length;
-			model.index = 0;
+			eventMap.mapListener(view, LoadProjectEvent.SHOW, dispatch, LoadProjectEvent);
 			
-			if (event.glo.journey)
-			{
-				event.glo.journey.currentIndex = event.glo.journeySettings.index;
-				event.glo.journey.setVisited(event.glo.journeySettings.index, true);
-			}
-			
-			model.journey = event.glo.journey;
+			eventMap.mapListener(eventDispatcher, GloModelEvent.JOURNEY_CHANGED, applyJourney, GloModelEvent);
 		}
+		
+		override public function onRemove():void
+		{
+			super.onRemove();
+			
+			eventMap.unmapListener(view, LoadProjectEvent.SHOW, dispatch, LoadProjectEvent);
+			
+			eventMap.unmapListener(eventDispatcher, GloModelEvent.JOURNEY_CHANGED, applyJourney, GloModelEvent);
+		}
+		
+		//--------------------------------------------------
+		// Protected methods
+		//--------------------------------------------------
+		
+		protected function applyJourney(event:GloModelEvent=null):void
+		{
+			view.journey = model.journey;
+		}
+		
 	}
 }

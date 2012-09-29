@@ -88,8 +88,9 @@ package org.glomaker.mobileplayer.mvcs
 			
 			// Views and Mediators
 			mediatorMap.mapView(GloApplication, GloApplicationMediator);
-			mediatorMap.mapView(GloPlayer, GloPlayerMediator);
 			mediatorMap.mapView(GloMenu, GloMenuMediator);
+			mediatorMap.mapView(GloPlayer, GloPlayerMediator);
+			mediatorMap.mapView(JourneyManager, JourneyManagerMediator);
 			mediatorMap.mapView(QRCodeReader, QRCodeReaderMediator);
 			mediatorMap.mapView(GloControls, GloControlsMediator);
 			mediatorMap.mapView(PageNumberDisplay, PageNumberDisplayMediator);

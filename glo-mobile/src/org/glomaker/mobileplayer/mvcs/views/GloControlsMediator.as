@@ -32,6 +32,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.GloModel;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
 	import org.robotlegs.mvcs.Mediator;
 	
 	public final class GloControlsMediator extends Mediator
@@ -79,6 +80,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.mapListener(view, ProjectEvent.MENU, handleMenuClick);
 			
 			eventMap.mapListener(view, ApplicationEvent.SHOW_QR_CODE_READER, dispatch);
+			eventMap.mapListener(view, ApplicationEvent.SHOW_JOURNEY_MANAGER, handleShowJourneyManager);
 			
 			eventMap.mapListener(view, GloMenuEvent.LIST_ITEMS, dispatch);
 			
@@ -100,6 +102,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.unmapListener(view, ProjectEvent.MENU, handleMenuClick);
 			
 			eventMap.unmapListener(view, ApplicationEvent.SHOW_QR_CODE_READER, dispatch);
+			eventMap.unmapListener(view, ApplicationEvent.SHOW_JOURNEY_MANAGER, handleShowJourneyManager);
 			
 			eventMap.unmapListener(view, GloMenuEvent.LIST_ITEMS, dispatch);
 		}
@@ -135,6 +138,19 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected function handleJourneyChanged(event:GloModelEvent=null):void
 		{
 			view.journeyManagerEnabled = model.journey != null;
+		}
+		
+		/**
+		 * Event handler - show journey manager. Go to next step first.
+		 */
+		protected function handleShowJourneyManager(event:ApplicationEvent):void
+		{
+			var next:Glo = model.journey.next(model.journey.currentIndex);
+			
+			if (next)
+				model.journey.currentIndex = next.journeySettings.index;
+			
+			dispatch(event);
 		}
 	}
 }

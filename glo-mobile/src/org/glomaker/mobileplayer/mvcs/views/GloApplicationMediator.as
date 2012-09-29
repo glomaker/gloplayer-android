@@ -78,8 +78,9 @@ package org.glomaker.mobileplayer.mvcs.views
 		override public function onRegister():void
 		{
 			super.onRegister();			
-			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, showPlayer);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_MENU, showMenu);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, showPlayer);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_JOURNEY_MANAGER, showJourneyManager);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_QR_CODE_READER, showQRCodeReader);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.HIDE_QR_CODE_READER, hideQRCodeReader);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.ENTER_FULL_SCREEN, fullScreen);
@@ -111,6 +112,15 @@ package org.glomaker.mobileplayer.mvcs.views
 		 * @private
 		 * Invokes showPlayer on view.
 		 */
+		protected function showMenu(event:Event = null):void
+		{
+			view.showMenu();
+		}
+		
+		/**
+		 * @private
+		 * Invokes showPlayer on view.
+		 */
 		protected function showPlayer(event:Event = null):void
 		{
 			view.showPlayer();
@@ -118,11 +128,11 @@ package org.glomaker.mobileplayer.mvcs.views
 		
 		/**
 		 * @private
-		 * Invokes showPlayer on view.
+		 * Invokes showJourneyManager on view.
 		 */
-		protected function showMenu(event:Event = null):void
+		protected function showJourneyManager(event:Event = null):void
 		{
-			view.showMenu();
+			view.showJourneyManager();
 		}
 		
 		/**
