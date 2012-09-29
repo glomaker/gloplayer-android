@@ -25,6 +25,7 @@
 */
 package org.glomaker.mobileplayer.mvcs.views.components
 {
+	import org.glomaker.mobileplayer.assets.IconRefresh;
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
 
 	/**
@@ -39,10 +40,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		 */
 		override protected function drawShape():void
 		{
-			shape.graphics.clear();
-			shape.graphics.beginFill( ColourPalette.BUTTON_UP_BLUE, 1 );
-			shape.graphics.drawCircle(0, 0, 27);
-			shape.graphics.endFill();
+			shape.addChild(new IconRefresh());
 		}
 	}
 }

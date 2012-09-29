@@ -25,21 +25,19 @@
 */
 package org.glomaker.mobileplayer.mvcs.views.components
 {
-	import flash.display.GradientType;
 	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
 	import flash.filters.DropShadowFilter;
-	import flash.geom.Matrix;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.text.TextLineMetrics;
 	
 	import net.dndigital.components.mobile.IMobileListItemRenderer;
 	
+	import org.glomaker.mobileplayer.assets.IconListJourney;
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Journey;
 	import org.glomaker.mobileplayer.mvcs.models.vo.MenuItem;
-	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 
 	/**
 	 * List item for the menu list.
@@ -48,10 +46,6 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	 */	
 	public class MenuListItem extends Sprite implements IMobileListItemRenderer
 	{
-		protected static const MARKER:uint = ScreenMaths.mmToPixels(3);
-		protected static const MARKER_STROKE:uint = ScreenMaths.mmToPixels(0.5);
-		protected static const MARKER_GLOW:uint = ScreenMaths.mmToPixels(0.5);
-		
 		protected var _data:Object;
 		protected var _index:Number = 0;
 		protected var _itemWidth:Number = 0;
@@ -61,6 +55,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		protected var label:String = "";
 		protected var isJourney:Boolean;
 		protected var textField:TextField;
+		protected var journeyMarker:IconListJourney;
 		protected var shadowFilter:DropShadowFilter;
 		
 		//-------- properites -----------
@@ -175,6 +170,13 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		 * */
 		protected function createChildren():void
 		{
+			if (!journeyMarker)
+			{
+				journeyMarker = new IconListJourney();
+				journeyMarker.visible = false;
+				addChild(journeyMarker);
+			}
+			
 			if(!textField) {
 				var textFormat:TextFormat = new TextFormat();
 				textFormat.color = 0xEAEAEA;
@@ -197,45 +199,20 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		
 		protected function drawMarker():void
 		{
-			if (isJourney)
-			{
-				var mx:Number = 5;
-				var my:Number = (_itemHeight - MARKER) / 2;
-				var size:uint = MARKER;
-				
-				// reset line style
-				graphics.lineStyle();
-				
-				// glow
-				var m:Matrix = new Matrix();
-				m.createGradientBox(size, size, 0, mx, my);
-				graphics.beginGradientFill(GradientType.RADIAL, [0xffffff, 0xffffff], [1, 0.2], [0, 255], m);
-				graphics.drawEllipse(mx, my, size, size);
-				graphics.endFill();
-				
-				// stroke
-				mx += MARKER_GLOW;
-				my += MARKER_GLOW;
-				size -= 2 * MARKER_GLOW;
-				graphics.beginFill(0x9bafce);
-				graphics.drawEllipse(mx, my, size, size);
-				graphics.endFill();
-				
-				// fill
-				mx += MARKER_STROKE;
-				my += MARKER_STROKE;
-				size -= 2 * MARKER_STROKE;
-				graphics.beginFill(0xffffff);
-				graphics.drawEllipse(mx, my, size, size);
-				graphics.endFill();
-			}
+			journeyMarker.x = 5;
+			journeyMarker.y = (itemHeight - journeyMarker.height) / 2;
+			journeyMarker.visible = isJourney;
 		}
 		
 		protected function draw():void
 		{
 			if(!initialized) return; 
 			
-			textField.x = isJourney ? (10 + MARKER) : 5;
+			// journey marker
+			drawMarker();
+			
+			// text field
+			textField.x = isJourney ? (journeyMarker.x + journeyMarker.width + 5) : 5;
 			textField.text = label;
 			textField.textColor = 0xffffff;
 			
@@ -255,9 +232,6 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			graphics.lineStyle( 1, 0x757575, 1, true, LineScaleMode.NONE );
 			graphics.moveTo( 0, _itemHeight - 2 );
 			graphics.lineTo( _itemWidth, _itemHeight - 2 );
-			
-			// journey marker
-			drawMarker();
 			
 			this.filters = [];
 		}

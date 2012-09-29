@@ -41,10 +41,11 @@ package
 	
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
+	
 	import org.glomaker.mobileplayer.mvcs.GloContext;
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
+	import org.glomaker.mobileplayer.mvcs.utils.FontUtil;
 	import org.glomaker.mobileplayer.mvcs.views.components.MenuButton;
-	
 	import org.robotlegs.mvcs.Context;
 	
 	[SWF(backgroundColor='#000000')]
@@ -71,6 +72,9 @@ package
 			super();
 			
 			stage.frameRate = 24;
+			
+			// fonts
+			FontUtil.init();
 			
 			// support autoOrients
 			stage.align = StageAlign.TOP_LEFT;

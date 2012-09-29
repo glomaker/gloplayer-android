@@ -64,7 +64,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		 * @private
 		 * Shape
 		 */
-		protected const shape:Shape = new Shape;
+		protected const shape:Sprite = new Sprite();
 		protected const hit:Sprite = new Sprite;
 		
 		protected var downColour:uint = ColourPalette.HIGHLIGHT_BLUE;

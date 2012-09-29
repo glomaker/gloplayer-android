@@ -53,6 +53,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
 	
+	import org.glomaker.mobileplayer.assets.QRCFocus;
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	import org.glomaker.mobileplayer.mvcs.views.components.LabelButton;
@@ -108,7 +109,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected var videoDisplay:Video;
 		protected var videoBitmap:Bitmap;
 		protected var videoContainer:Sprite;
-		protected var snapRegion:Shape;
+		protected var snapRegion:QRCFocus;
 		protected var closeButton:LabelButton;
 		
 		//--------------------------------------------------
@@ -309,11 +310,7 @@ package org.glomaker.mobileplayer.mvcs.views
 				addChild(videoContainer);
 			}
 			
-			snapRegion = new Shape();
-			snapRegion.graphics.clear();
-			snapRegion.graphics.lineStyle(10, 0xffffff, 0.5);
-			snapRegion.graphics.drawRoundRect(5, 5, SNAP_SIZE + 10, SNAP_SIZE + 10, 3, 3);
-			snapRegion.graphics.lineStyle();
+			snapRegion = new QRCFocus();
 			addChild(snapRegion);
 			
 			closeButton = new LabelButton();
@@ -336,8 +333,8 @@ package org.glomaker.mobileplayer.mvcs.views
 			graphics.endFill();
 			
 			// UI elements
-			snapRegion.x = (width - snapRegion.width) / 2;
-			snapRegion.y = (height - snapRegion.height) / 2;
+			snapRegion.x = width / 2;
+			snapRegion.y = height / 2;
 			
 			closeButton.height = ScreenMaths.mmToPixels(10);
 			closeButton.width = width - 2*closeButton.height;
