@@ -26,14 +26,17 @@
 package org.glomaker.mobileplayer.mvcs.views
 {
 	import flash.display.GradientType;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	
 	import net.dndigital.components.GUIComponent;
+	import net.dndigital.components.IGUIComponent;
 	
 	import org.glomaker.mobileplayer.assets.JourneyDetails;
 	import org.glomaker.mobileplayer.assets.LaunchButton;
+	import org.glomaker.mobileplayer.mvcs.events.JourneyEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
@@ -92,14 +95,27 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		public function set journey(value:Journey):void
 		{
-			if (value != _journey)
+			if (value == journey)
+				return;
+			
+			if (journey)
 			{
-				_journey = value;
-				journeyChanged = true;
-				invalidateData();
+				journey.removeEventListener(JourneyEvent.CURRENT_CHANGED, journey_eventHandler);
+				journey.removeEventListener(JourneyEvent.VISITED_CHANGED, journey_eventHandler);
 			}
 			
-			current = journey ? journey.get(journey.currentIndex) : null;
+			_journey = value;
+			
+			if (journey)
+			{
+				journey.addEventListener(JourneyEvent.CURRENT_CHANGED, journey_eventHandler);
+				journey.addEventListener(JourneyEvent.VISITED_CHANGED, journey_eventHandler);
+			}
+			
+			updateCurrent();
+			
+			journeyChanged = true;
+			invalidateData();
 		}
 		
 		//--------------------------------------------------
@@ -132,9 +148,42 @@ package org.glomaker.mobileplayer.mvcs.views
 		}
 		
 		//--------------------------------------------------
+		// Protected functions
+		//--------------------------------------------------
+		
+		/**
+		 * Updates current GLO.
+		 */
+		protected function updateCurrent():void
+		{
+			current = journey ? journey.get(journey.currentIndex) : null;
+		}
+		
+		/**
+		 * Updates display based on visited state of current GLO.
+		 */
+		protected function updateVisited():void
+		{
+			journeyDetails.visited = (journey && current && current.journeySettings) ? journey.isVisited(current.journeySettings.index) : false;
+		}
+		
+		//--------------------------------------------------
 		// Overrides
 		//--------------------------------------------------
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function initialize():IGUIComponent
+		{
+			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
+			
+			return super.initialize();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function commited():void
 		{
 			super.commited();
@@ -144,27 +193,28 @@ package org.glomaker.mobileplayer.mvcs.views
 				if (journeyChanged)
 				{
 					journeyChanged = false;
-					
 					route.journey = journey;
 					journeyInfo.text = journey ? journey.displayName : "";
+				}
+				
+				if (currentChanged)
+				{
+					currentChanged = false;
+					var settings:JourneySettings = current ? current.journeySettings : null;
+					locationInfo.text = settings ? settings.location : "";
+					journeyDetails.index = settings ? settings.index : 0;
+					journeyDetails.compassVisible = settings && !isNaN(settings.gpsLat) && !isNaN(settings.gpsLong);
 					journeyDetails.direction = 0;
 					journeyDetails.distance = null;
 				}
 				
-				var currentSettings:JourneySettings = current ? current.journeySettings : null;
-				if (currentChanged)
-				{
-					currentChanged = false;
-					route.updateSteps();
-					locationInfo.text = currentSettings ? currentSettings.location : "";
-					journeyDetails.index = currentSettings ? currentSettings.index : 0;
-					journeyDetails.compassVisible = currentSettings && !isNaN(currentSettings.gpsLat) && !isNaN(currentSettings.gpsLong);
-				}
-				
-				journeyDetails.visited = (journey && currentSettings) ? journey.isVisited(currentSettings.index) : false;
+				updateVisited();
 			}
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function createChildren():void
 		{
 			super.createChildren();
@@ -184,24 +234,9 @@ package org.glomaker.mobileplayer.mvcs.views
 			addChild(launchButton);
 		}
 		
-		protected function launchButton_clickHandler(event:MouseEvent):void
-		{
-			journeyDetails.visited = true;
-			
-			dispatchEvent(new LoadProjectEvent(LoadProjectEvent.SHOW, current));
-		}
-		
-		protected function route_clickHandler(event:MouseEvent):void
-		{
-			var step:JourneyStep = event.target as JourneyStep;
-			if (step)
-			{
-				journey.currentIndex = step.index;
-				current = journey.get(step.index);
-				route.updateSteps();
-			}
-		}
-		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);
@@ -250,6 +285,69 @@ package org.glomaker.mobileplayer.mvcs.views
 			launchButton.scaleY = launchButton.scaleX;
 			launchButton.x = (mainRect.width - (launchButton.width * launchButton.scaleX)) / 2;
 			launchButton.y = journeyDetails.y + journeyDetails.height + vPadding;
+		}
+		
+		//--------------------------------------------------
+		// Event handlers
+		//--------------------------------------------------
+		
+		/**
+		 * Handles 'launch button' clicks to open current GLO in player.
+		 */
+		protected function launchButton_clickHandler(event:MouseEvent):void
+		{
+			dispatchEvent(new LoadProjectEvent(LoadProjectEvent.SHOW, current));
+		}
+		
+		/**
+		 * Handles 'route' clicks to detect step selection.
+		 */
+		protected function route_clickHandler(event:MouseEvent):void
+		{
+			var step:JourneyStep = event.target as JourneyStep;
+			if (step)
+				journey.currentIndex = step.index;
+		}
+		
+		/**
+		 * Handles Journey change events.
+		 */
+		protected function journey_eventHandler(event:JourneyEvent):void
+		{
+			switch (event.type)
+			{
+				case JourneyEvent.CURRENT_CHANGED:
+					updateCurrent();
+					break;
+				
+				case JourneyEvent.VISITED_CHANGED:
+					updateVisited();
+					break;
+			}
+		}
+
+		/**
+		 * Handles 'removed from stage' event to monitor when the component is added back
+		 * on stage to trigger validation which only works when the component is on stage.
+		 */
+		protected function removedFromStageHandler(event:Event):void
+		{
+			removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
+			addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+		}
+		
+		/**
+		 * Handles 'added to stage' event to trigger validation of items invalidated while
+		 * the component was not on stage.
+		 */
+		protected function addedToStageHandler(event:Event):void
+		{
+			removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
+			
+			validateData();
+			validateDisplay();
+			validateState();
 		}
 	}
 }

@@ -25,18 +25,13 @@
 */
 package org.glomaker.mobileplayer.mvcs.views.components
 {
-	import flash.display.GraphicsPathCommand;
-	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	
-	import net.dndigital.components.Container;
 	import net.dndigital.components.GUIComponent;
 	
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
-	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
-	import org.glomaker.mobileplayer.mvcs.models.vo.Journey;
 	import org.glomaker.mobileplayer.mvcs.utils.FontUtil;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	
@@ -128,6 +123,9 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		// Overrides
 		//--------------------------------------------------
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function commited():void
 		{
 			super.commited();
@@ -147,6 +145,9 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			}
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function createChildren():void
 		{
 			super.createChildren();
@@ -168,6 +169,9 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			addChild(textDisplay);
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);

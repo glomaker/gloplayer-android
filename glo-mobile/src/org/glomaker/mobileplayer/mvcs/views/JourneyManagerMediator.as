@@ -52,6 +52,9 @@ package org.glomaker.mobileplayer.mvcs.views
 		// Overrides
 		//--------------------------------------------------
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function onRegister():void
 		{
 			super.onRegister();
@@ -63,6 +66,9 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.mapListener(eventDispatcher, GloModelEvent.JOURNEY_CHANGED, applyJourney, GloModelEvent);
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override public function onRemove():void
 		{
 			super.onRemove();
@@ -76,6 +82,9 @@ package org.glomaker.mobileplayer.mvcs.views
 		// Protected methods
 		//--------------------------------------------------
 		
+		/**
+		 * Assigns current journey to view.
+		 */
 		protected function applyJourney(event:GloModelEvent=null):void
 		{
 			view.journey = model.journey;

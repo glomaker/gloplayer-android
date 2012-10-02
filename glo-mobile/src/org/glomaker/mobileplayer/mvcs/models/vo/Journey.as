@@ -25,6 +25,12 @@
 */
 package org.glomaker.mobileplayer.mvcs.models.vo
 {
+	import org.glomaker.mobileplayer.mvcs.events.JourneyEvent;
+
+	[Event(name="listChanged", type="org.glomaker.mobileplayer.mvcs.events.JourneyEvent")]
+	[Event(name="currentChanged", type="org.glomaker.mobileplayer.mvcs.events.JourneyEvent")]
+	[Event(name="visitedChanged", type="org.glomaker.mobileplayer.mvcs.events.JourneyEvent")]
+	
 	/**
 	 * Represents data about a journey.
 	 * 
@@ -87,7 +93,13 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		 */
 		public function set currentIndex(value:uint):void
 		{
-			_currentIndex = indices.indexOf(value) >= 0 ? value : 0;
+			value = indices.indexOf(value) >= 0 ? value : 0;
+			
+			if (value != _currentIndex)
+			{
+				_currentIndex = value;
+				dispatchEvent(new JourneyEvent(JourneyEvent.CURRENT_CHANGED));
+			}
 		}
 		
 		//--------------------------------------------------
@@ -99,6 +111,9 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		 */
 		public function clear():void
 		{
+			if (indices.length == 0)
+				return;
+			
 			for each (var glo:Glo in glos)
 			{
 				glo.journey = null;
@@ -106,8 +121,19 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 			
 			glos = [];
 			indices.length = 0;
-			visited.length = 0;
-			currentIndex = 0;
+			dispatchEvent(new JourneyEvent(JourneyEvent.LIST_CHANGED));
+			
+			if (_currentIndex != 0)
+			{
+				_currentIndex = 0;
+				dispatchEvent(new JourneyEvent(JourneyEvent.CURRENT_CHANGED));
+			}
+			
+			if (visited.length != 0)
+			{
+				visited.length = 0;
+				dispatchEvent(new JourneyEvent(JourneyEvent.VISITED_CHANGED));
+			}
 		}
 		
 		/**
@@ -117,20 +143,26 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		{
 			if (glo && index > 0)
 			{
-				glo.journey = this;
-				glos[index] = glo;
-				
-				if (indices.indexOf(index) < 0)
+				var old:Glo = get(index);
+				if (old != glo)
 				{
-					indices.push(index);
-					indices.sort(function(a:uint, b:uint):int {
-						if (a < b)
-							return -1;
-						else if (a > b)
-							return 1;
-						else
-							return 0;
-					});
+					glo.journey = this;
+					glos[index] = glo;
+					
+					if (indices.indexOf(index) < 0)
+					{
+						indices.push(index);
+						indices.sort(function(a:uint, b:uint):int {
+							if (a < b)
+								return -1;
+							else if (a > b)
+								return 1;
+							else
+								return 0;
+						});
+					}
+					
+					dispatchEvent(new JourneyEvent(JourneyEvent.LIST_CHANGED));
 				}
 				
 				setVisited(index, visited);
@@ -184,16 +216,17 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		/**
 		 * Sets the 'visited' state of the Glo with the specified index to the specified value.
 		 */
-		public function setVisited(index:uint, visited:Boolean):void
+		public function setVisited(index:uint, value:Boolean):void
 		{
-			if (indices.indexOf(index) >= 0)
+			var old:Boolean = isVisited(index);
+			if (old != value)
 			{
-				var i:int = this.visited.indexOf(index);
+				if (value)
+					visited.push(index);
+				else
+					visited.splice(visited.indexOf(index), 1);
 				
-				if (visited && i < 0)
-					this.visited.push(index);
-				else if (!visited && i >= 0)
-					this.visited.splice(i, 1);
+				dispatchEvent(new JourneyEvent(JourneyEvent.VISITED_CHANGED));
 			}
 		}
 		

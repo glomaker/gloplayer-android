@@ -32,7 +32,9 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	
 	import net.dndigital.components.Container;
 	import net.dndigital.components.GUIComponent;
+	import net.dndigital.components.IGUIComponent;
 	
+	import org.glomaker.mobileplayer.mvcs.events.JourneyEvent;
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Journey;
@@ -73,6 +75,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		//--------------------------------------------------
 		
 		private var _journey:Journey;
+		private var journeyChanged:Boolean;
 
 		/**
 		 * Journey for which to display the route.
@@ -87,40 +90,36 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		 */
 		public function set journey(value:Journey):void
 		{
-			if (value != _journey)
-			{
-				_journey = value;
-				createSteps();
-			}
-			else
-			{
-				updateSteps();
-			}
-		}
-		
-		public function updateSteps():void
-		{
-			if (!journey)
+			if (value == journey)
 				return;
 			
-			var glo:Glo = journey.first();
-			var i:uint = 0;
-			
-			while (glo)
+			if (journey)
 			{
-				var step:JourneyStep = steps[i];
-				step.visited = journey.isVisited(step.index);
-				step.selected = (journey.currentIndex == step.index);
-				
-				glo = journey.next(glo.journeySettings.index);
-				i++;
+				journey.removeEventListener(JourneyEvent.LIST_CHANGED, journey_eventHandler);
+				journey.removeEventListener(JourneyEvent.CURRENT_CHANGED, journey_eventHandler);
+				journey.removeEventListener(JourneyEvent.VISITED_CHANGED, journey_eventHandler);
 			}
+			
+			_journey = value;
+			
+			if (journey)
+			{
+				journey.addEventListener(JourneyEvent.LIST_CHANGED, journey_eventHandler);
+				journey.addEventListener(JourneyEvent.CURRENT_CHANGED, journey_eventHandler);
+				journey.addEventListener(JourneyEvent.VISITED_CHANGED, journey_eventHandler);
+			}
+			
+			journeyChanged = true;
+			invalidateData();
 		}
 		
 		//--------------------------------------------------
 		// Protected functions
 		//--------------------------------------------------
 		
+		/**
+		 * Creates the route steps.
+		 */
 		protected function createSteps():void
 		{
 			steps.length = 0;
@@ -175,17 +174,71 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			}
 		}
 		
+		/**
+		 * Updates the states of the steps (visited and selected states).
+		 */
+		protected function updateSteps():void
+		{
+			if (!journey)
+				return;
+			
+			var glo:Glo = journey.first();
+			var i:uint = 0;
+			
+			while (glo)
+			{
+				var step:JourneyStep = steps[i];
+				step.visited = journey.isVisited(step.index);
+				step.selected = (journey.currentIndex == step.index);
+				
+				glo = journey.next(glo.journeySettings.index);
+				i++;
+			}
+		}
+		
 		//--------------------------------------------------
 		// Overrides
 		//--------------------------------------------------
 		
+		/**
+		 * @inheritDoc
+		 */
+		override public function initialize():IGUIComponent
+		{
+			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
+			
+			return super.initialize();
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function commited():void
+		{
+			super.commited();
+			
+			if (journeyChanged)
+			{
+				journeyChanged = false;
+				createSteps();
+			}
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function createChildren():void
 		{
 			super.createChildren();
 			
 			addChild(container);
+			
+			createSteps();
 		}
 		
+		/**
+		 * @inheritDoc
+		 */
 		override protected function resized(width:Number, height:Number):void
 		{
 			super.resized(width, height);
@@ -198,6 +251,52 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			graphics.beginFill(ColourPalette.JOURNEY_DARK_BLUE);
 			graphics.drawRect(0, 0, width, height);
 			graphics.endFill();
+		}
+		
+		//--------------------------------------------------
+		// Event handlers
+		//--------------------------------------------------
+		
+		/**
+		 * Handles Journey change events.
+		 */
+		protected function journey_eventHandler(event:JourneyEvent):void
+		{
+			switch (event.type)
+			{
+				case JourneyEvent.LIST_CHANGED:
+					createSteps();
+					break;
+				
+				case JourneyEvent.CURRENT_CHANGED:
+				case JourneyEvent.VISITED_CHANGED:
+					updateSteps();
+					break;
+			}
+		}
+
+		/**
+		 * Handles 'removed from stage' event to monitor when the component is added back
+		 * on stage to trigger validation which only works when the component is on stage.
+		 */
+		protected function removedFromStageHandler(event:Event):void
+		{
+			removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
+			addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+		}
+		
+		/**
+		 * Handles 'added to stage' event to trigger validation of items invalidated while
+		 * the component was not on stage.
+		 */
+		protected function addedToStageHandler(event:Event):void
+		{
+			removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
+			
+			validateData();
+			validateDisplay();
+			validateState();
 		}
 	}
 }
