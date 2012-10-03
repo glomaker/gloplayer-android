@@ -26,6 +26,11 @@
 
 package org.glomaker.mobileplayer.mvcs.models.vo
 {
+	import flash.sensors.Geolocation;
+	
+	import org.glomaker.mobileplayer.mvcs.utils.GeoPosition;
+	import org.glomaker.mobileplayer.mvcs.views.QRCodeReader;
+
 	/**
 	 * Stores a GLO's journey settings. 
 	 * 
@@ -37,8 +42,7 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		public var location:String;
 		public var index:uint = 0;
 		
-		public var gpsLat:Number;
-		public var gpsLong:Number;
+		public var gpsPosition:GeoPosition;
 		public var gpsEnabled:Boolean = false;
 		
 		public var qrCode:String;
@@ -46,12 +50,12 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		
 		public function get hasQRCode():Boolean
 		{
-			return (qrEnabled && qrCode);
+			return (QRCodeReader.isSupported && qrEnabled && qrCode);
 		}
 		
 		public function get hasGPS():Boolean
 		{
-			return (gpsEnabled && !isNaN(gpsLat) && !isNaN(gpsLong));
+			return (Geolocation.isSupported && gpsEnabled && gpsPosition && gpsPosition.valid);
 		}
 	}
 }

@@ -37,9 +37,9 @@ package org.glomaker.mobileplayer.mvcs.services {
 import eu.kiichigo.utils.*;
 
 import flash.filesystem.File;
-import flash.utils.Dictionary;
 
 import org.glomaker.mobileplayer.mvcs.models.vo.*;
+import org.glomaker.mobileplayer.mvcs.utils.GeoPosition;
 
 /**
  * @private
@@ -94,8 +94,7 @@ function $journey(xml:XML):JourneySettings
 	settings.name = (xml.name != "null" ? xml.name : "");
 	settings.location = (xml.location != "null" ? xml.location : "");
 	settings.index = parseInt(xml.index);
-	settings.gpsLat = parseFloat(xml.gps.@lat);
-	settings.gpsLong = parseFloat(xml.gps.@long);
+	settings.gpsPosition = new GeoPosition(parseFloat(xml.gps.@lat), parseFloat(xml.gps.@long));
 	settings.gpsEnabled = (xml.gps.@enabled == "true");
 	settings.qrCode = (xml.qr.@code != "null" ? xml.qr.@code : "");
 	settings.qrEnabled = (xml.qr.@enabled == "true");

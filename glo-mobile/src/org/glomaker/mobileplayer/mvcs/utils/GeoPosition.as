@@ -1,0 +1,66 @@
+package org.glomaker.mobileplayer.mvcs.utils
+{
+	/**
+	 * Represents a geographical position.
+	 * 
+	 * @author haykel
+	 * 
+	 */
+	public class GeoPosition
+	{
+		public var latitude:Number;
+		public var longitude:Number;
+		
+		/**
+		 * Constructor.
+		 */
+		public function GeoPosition(latitude:Number=NaN, longitude:Number=NaN)
+		{
+			this.latitude = latitude;
+			this.longitude = longitude;
+		}
+		
+		/**
+		 * Is the point valid (currently only checks whether latitude and longitude are not NaN).
+		 */
+		public function get valid():Boolean
+		{
+			return (!isNaN(latitude) && !isNaN(longitude));
+		}
+		
+		/**
+		 * Returns the distance from this point to the specified target point.
+		 * 
+		 * If 'miles' is true, the distance is returned in miles, otherwise in km.
+		 * 
+		 * If any of the points is invalid, NaN is returned.
+		 */
+		public function distance(target:GeoPosition, miles:Boolean=false):Number
+		{
+			if (!valid || !target || !target.valid)
+				return NaN;
+			
+			var pi80:Number = Math.PI/180;
+			var lat1:Number = latitude * pi80;
+			var lng1:Number = longitude * pi80;
+			var lat2:Number = target.latitude * pi80;
+			var lng2:Number = target.longitude * pi80;
+			
+			var earthRadius:Number = 6372.797; // mean radius of Earth in km
+			var dlat:Number = lat2-lat1;
+			var dlng:Number = lng2-lng1;
+			var a:Number = Math.sin(dlat / 2) * Math.sin(dlat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlng / 2) * Math.sin(dlng / 2);
+			var c:Number = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+			var km:Number = earthRadius*c;
+			
+			trace(this, target, km);
+			
+			return (miles ? (km * 0.621371192) : km);
+		}
+		
+		public function toString():String
+		{
+			return "GeoPosition (" + latitude.toString() + " , " + longitude.toString() + ")";
+		}
+	}
+}

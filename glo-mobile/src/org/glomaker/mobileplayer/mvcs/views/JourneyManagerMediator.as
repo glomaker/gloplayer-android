@@ -61,6 +61,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.onRegister();
 			
+			view.trackGPS = true;
 			handleGloChanged();
 			
 			eventMap.mapListener(view, LoadProjectEvent.SHOW, dispatch, LoadProjectEvent);
@@ -75,6 +76,8 @@ package org.glomaker.mobileplayer.mvcs.views
 		override public function onRemove():void
 		{
 			super.onRemove();
+			
+			view.trackGPS = false;
 			
 			eventMap.unmapListener(view, LoadProjectEvent.SHOW, dispatch, LoadProjectEvent);
 			eventMap.unmapListener(view, JourneyManagerEvent.STEP_CLICKED, handleStepClicked, JourneyManagerEvent);

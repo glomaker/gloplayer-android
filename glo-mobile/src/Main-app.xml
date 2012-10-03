@@ -164,6 +164,8 @@
 				<uses-permission android:name="android.permission.INTERNET"/>
 				<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 				<uses-permission android:name="android.permission.CAMERA" /> 
+				<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> 
+				<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> 
                 
 			    <!-- Make all camera features optional to allow installation of the app on devices without these features. -->
 			    <!-- Related functionality will be disabled in the app for these devices. -->

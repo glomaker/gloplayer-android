@@ -27,9 +27,12 @@ package org.glomaker.mobileplayer.mvcs.views
 {
 	import flash.display.GradientType;
 	import flash.events.Event;
+	import flash.events.GeolocationEvent;
 	import flash.events.MouseEvent;
+	import flash.events.StatusEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
+	import flash.sensors.Geolocation;
 	
 	import net.dndigital.components.GUIComponent;
 	import net.dndigital.components.IGUIComponent;
@@ -43,6 +46,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Journey;
 	import org.glomaker.mobileplayer.mvcs.models.vo.JourneySettings;
+	import org.glomaker.mobileplayer.mvcs.utils.GeoPosition;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	import org.glomaker.mobileplayer.mvcs.views.components.JourneyInfoPanel;
 	import org.glomaker.mobileplayer.mvcs.views.components.JourneyRoute;
@@ -72,6 +76,9 @@ package org.glomaker.mobileplayer.mvcs.views
 		
 		protected var journey:Journey;
 		protected var journeyChanged:Boolean;
+		
+		protected var geo:Geolocation;
+		protected var geoPosition:GeoPosition;
 		
 		protected var journeyInfo:JourneyInfoPanel = new JourneyInfoPanel();
 		protected var route:JourneyRoute = new JourneyRoute();
@@ -123,6 +130,33 @@ package org.glomaker.mobileplayer.mvcs.views
 		}
 		
 		//--------------------------------------------------
+		// trackGPS
+		//--------------------------------------------------
+		
+		private var _trackGPS:Boolean;
+
+		/**
+		 * Whether to enable tracking for GPS position or not.
+		 */
+		public function get trackGPS():Boolean
+		{
+			return _trackGPS;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set trackGPS(value:Boolean):void
+		{
+			if (value == _trackGPS)
+				return;
+			
+			_trackGPS = value;
+			
+			updateGPS();
+		}
+		
+		//--------------------------------------------------
 		// Protected functions
 		//--------------------------------------------------
 		
@@ -132,6 +166,28 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected function updateVisited():void
 		{
 			journeyDetails.visited = (journey && glo && glo.journeySettings) ? journey.isVisited(glo.journeySettings.index) : false;
+		}
+		
+		/**
+		 * Updates gps tracking based on current config and Glo.
+		 */
+		protected function updateGPS():void
+		{
+			var doTrack:Boolean = trackGPS && geoPosition;
+			if (doTrack && !geo)
+			{
+				geo = new Geolocation();
+				geo.addEventListener(StatusEvent.STATUS, geo_statusHandler);
+				if (!geo.muted)
+					geo.addEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+			}
+			else if (!doTrack && geo)
+			{
+				geo.removeEventListener(StatusEvent.STATUS, geo_statusHandler);
+				if (!geo.muted)
+					geo.removeEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+				geo = null;
+			}
 		}
 		
 		//--------------------------------------------------
@@ -168,11 +224,14 @@ package org.glomaker.mobileplayer.mvcs.views
 				{
 					gloChanged = false;
 					var settings:JourneySettings = glo ? glo.journeySettings : null;
+					geoPosition = settings && settings.hasGPS ? settings.gpsPosition : null;
 					locationInfo.text = settings ? settings.location : "";
 					journeyDetails.index = settings ? settings.index : 0;
-					journeyDetails.compassVisible = settings && settings.hasGPS;
+					journeyDetails.compassVisible = geoPosition != null;
 					journeyDetails.direction = 0;
 					journeyDetails.distance = null;
+					
+					updateGPS();
 				}
 				
 				updateVisited();
@@ -282,6 +341,47 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected function journey_eventHandler(event:JourneyEvent):void
 		{
 			updateVisited();
+		}
+		
+		/**
+		 * Handles GeoLocation update events. Computes and displays distance and direction of compass.
+		 */
+		protected function geo_updateHandler(event:GeolocationEvent):void
+		{
+			var target:GeoPosition = new GeoPosition(event.latitude, event.longitude);
+			if (!geoPosition || !target.valid)
+			{
+				journeyDetails.distance = null;
+				journeyDetails.direction = 0;
+			}
+			else
+			{
+				var distance:Number = geoPosition.distance(target);
+				var formatted:String;
+				if (distance >= 1)
+				{
+					distance = Math.ceil(distance * 10) / 10;
+					formatted = distance.toString() + "km";
+				}
+				else
+				{
+					distance = Math.ceil(distance * 1000);
+					formatted = distance.toString() + "m";
+				}
+				
+				journeyDetails.distance = formatted;
+			}
+		}
+		
+		/**
+		 * Handles GeoLocation statu events.
+		 */
+		protected function geo_statusHandler(event:StatusEvent):void
+		{
+			if (geo.muted)
+				geo.removeEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+			else
+				geo.addEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
 		}
 
 		/**
