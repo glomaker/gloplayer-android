@@ -27,8 +27,8 @@ package org.glomaker.mobileplayer.mvcs.views.components
 {
 	import eu.kiichigo.utils.log;
 	
-	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.filters.GlowFilter;
 	import flash.geom.ColorTransform;
 	
 	import net.dndigital.components.Button;
@@ -69,6 +69,37 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		
 		protected var downColour:uint = ColourPalette.HIGHLIGHT_BLUE;
 		protected var disabledColour:uint = ColourPalette.DISABLED_BLUE;
+		
+		protected var glow:GlowFilter = new GlowFilter(0xffffff, 1, 5, 5);
+		
+		//--------------------------------------------------------------------------
+		//
+		//  highlighted
+		//
+		//--------------------------------------------------------------------------
+		
+		private var _highlighted:Boolean;
+		
+		/**
+		 * Whether the button should be highlighted.
+		 */
+		public function get highlighted():Boolean
+		{
+			return _highlighted;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set highlighted(value:Boolean):void
+		{
+			if (value == highlighted)
+				return;
+			
+			_highlighted = value;
+			
+			setShapeColour();
+		}
 		
 		//--------------------------------------------------------------------------
 		//
@@ -141,23 +172,28 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		protected function setShapeColour():void
 		{
 			var t:ColorTransform = new ColorTransform();
+			var f:Array = highlighted ? [glow] : [];
 			
 			switch( state )
 			{
 				case DOWN:
-					t.color = downColour;
+					t.color = highlighted ? 0xffffff : downColour;
 					break;
 				
 				case DISABLED:
 					t.color = disabledColour;
+					f = [];
 					break;
 				
 				default: // UP : no color transfoms
+					if (highlighted)
+						t.color = 0xffffff;
 					break;
 			}
 
 			// apply
 			shape.transform.colorTransform = t;
+			shape.filters = f;
 		}
 	}
 }

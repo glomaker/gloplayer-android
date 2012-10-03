@@ -80,16 +80,12 @@ package org.glomaker.mobileplayer.mvcs.commands
 			
 			dispatch(ApplicationEvent.SHOW_PLAYER_EVENT);
 			
+			model.glo = event.glo;
 			model.length = event.project.length;
 			model.index = 0;
 			
-			if (event.glo.journey)
-			{
-				event.glo.journey.currentIndex = event.glo.journeySettings.index;
-				event.glo.journey.setVisited(event.glo.journeySettings.index, true);
-			}
-			
-			model.journey = event.glo.journey;
+			if (model.glo.journey)
+				model.glo.journey.setVisited(model.glo.journeySettings.index, true);
 		}
 	}
 }

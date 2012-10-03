@@ -92,13 +92,14 @@ package org.glomaker.mobileplayer.mvcs.commands
 			}
 			else if (item is Journey)
 			{
-				model.journey = item as Journey;
+				var journey:Journey = item as Journey;
 				
 				// either show the journey manager if it has a current GLO, or launch the first GLO of the journey
-				if (model.journey.currentIndex > 0)
+				model.glo = journey.get(journey.currentIndex);
+				if (model.glo)
 					dispatch(ApplicationEvent.SHOW_JOURNEY_MANAGER_EVENT);
 				else
-					dispatch(new LoadProjectEvent(LoadProjectEvent.SHOW, model.journey.first()));
+					dispatch(new LoadProjectEvent(LoadProjectEvent.SHOW, journey.first()));
 			}
 		}
 	}

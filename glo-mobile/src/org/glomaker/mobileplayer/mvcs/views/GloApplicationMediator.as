@@ -30,6 +30,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.events.NotificationEvent;
+	import org.glomaker.mobileplayer.mvcs.models.GloModel;
 	import org.glomaker.mobileplayer.mvcs.views.components.Notification;
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -53,6 +54,12 @@ package org.glomaker.mobileplayer.mvcs.views
 		//  Properties
 		//
 		//--------------------------------------------------------------------------
+		
+		[Inject]
+		/**
+		 * @private
+		 */
+		public var model:GloModel;
 		
 		[Inject]
 		/**
@@ -114,6 +121,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function showMenu(event:Event = null):void
 		{
+			model.glo = null;
 			view.showMenu();
 		}
 		

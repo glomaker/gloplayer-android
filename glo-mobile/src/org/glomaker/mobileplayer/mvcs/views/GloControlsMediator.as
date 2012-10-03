@@ -27,6 +27,8 @@ package org.glomaker.mobileplayer.mvcs.views
 {
 	import eu.kiichigo.utils.log;
 	
+	import flash.events.Event;
+	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
 	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
@@ -71,21 +73,20 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		override public function onRegister():void
 		{
-			eventMap.mapListener(eventDispatcher, ProjectEvent.PAGE, handlePage);
-			eventMap.mapListener(eventDispatcher, GloModelEvent.QR_CODES_LISTED, handleQrCodesListed);
-			eventMap.mapListener(eventDispatcher, GloModelEvent.JOURNEY_CHANGED, handleJourneyChanged);
+			eventMap.mapListener(eventDispatcher, ProjectEvent.PAGE, updateView);
+			eventMap.mapListener(eventDispatcher, GloModelEvent.QR_CODES_LISTED, updateView);
+			eventMap.mapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, updateView);
 			
 			eventMap.mapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.mapListener(view, ProjectEvent.PREV_PAGE, dispatch);
-			eventMap.mapListener(view, ProjectEvent.MENU, handleMenuClick);
 			
+			eventMap.mapListener(view, ApplicationEvent.SHOW_MENU, dispatch);
 			eventMap.mapListener(view, ApplicationEvent.SHOW_QR_CODE_READER, dispatch);
 			eventMap.mapListener(view, ApplicationEvent.SHOW_JOURNEY_MANAGER, handleShowJourneyManager);
 			
 			eventMap.mapListener(view, GloMenuEvent.LIST_ITEMS, dispatch);
 			
-			handleQrCodesListed();
-			handleJourneyChanged();
+			updateView();
 		}
 
 		/**
@@ -93,14 +94,14 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		override public function onRemove():void
 		{
-			eventMap.unmapListener(eventDispatcher, ProjectEvent.PAGE, handlePage);
-			eventMap.unmapListener(eventDispatcher, GloModelEvent.QR_CODES_LISTED, handleQrCodesListed);
-			eventMap.unmapListener(eventDispatcher, GloModelEvent.JOURNEY_CHANGED, handleJourneyChanged);
+			eventMap.unmapListener(eventDispatcher, ProjectEvent.PAGE, updateView);
+			eventMap.unmapListener(eventDispatcher, GloModelEvent.QR_CODES_LISTED, updateView);
+			eventMap.unmapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, updateView);
 			
 			eventMap.unmapListener(view, ProjectEvent.NEXT_PAGE, dispatch);
 			eventMap.unmapListener(view, ProjectEvent.PREV_PAGE, dispatch);
-			eventMap.unmapListener(view, ProjectEvent.MENU, handleMenuClick);
 			
+			eventMap.unmapListener(view, ApplicationEvent.SHOW_MENU, dispatch);
 			eventMap.unmapListener(view, ApplicationEvent.SHOW_QR_CODE_READER, dispatch);
 			eventMap.unmapListener(view, ApplicationEvent.SHOW_JOURNEY_MANAGER, handleShowJourneyManager);
 			
@@ -108,36 +109,11 @@ package org.glomaker.mobileplayer.mvcs.views
 		}
 		
 		/**
-		 * Event handler - controls background was clicked. 
-		 * @param e
-		 */		
-		protected function handleMenuClick(event:ProjectEvent):void
-		{
-			dispatch(ApplicationEvent.SHOW_MENU_EVENT);
-		}
-		
-		/**
-		 * Event handler - current page has changed.
+		 * Updates view based on current data.
 		 */
-		protected function handlePage(event:ProjectEvent):void
+		protected function updateView(event:Event=null):void
 		{
-			view.lock(model.index == 0, model.index >= model.length - 1);
-		}
-		
-		/**
-		 * Event handler - list of QR Codes was updated.
-		 */
-		protected function handleQrCodesListed(event:GloModelEvent=null):void
-		{
-			view.qrCodeEnabled = (QRCodeReader.isSupported && model.qrCodes && model.qrCodes.length > 0);
-		}
-		
-		/**
-		 * Event handler - current journey changed.
-		 */
-		protected function handleJourneyChanged(event:GloModelEvent=null):void
-		{
-			view.journeyManagerEnabled = model.journey != null;
+			view.updateFor(model.qrCodes, model.glo, model.index, model.length);
 		}
 		
 		/**
@@ -145,10 +121,9 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function handleShowJourneyManager(event:ApplicationEvent):void
 		{
-			var next:Glo = model.journey.next(model.journey.currentIndex);
-			
+			var next:Glo = model.glo.journey.next(model.glo.journeySettings.index);
 			if (next)
-				model.journey.currentIndex = next.journeySettings.index;
+				model.glo = next;
 			
 			dispatch(event);
 		}

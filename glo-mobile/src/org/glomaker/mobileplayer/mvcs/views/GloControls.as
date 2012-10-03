@@ -37,6 +37,8 @@ package org.glomaker.mobileplayer.mvcs.views
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
+	import org.glomaker.mobileplayer.mvcs.models.vo.QRCodeList;
 	import org.glomaker.mobileplayer.mvcs.utils.DrawingUtils;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	import org.glomaker.mobileplayer.mvcs.views.components.BackToMenuButton;
@@ -126,37 +128,12 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected const journeyManager:JourneyManagerButton = new JourneyManagerButton;
 		
-		//--------------------------------------------------------------------------
-		//
-		//  qrCodeEnabled
-		//
-		//--------------------------------------------------------------------------
-		
-		/**
-		 * Set enabled state of the QR Code button.
-		 */
-		public function set qrCodeEnabled(value:Boolean):void
-		{
-			qrCode.enabled = value;
-		}
-		
-		//--------------------------------------------------------------------------
-		//
-		//  journeyManagerEnabled
-		//
-		//--------------------------------------------------------------------------
-		
-		private var _journeyManagerEnabled:Boolean;
-		
-		/**
-		 * Set enabled state of the journey button.
-		 */
-		public function set journeyManagerEnabled(value:Boolean):void
-		{
-			_journeyManagerEnabled = value;
-			
-			journeyManager.enabled = _journeyManagerEnabled && (state != JOURNEY);
-		}
+		protected var hasPrevPage:Boolean;
+		protected var hasNextPage:Boolean;
+		protected var hasQRCodes:Boolean;
+		protected var hasJourney:Boolean;
+		protected var journeyHasQRCode:Boolean;
+		protected var currentHasQRCode:Boolean;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -165,20 +142,45 @@ package org.glomaker.mobileplayer.mvcs.views
 		//--------------------------------------------------------------------------
 		
 		/**
-		 * Locks and unlocks navigation buttons.
-		 * 
-		 * @param	prev	Indicates whether previous navigation control should be disabled or not.
-		 * @param	next	Indicates whether next navigation control should be disabled or not.
-		 * 
-		 * @langversion 3.0
-		 * @playerversion Flash 10
-		 * @playerversion AIR 2.5
-		 * @productversion Flex 4.5
+		 * Update button states for the specified data.
 		 */
-		public function lock(prev:Boolean = false, next:Boolean = false):void
+		public function updateFor(qrCodes:QRCodeList, glo:Glo, currentPage:int, pageCount:uint):void
 		{
-			this.prev.enabled = !prev;
-			this.next.enabled = !next;
+			hasPrevPage = (pageCount > 0 && currentPage > 0);
+			hasNextPage = (pageCount > 0 && (currentPage < pageCount - 1));
+			hasQRCodes = (qrCodes && qrCodes.length > 0);
+			hasJourney = (glo && glo.journey);
+			currentHasQRCode = (glo && glo.journeySettings && glo.journeySettings.hasQRCode);
+			
+			journeyHasQRCode = false;
+			if (glo && glo.journey)
+			{
+				var glo:Glo = glo.journey.first();
+				while (glo)
+				{
+					if (glo.journeySettings.hasQRCode)
+					{
+						journeyHasQRCode = true;
+						break;
+					}
+					
+					glo = glo.journey.next(glo.journeySettings.index);
+				}
+			}
+			
+			invalidateData();
+		}
+		
+		/**
+		 * Update button states based on current data and compoenent state.
+		 */
+		protected function updateButtons():void
+		{
+			prev.enabled = (state == PLAYER && hasPrevPage);
+			next.enabled = (state == PLAYER && hasNextPage);
+			journeyManager.enabled = (state == PLAYER && hasJourney);
+			qrCode.enabled = (state == JOURNEY && journeyHasQRCode) || (state == PLAYER && hasJourney && journeyHasQRCode) || (state == HOME && hasQRCodes);
+			qrCode.highlighted = currentHasQRCode;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -219,13 +221,18 @@ package org.glomaker.mobileplayer.mvcs.views
 			invalidateDisplay();
 		}
 
+		override protected function commited():void
+		{
+			super.commited();
+			
+			updateButtons();
+		}
 		
 		override protected function stateChanged(newState:String):void
 		{
 			super.stateChanged(newState);
 			
-			journeyManager.enabled = _journeyManagerEnabled && (newState != JOURNEY);
-			
+			updateButtons();
 			invalidateDisplay();
 		}
 		
@@ -337,7 +344,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			else if(event.target == prev)
 				dispatchEvent(ProjectEvent.PREV_PAGE_EVENT);
 			else if(event.target == menuLink)
-				dispatchEvent(ProjectEvent.MENU_EVENT);
+				dispatchEvent(ApplicationEvent.SHOW_MENU_EVENT);
 			else if(event.target == refresh)
 				dispatchEvent(GloMenuEvent.LIST_ITEMS_EVENT);
 			else if(event.target == qrCode)

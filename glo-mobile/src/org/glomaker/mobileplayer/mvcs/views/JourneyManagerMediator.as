@@ -26,8 +26,10 @@
 package org.glomaker.mobileplayer.mvcs.views
 {
 	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
+	import org.glomaker.mobileplayer.mvcs.events.JourneyManagerEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.GloModel;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
 	import org.robotlegs.mvcs.Mediator;
 	
 	public class JourneyManagerMediator extends Mediator
@@ -62,8 +64,9 @@ package org.glomaker.mobileplayer.mvcs.views
 			applyJourney();
 			
 			eventMap.mapListener(view, LoadProjectEvent.SHOW, dispatch, LoadProjectEvent);
+			eventMap.mapListener(view, JourneyManagerEvent.STEP_CLICKED, handleStepClicked, JourneyManagerEvent);
 			
-			eventMap.mapListener(eventDispatcher, GloModelEvent.JOURNEY_CHANGED, applyJourney, GloModelEvent);
+			eventMap.mapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, applyJourney, GloModelEvent);
 		}
 		
 		/**
@@ -74,8 +77,9 @@ package org.glomaker.mobileplayer.mvcs.views
 			super.onRemove();
 			
 			eventMap.unmapListener(view, LoadProjectEvent.SHOW, dispatch, LoadProjectEvent);
+			eventMap.unmapListener(view, JourneyManagerEvent.STEP_CLICKED, handleStepClicked, JourneyManagerEvent);
 			
-			eventMap.unmapListener(eventDispatcher, GloModelEvent.JOURNEY_CHANGED, applyJourney, GloModelEvent);
+			eventMap.unmapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, applyJourney, GloModelEvent);
 		}
 		
 		//--------------------------------------------------
@@ -87,8 +91,17 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function applyJourney(event:GloModelEvent=null):void
 		{
-			view.journey = model.journey;
+			view.journey = model.glo ? model.glo.journey : null;
 		}
 		
+		/**
+		 * Handle step click event.
+		 */
+		protected function handleStepClicked(event:JourneyManagerEvent):void
+		{
+			var glo:Glo = view.journey.get(event.stepIndex);
+			if (glo)
+				model.glo = glo;
+		}
 	}
 }

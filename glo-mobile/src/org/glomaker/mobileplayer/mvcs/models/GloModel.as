@@ -27,13 +27,9 @@ package org.glomaker.mobileplayer.mvcs.models
 {
 	import eu.kiichigo.utils.formatToString;
 	
-	import flash.events.Event;
-	
 	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
-	import org.glomaker.mobileplayer.mvcs.models.vo.Journey;
-	import org.glomaker.mobileplayer.mvcs.models.vo.Page;
-	import org.glomaker.mobileplayer.mvcs.models.vo.Project;
+	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
 	import org.glomaker.mobileplayer.mvcs.models.vo.QRCodeList;
 	import org.robotlegs.mvcs.Actor;
 
@@ -113,26 +109,29 @@ package org.glomaker.mobileplayer.mvcs.models
 		/**
 		 * @private
 		 */
-		private var _journey:Journey;
+		private var _glo:Glo;
 		/**
-		 * Current journey. Can be either the journey currently managed by the
-		 * journey manager or a journey to which belongs the currently displayed GLO.
+		 * Current GLO. Can be either the GLO currently displayed in the player
+		 * or in the journey manager.
 		 */
-		public function get journey():Journey
+		public function get glo():Glo
 		{
-			return _journey;
+			return _glo;
 		}
 		/**
 		 * @private
 		 */
-		public function set journey(value:Journey):void
+		public function set glo(value:Glo):void
 		{
-			if (value == _journey)
+			if (value == _glo)
 				return;
 			
-			_journey = value;
+			_glo = value;
 			
-			dispatch(new GloModelEvent(GloModelEvent.JOURNEY_CHANGED));
+			if (glo && glo.journey)
+				glo.journey.currentIndex = glo.journeySettings.index;
+			
+			dispatch(new GloModelEvent(GloModelEvent.GLO_CHANGED));
 		}
 		
 		//--------------------------------------------------------------------------

@@ -26,38 +26,49 @@
 package org.glomaker.mobileplayer.mvcs.events
 {
 	import flash.events.Event;
-	
-	public class GloModelEvent extends Event
+
+	public class JourneyManagerEvent extends Event
 	{
-		//--------------------------------------------------
-		// Constatns
-		//--------------------------------------------------
+		//--------------------------------------------------------------------------
+		//
+		//  Event Constants
+		//
+		//--------------------------------------------------------------------------
 		
-		public static const QR_CODES_LISTED:String = "qrCodesListed";
-		public static const GLO_CHANGED:String = "gloChanged";
+		public static const STEP_CLICKED:String = "stepClicked";
+
+		//--------------------------------------------------------------------------
+		//
+		//  Instance variables
+		//
+		//--------------------------------------------------------------------------
 		
-		//--------------------------------------------------
-		// Initialization
-		//--------------------------------------------------
+		public var stepIndex:uint;
 		
-		/**
-		 * Constructor.
-		 */
-		public function GloModelEvent(type:String)
+		//--------------------------------------------------------------------------
+		//
+		//  Constructor
+		//
+		//--------------------------------------------------------------------------
+		public function JourneyManagerEvent(type:String, stepIndex:uint=0)
 		{
-			super(type);
+			super(type, false, false);
+			
+			this.stepIndex = stepIndex;
 		}
-		
-		//--------------------------------------------------
-		// Overrides
-		//--------------------------------------------------
+
+		//--------------------------------------------------------------------------
+		//
+		//  Overridden API
+		//
+		//--------------------------------------------------------------------------
 		
 		/**
 		 * @inheritDoc
 		 */
-		override public function clone():Event
+		public override function clone():Event
 		{
-			return new GloModelEvent(type);
+			return new JourneyManagerEvent(type, stepIndex);
 		}
 		
 		/**
@@ -65,7 +76,7 @@ package org.glomaker.mobileplayer.mvcs.events
 		 */
 		public override function toString():String
 		{
-			return formatToString("GloModelEvent", "type");
+			return formatToString("JourneyManagerEvent", "type", "stepIndex");
 		}
 	}
 }

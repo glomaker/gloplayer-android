@@ -39,7 +39,6 @@ package org.glomaker.mobileplayer.mvcs.events
 		
 		public static const NEXT_PAGE_EVENT:ProjectEvent = new ProjectEvent(ProjectEvent.NEXT_PAGE);
 		public static const PREV_PAGE_EVENT:ProjectEvent = new ProjectEvent(ProjectEvent.PREV_PAGE);
-		public static const MENU_EVENT:ProjectEvent = new ProjectEvent(ProjectEvent.MENU);
 
 		//--------------------------------------------------------------------------
 		//
@@ -51,7 +50,6 @@ package org.glomaker.mobileplayer.mvcs.events
 		public static const PAGE_CHANGED:String = "pageChanged";
 		public static const NEXT_PAGE:String = "nextPage";
 		public static const PREV_PAGE:String = "prevPage";
-		public static const MENU:String = "menu";
 
 		//--------------------------------------------------------------------------
 		//

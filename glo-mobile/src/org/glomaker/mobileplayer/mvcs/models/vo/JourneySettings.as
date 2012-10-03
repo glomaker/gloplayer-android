@@ -43,5 +43,15 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		
 		public var qrCode:String;
 		public var qrEnabled:Boolean = false;
+		
+		public function get hasQRCode():Boolean
+		{
+			return (qrEnabled && qrCode);
+		}
+		
+		public function get hasGPS():Boolean
+		{
+			return (gpsEnabled && !isNaN(gpsLat) && !isNaN(gpsLong));
+		}
 	}
 }

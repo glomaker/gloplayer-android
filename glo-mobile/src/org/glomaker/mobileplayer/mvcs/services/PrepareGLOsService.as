@@ -185,7 +185,7 @@ package org.glomaker.mobileplayer.mvcs.services
 			{
 				journeyName = StringUtil.trim(event.glo.journeySettings.name);
 				journeyIndex = event.glo.journeySettings.index;
-				if (event.glo.journeySettings.qrEnabled)
+				if (event.glo.journeySettings.hasQRCode)
 					qrCodes.add(event.glo.journeySettings.qrCode, event.glo);
 			}
 			

@@ -37,6 +37,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import org.glomaker.mobileplayer.assets.JourneyDetails;
 	import org.glomaker.mobileplayer.assets.LaunchButton;
 	import org.glomaker.mobileplayer.mvcs.events.JourneyEvent;
+	import org.glomaker.mobileplayer.mvcs.events.JourneyManagerEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
@@ -203,7 +204,7 @@ package org.glomaker.mobileplayer.mvcs.views
 					var settings:JourneySettings = current ? current.journeySettings : null;
 					locationInfo.text = settings ? settings.location : "";
 					journeyDetails.index = settings ? settings.index : 0;
-					journeyDetails.compassVisible = settings && !isNaN(settings.gpsLat) && !isNaN(settings.gpsLong);
+					journeyDetails.compassVisible = settings && settings.hasGPS;
 					journeyDetails.direction = 0;
 					journeyDetails.distance = null;
 				}
@@ -306,7 +307,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			var step:JourneyStep = event.target as JourneyStep;
 			if (step)
-				journey.currentIndex = step.index;
+				dispatchEvent(new JourneyManagerEvent(JourneyManagerEvent.STEP_CLICKED, step.index));
 		}
 		
 		/**
