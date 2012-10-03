@@ -70,6 +70,9 @@ package org.glomaker.mobileplayer.mvcs.views
 		// Instance variables
 		//--------------------------------------------------
 		
+		protected var journey:Journey;
+		protected var journeyChanged:Boolean;
+		
 		protected var journeyInfo:JourneyInfoPanel = new JourneyInfoPanel();
 		protected var route:JourneyRoute = new JourneyRoute();
 		protected var locationInfo:JourneyInfoPanel = new JourneyInfoPanel();
@@ -77,74 +80,45 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected var launchButton:LaunchButton = new LaunchButton();
 		
 		//--------------------------------------------------
-		// journey
+		// glo
 		//--------------------------------------------------
 		
-		private var _journey:Journey;
-		private var journeyChanged:Boolean;
-
-		/**
-		 * Managed journey.
-		 */
-		public function get journey():Journey
-		{
-			return _journey;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set journey(value:Journey):void
-		{
-			if (value == journey)
-				return;
-			
-			if (journey)
-			{
-				journey.removeEventListener(JourneyEvent.CURRENT_CHANGED, journey_eventHandler);
-				journey.removeEventListener(JourneyEvent.VISITED_CHANGED, journey_eventHandler);
-			}
-			
-			_journey = value;
-			
-			if (journey)
-			{
-				journey.addEventListener(JourneyEvent.CURRENT_CHANGED, journey_eventHandler);
-				journey.addEventListener(JourneyEvent.VISITED_CHANGED, journey_eventHandler);
-			}
-			
-			updateCurrent();
-			
-			journeyChanged = true;
-			invalidateData();
-		}
-		
-		//--------------------------------------------------
-		// current
-		//--------------------------------------------------
-		
-		private var _current:Glo;
-		private var currentChanged:Boolean;
+		private var _glo:Glo;
+		private var gloChanged:Boolean;
 
 		/**
 		 * Current GLO.
 		 */
-		public function get current():Glo
+		public function get glo():Glo
 		{
-			return _current;
+			return _glo;
 		}
 
 		/**
 		 * @private
 		 */
-		public function set current(value:Glo):void
+		public function set glo(value:Glo):void
 		{
-			if (value == _current)
+			if (value == _glo)
 				return;
 			
-			_current = value;
+			_glo = value;
 			
-			currentChanged = true;
+			var oldJourney:Journey = journey;
+			journey = glo ? glo.journey : null;
+			
+			if (journey != oldJourney)
+			{
+				if (oldJourney)
+					oldJourney.removeEventListener(JourneyEvent.VISITED_CHANGED, journey_eventHandler);
+				
+				if (journey)
+					journey.addEventListener(JourneyEvent.VISITED_CHANGED, journey_eventHandler);
+				
+				journeyChanged = true;
+			}
+			
+			gloChanged = true;
 			invalidateData();
 		}
 		
@@ -153,19 +127,11 @@ package org.glomaker.mobileplayer.mvcs.views
 		//--------------------------------------------------
 		
 		/**
-		 * Updates current GLO.
-		 */
-		protected function updateCurrent():void
-		{
-			current = journey ? journey.get(journey.currentIndex) : null;
-		}
-		
-		/**
 		 * Updates display based on visited state of current GLO.
 		 */
 		protected function updateVisited():void
 		{
-			journeyDetails.visited = (journey && current && current.journeySettings) ? journey.isVisited(current.journeySettings.index) : false;
+			journeyDetails.visited = (journey && glo && glo.journeySettings) ? journey.isVisited(glo.journeySettings.index) : false;
 		}
 		
 		//--------------------------------------------------
@@ -189,7 +155,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.commited();
 			
-			if (journeyChanged || currentChanged)
+			if (journeyChanged || gloChanged)
 			{
 				if (journeyChanged)
 				{
@@ -198,10 +164,10 @@ package org.glomaker.mobileplayer.mvcs.views
 					journeyInfo.text = journey ? journey.displayName : "";
 				}
 				
-				if (currentChanged)
+				if (gloChanged)
 				{
-					currentChanged = false;
-					var settings:JourneySettings = current ? current.journeySettings : null;
+					gloChanged = false;
+					var settings:JourneySettings = glo ? glo.journeySettings : null;
 					locationInfo.text = settings ? settings.location : "";
 					journeyDetails.index = settings ? settings.index : 0;
 					journeyDetails.compassVisible = settings && settings.hasGPS;
@@ -297,7 +263,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function launchButton_clickHandler(event:MouseEvent):void
 		{
-			dispatchEvent(new LoadProjectEvent(LoadProjectEvent.SHOW, current));
+			dispatchEvent(new LoadProjectEvent(LoadProjectEvent.SHOW, glo));
 		}
 		
 		/**
@@ -315,16 +281,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function journey_eventHandler(event:JourneyEvent):void
 		{
-			switch (event.type)
-			{
-				case JourneyEvent.CURRENT_CHANGED:
-					updateCurrent();
-					break;
-				
-				case JourneyEvent.VISITED_CHANGED:
-					updateVisited();
-					break;
-			}
+			updateVisited();
 		}
 
 		/**

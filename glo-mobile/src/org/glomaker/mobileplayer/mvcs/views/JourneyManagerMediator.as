@@ -61,12 +61,12 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.onRegister();
 			
-			applyJourney();
+			handleGloChanged();
 			
 			eventMap.mapListener(view, LoadProjectEvent.SHOW, dispatch, LoadProjectEvent);
 			eventMap.mapListener(view, JourneyManagerEvent.STEP_CLICKED, handleStepClicked, JourneyManagerEvent);
 			
-			eventMap.mapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, applyJourney, GloModelEvent);
+			eventMap.mapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, handleGloChanged, GloModelEvent);
 		}
 		
 		/**
@@ -79,7 +79,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.unmapListener(view, LoadProjectEvent.SHOW, dispatch, LoadProjectEvent);
 			eventMap.unmapListener(view, JourneyManagerEvent.STEP_CLICKED, handleStepClicked, JourneyManagerEvent);
 			
-			eventMap.unmapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, applyJourney, GloModelEvent);
+			eventMap.unmapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, handleGloChanged, GloModelEvent);
 		}
 		
 		//--------------------------------------------------
@@ -87,11 +87,11 @@ package org.glomaker.mobileplayer.mvcs.views
 		//--------------------------------------------------
 		
 		/**
-		 * Assigns current journey to view.
+		 * Handle Glo changed.
 		 */
-		protected function applyJourney(event:GloModelEvent=null):void
+		protected function handleGloChanged(event:GloModelEvent=null):void
 		{
-			view.journey = model.glo ? model.glo.journey : null;
+			view.glo = model.glo;
 		}
 		
 		/**
@@ -99,7 +99,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function handleStepClicked(event:JourneyManagerEvent):void
 		{
-			var glo:Glo = view.journey.get(event.stepIndex);
+			var glo:Glo = model.glo.journey.get(event.stepIndex);
 			if (glo)
 				model.glo = glo;
 		}
