@@ -201,4 +201,7 @@
 		</InfoAdditions>
 		<requestedDisplayResolution>high</requestedDisplayResolution>
 	</iPhone>
+<extensions>
+        <extensionID>com.christiancantrell.compass</extensionID>
+    </extensions>
 </application>

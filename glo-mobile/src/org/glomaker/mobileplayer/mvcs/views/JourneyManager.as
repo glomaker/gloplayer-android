@@ -25,6 +25,8 @@
 */
 package org.glomaker.mobileplayer.mvcs.views
 {
+	import com.christiancantrell.extensions.Compass;
+	
 	import flash.display.GradientType;
 	import flash.events.Event;
 	import flash.events.GeolocationEvent;
@@ -78,8 +80,12 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected var journeyChanged:Boolean;
 		
 		protected var geo:Geolocation;
-		protected var geoPosition:GeoPosition;
-		
+		protected var targetPosition:GeoPosition;
+
+		protected var compass:Compass;
+		protected var azimuth:Number = 0;
+		protected var targetAzimuth:Number = 0;
+
 		protected var journeyInfo:JourneyInfoPanel = new JourneyInfoPanel();
 		protected var route:JourneyRoute = new JourneyRoute();
 		protected var locationInfo:JourneyInfoPanel = new JourneyInfoPanel();
@@ -169,27 +175,66 @@ package org.glomaker.mobileplayer.mvcs.views
 		}
 		
 		/**
-		 * Updates gps tracking based on current config and Glo.
+		 * Updates gps and compass tracking based on current config and Glo.
 		 */
 		protected function updateGPS():void
 		{
-			var doTrack:Boolean = trackGPS && geoPosition;
+			var doTrack:Boolean = trackGPS && targetPosition;
 			if (doTrack && !geo)
 			{
 				geo = new Geolocation();
+				compass = new Compass();
+				
+				geo.setRequestedUpdateInterval(1000);
 				geo.addEventListener(StatusEvent.STATUS, geo_statusHandler);
 				if (!geo.muted)
-					geo.addEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+					addUpdateListeners();
 			}
 			else if (!doTrack && geo)
 			{
 				geo.removeEventListener(StatusEvent.STATUS, geo_statusHandler);
 				if (!geo.muted)
-					geo.removeEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+					removeUpdateListeners();
+				
 				geo = null;
+				compass = null;
 			}
 		}
 		
+		/**
+		 * Adds listeners for gps and compass update events.
+		 */
+		protected function addUpdateListeners():void
+		{
+			compass.register();
+			compass.addEventListener(StatusEvent.STATUS, compass_statusHandler);
+			geo.addEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+		}
+		
+		/**
+		 * Removes listeners for gps and compass update events.
+		 */
+		protected function removeUpdateListeners():void
+		{
+			compass.deregister();
+			compass.removeEventListener(StatusEvent.STATUS, compass_statusHandler);
+			geo.removeEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+			
+			azimuth = 0;
+			targetAzimuth = 0;
+			journeyDetails.distance = null;
+			journeyDetails.direction = 0;
+		}
+		
+		/**
+		 * Updates the compass direction based on current device and target azimuth values.
+		 * 
+		 */
+		protected function updateDirection():void
+		{
+			journeyDetails.direction = Math.round(targetAzimuth - azimuth);
+		}
+
 		//--------------------------------------------------
 		// Overrides
 		//--------------------------------------------------
@@ -224,10 +269,10 @@ package org.glomaker.mobileplayer.mvcs.views
 				{
 					gloChanged = false;
 					var settings:JourneySettings = glo ? glo.journeySettings : null;
-					geoPosition = settings && settings.hasGPS ? settings.gpsPosition : null;
+					targetPosition = settings && settings.hasGPS ? settings.gpsPosition : null;
 					locationInfo.text = settings ? settings.location : "";
 					journeyDetails.index = settings ? settings.index : 0;
-					journeyDetails.compassVisible = geoPosition != null;
+					journeyDetails.compassVisible = targetPosition != null;
 					journeyDetails.direction = 0;
 					journeyDetails.distance = null;
 					
@@ -344,21 +389,21 @@ package org.glomaker.mobileplayer.mvcs.views
 		}
 		
 		/**
-		 * Handles GeoLocation update events. Computes and displays distance and direction of compass.
+		 * Handles GeoLocation update events. Updates distance and direction of compass.
 		 */
 		protected function geo_updateHandler(event:GeolocationEvent):void
 		{
-			var target:GeoPosition = new GeoPosition(event.latitude, event.longitude);
-			if (!geoPosition || !target.valid)
+			var currentPosition:GeoPosition = new GeoPosition(event.latitude, event.longitude);
+			if (targetPosition && currentPosition.valid)
 			{
-				journeyDetails.distance = null;
-				journeyDetails.direction = 0;
-			}
-			else
-			{
-				var distance:Number = geoPosition.distance(target);
+				var distance:Number = currentPosition.distance(targetPosition);
 				var formatted:String;
-				if (distance >= 1)
+				if (distance >= 100)
+				{
+					distance = Math.ceil(distance);
+					formatted = distance.toString() + "km";
+				}
+				else if (distance >= 1)
 				{
 					distance = Math.ceil(distance * 10) / 10;
 					formatted = distance.toString() + "km";
@@ -370,20 +415,33 @@ package org.glomaker.mobileplayer.mvcs.views
 				}
 				
 				journeyDetails.distance = formatted;
+				
+				targetAzimuth = currentPosition.azimuth(targetPosition);
+				updateDirection();
 			}
 		}
 		
 		/**
-		 * Handles GeoLocation statu events.
+		 * Handles GeoLocation status events.
 		 */
 		protected function geo_statusHandler(event:StatusEvent):void
 		{
 			if (geo.muted)
-				geo.removeEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+				removeUpdateListeners();
 			else
-				geo.addEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+				addUpdateListeners();
 		}
-
+		
+		/**
+		 * Handles Compass update events. Updates direction of compass.
+		 */
+		protected function compass_statusHandler(event:StatusEvent):void
+		{
+			var values:Array = event.level.split("&");
+			azimuth = Number(values[0]);
+			updateDirection();
+		}
+		
 		/**
 		 * Handles 'removed from stage' event to monitor when the component is added back
 		 * on stage to trigger validation which only works when the component is on stage.
