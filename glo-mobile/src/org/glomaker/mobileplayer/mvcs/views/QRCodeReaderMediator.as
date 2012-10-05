@@ -74,15 +74,25 @@ package org.glomaker.mobileplayer.mvcs.views
 		public var view:QRCodeReader;
 		
 		/**
+		 * Glo whose QR code has been scanned.
+		 */
+		protected var glo:Glo
+
+		/**
 		 * Save a reference to stage on registration to reset its orientation settings back on remove
 		 * where the stage is not available through the view anymore.
 		 */
 		protected var stage:Stage;
 		
 		/**
-		 * Glo whose QR code has been scanned.
+		 * Save value of autoOrients to reset it when the view is closed.
 		 */
-		protected var glo:Glo
+		protected var autoOrients:Boolean;
+		
+		/**
+		 * Save systemIdleMode setting to reset it when the view is closed.
+		 */
+		protected var systemIdleMode:String;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -102,6 +112,9 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.mapListener(view, DataEvent.DATA, handleViewData, DataEvent);
 			
 			stage = view.stage;
+			autoOrients = stage.autoOrients;
+			systemIdleMode = NativeApplication.nativeApplication.systemIdleMode;
+			
 			stage.autoOrients = false;
 			stage.setOrientation(StageOrientation.DEFAULT);
 			NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.KEEP_AWAKE;
@@ -126,8 +139,8 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.unmapListener(view, ApplicationEvent.HIDE_QR_CODE_READER, dispatch, ApplicationEvent);
 			eventMap.unmapListener(view, DataEvent.DATA, handleViewData, DataEvent);
 			
-			stage.autoOrients = true;
-			NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.NORMAL;
+			stage.autoOrients = autoOrients;
+			NativeApplication.nativeApplication.systemIdleMode = systemIdleMode;
 			stage = null;
 			
 			dispatch(ApplicationEvent.LEAVE_FULL_SCREEN_EVENT);
