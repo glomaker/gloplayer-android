@@ -175,7 +175,16 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function updateVisited():void
 		{
-			journeyDetails.visited = (journey && glo && glo.journeySettings) ? journey.isVisited(glo.journeySettings.index) : false;
+			var visited:Boolean = false;
+			var launchVisible:Boolean = false;
+			if (journey && glo && glo.journeySettings)
+			{
+				visited = journey.isVisited(glo.journeySettings.index);
+				launchVisible = visited || (!glo.journeySettings.hasGPS && !glo.journeySettings.hasQRCode);
+			}
+			
+			journeyDetails.visited = visited;
+			launchButton.visible = launchVisible;
 		}
 		
 		/**
@@ -429,6 +438,11 @@ package org.glomaker.mobileplayer.mvcs.views
 				
 				targetAzimuth = currentPosition.azimuth(targetPosition);
 				updateDirection();
+				
+				if (distance <= event.horizontalAccuracy && !launchButton.visible)
+				{
+					launchButton.visible = true;
+				}
 			}
 		}
 		
