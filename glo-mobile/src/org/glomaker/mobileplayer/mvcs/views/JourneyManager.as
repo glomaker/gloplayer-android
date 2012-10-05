@@ -352,9 +352,9 @@ package org.glomaker.mobileplayer.mvcs.views
 			graphics.endFill();
 			
 			// launch button
-			launchButton.scaleX = LAUNCH_HEIGHT / launchButton.height;
-			launchButton.scaleY = launchButton.scaleX;
-			launchButton.x = (mainRect.width - (launchButton.width * launchButton.scaleX)) / 2;
+			launchButton.scaleY = LAUNCH_HEIGHT / (launchButton.height / launchButton.scaleY);
+			launchButton.scaleX = launchButton.scaleY;
+			launchButton.x = (mainRect.width - launchButton.width) / 2;
 			launchButton.y = journeyDetails.y + journeyDetails.height + vPadding;
 		}
 		
