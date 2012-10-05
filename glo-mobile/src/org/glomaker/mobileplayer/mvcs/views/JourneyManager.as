@@ -26,6 +26,7 @@
 package org.glomaker.mobileplayer.mvcs.views
 {
 	import com.christiancantrell.extensions.Compass;
+	import com.christiancantrell.extensions.CompassChangedEvent;
 	
 	import flash.desktop.NativeApplication;
 	import flash.desktop.SystemIdleMode;
@@ -196,9 +197,12 @@ package org.glomaker.mobileplayer.mvcs.views
 			if (doTrack && !geo)
 			{
 				geo = new Geolocation();
-				compass = new Compass();
-				
 				geo.setRequestedUpdateInterval(1000);
+				
+				compass = new Compass();
+				if (!compass.isSupported())
+					compass = null;
+
 				geo.addEventListener(StatusEvent.STATUS, geo_statusHandler);
 				if (!geo.muted)
 					addUpdateListeners();
@@ -219,9 +223,13 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function addUpdateListeners():void
 		{
-			compass.register();
-			compass.addEventListener(StatusEvent.STATUS, compass_statusHandler);
 			geo.addEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+			
+			if (compass)
+			{
+				compass.register();
+				compass.addEventListener(CompassChangedEvent.MAGNETIC_FIELD_CHANGED, compass_magneticFieldChangedHandler);
+			}
 			
 			// keep awake while tracking
 			systemIdleMode = NativeApplication.nativeApplication.systemIdleMode;
@@ -233,9 +241,13 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function removeUpdateListeners():void
 		{
-			compass.deregister();
-			compass.removeEventListener(StatusEvent.STATUS, compass_statusHandler);
 			geo.removeEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+			
+			if (compass)
+			{
+				compass.deregister();
+				compass.removeEventListener(CompassChangedEvent.MAGNETIC_FIELD_CHANGED, compass_magneticFieldChangedHandler);
+			}
 			
 			azimuth = 0;
 			targetAzimuth = 0;
@@ -459,10 +471,9 @@ package org.glomaker.mobileplayer.mvcs.views
 		/**
 		 * Handles Compass update events. Updates direction of compass.
 		 */
-		protected function compass_statusHandler(event:StatusEvent):void
+		protected function compass_magneticFieldChangedHandler(event:CompassChangedEvent):void
 		{
-			var values:Array = event.level.split("&");
-			azimuth = Math.round(Number(values[0]));
+			azimuth = Math.round(event.azimuth);
 			updateDirection();
 		}
 		
