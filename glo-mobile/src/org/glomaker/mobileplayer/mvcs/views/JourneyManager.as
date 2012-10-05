@@ -252,7 +252,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function updateDirection():void
 		{
-			journeyDetails.direction = Math.round(targetAzimuth - azimuth);
+			journeyDetails.direction = targetAzimuth - azimuth;
 		}
 
 		//--------------------------------------------------
@@ -418,19 +418,18 @@ package org.glomaker.mobileplayer.mvcs.views
 			{
 				var distance:Number = currentPosition.distance(targetPosition);
 				var formatted:String;
-				if (distance >= 100)
+				if (distance >= 100000)
 				{
-					distance = Math.ceil(distance);
+					distance = Math.ceil(distance / 1000);
 					formatted = distance.toString() + "km";
 				}
-				else if (distance >= 1)
+				else if (distance >= 1000)
 				{
-					distance = Math.ceil(distance * 10) / 10;
+					distance = Math.ceil(distance / 100) / 10;
 					formatted = distance.toString() + "km";
 				}
 				else
 				{
-					distance = Math.ceil(distance * 1000);
 					formatted = distance.toString() + "m";
 				}
 				
@@ -463,7 +462,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected function compass_statusHandler(event:StatusEvent):void
 		{
 			var values:Array = event.level.split("&");
-			azimuth = Number(values[0]);
+			azimuth = Math.round(Number(values[0]));
 			updateDirection();
 		}
 		

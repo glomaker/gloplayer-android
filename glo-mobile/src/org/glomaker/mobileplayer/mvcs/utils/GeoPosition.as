@@ -31,13 +31,11 @@ package org.glomaker.mobileplayer.mvcs.utils
 		}
 		
 		/**
-		 * Returns the distance from this point to the specified target point.
-		 * 
-		 * If 'miles' is true, the distance is returned in miles, otherwise in km.
+		 * Returns the distance in meters from this point to the specified target point.
 		 * 
 		 * If any of the points is invalid, NaN is returned.
 		 */
-		public function distance(target:GeoPosition, miles:Boolean=false):Number
+		public function distance(target:GeoPosition):Number
 		{
 			if (!valid || !target || !target.valid)
 				return NaN;
@@ -48,16 +46,14 @@ package org.glomaker.mobileplayer.mvcs.utils
 			var lat2:Number = target.latitude * pi80;
 			var lng2:Number = target.longitude * pi80;
 			
-			var earthRadius:Number = 6372.797; // mean radius of Earth in km
+			var earthRadius:Number = 6372797; // mean radius of Earth in m
 			var dlat:Number = lat2-lat1;
 			var dlng:Number = lng2-lng1;
 			var a:Number = Math.sin(dlat / 2) * Math.sin(dlat / 2) + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlng / 2) * Math.sin(dlng / 2);
 			var c:Number = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-			var km:Number = earthRadius*c;
+			var m:Number = earthRadius*c;
 			
-			trace(this, target, km);
-			
-			return (miles ? (km * 0.621371192) : km);
+			return Math.round(m);
 		}
 		
 		/**
@@ -80,7 +76,7 @@ package org.glomaker.mobileplayer.mvcs.utils
 			var x:Number = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dlng);
 			var brng:Number = Math.atan2(y, x);
 			
-			return ((brng / pi80) + 360) % 360;
+			return (Math.round(brng / pi80) + 360) % 360;
 		}
 		
 		public function toString():String
