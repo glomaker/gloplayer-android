@@ -25,6 +25,9 @@
 */
 package org.glomaker.mobileplayer.mvcs.views
 {
+	import flash.display.Stage;
+	import flash.display.StageOrientation;
+	
 	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
 	import org.glomaker.mobileplayer.mvcs.events.JourneyManagerEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
@@ -42,13 +45,24 @@ package org.glomaker.mobileplayer.mvcs.views
 		/**
 		 * @private
 		 */
-		public var view:JourneyManager;
+		public var model:GloModel;
 		
 		[Inject]
 		/**
 		 * @private
 		 */
-		public var model:GloModel;
+		public var view:JourneyManager;
+		
+		/**
+		 * Save a reference to stage on registration to reset its orientation settings back on remove
+		 * where the stage is not available through the view anymore.
+		 */
+		protected var stage:Stage;
+		
+		/**
+		 * Save value of autoOrients to reset it when the view is closed.
+		 */
+		protected var autoOrients:Boolean;
 		
 		//--------------------------------------------------
 		// Overrides
@@ -61,13 +75,19 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.onRegister();
 			
-			view.trackGPS = true;
-			handleGloChanged();
-			
 			eventMap.mapListener(view, LoadProjectEvent.SHOW, dispatch, LoadProjectEvent);
 			eventMap.mapListener(view, JourneyManagerEvent.STEP_CLICKED, handleStepClicked, JourneyManagerEvent);
 			
 			eventMap.mapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, handleGloChanged, GloModelEvent);
+			
+			stage = view.stage;
+			autoOrients = stage.autoOrients;
+			
+			stage.autoOrients = false;
+			stage.setOrientation(StageOrientation.DEFAULT);
+			
+			view.trackGPS = true;
+			handleGloChanged();
 		}
 		
 		/**
@@ -77,12 +97,15 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.onRemove();
 			
-			view.trackGPS = false;
-			
 			eventMap.unmapListener(view, LoadProjectEvent.SHOW, dispatch, LoadProjectEvent);
 			eventMap.unmapListener(view, JourneyManagerEvent.STEP_CLICKED, handleStepClicked, JourneyManagerEvent);
 			
 			eventMap.unmapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, handleGloChanged, GloModelEvent);
+			
+			view.trackGPS = false;
+			
+			stage.autoOrients = autoOrients;
+			stage = null;
 		}
 		
 		//--------------------------------------------------

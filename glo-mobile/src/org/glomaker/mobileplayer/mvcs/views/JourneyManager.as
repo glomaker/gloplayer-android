@@ -27,6 +27,8 @@ package org.glomaker.mobileplayer.mvcs.views
 {
 	import com.christiancantrell.extensions.Compass;
 	
+	import flash.desktop.NativeApplication;
+	import flash.desktop.SystemIdleMode;
 	import flash.display.GradientType;
 	import flash.events.Event;
 	import flash.events.GeolocationEvent;
@@ -86,6 +88,8 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected var azimuth:Number = 0;
 		protected var targetAzimuth:Number = 0;
 
+		protected var systemIdleMode:String;
+		
 		protected var journeyInfo:JourneyInfoPanel = new JourneyInfoPanel();
 		protected var route:JourneyRoute = new JourneyRoute();
 		protected var locationInfo:JourneyInfoPanel = new JourneyInfoPanel();
@@ -209,6 +213,10 @@ package org.glomaker.mobileplayer.mvcs.views
 			compass.register();
 			compass.addEventListener(StatusEvent.STATUS, compass_statusHandler);
 			geo.addEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+			
+			// keep awake while tracking
+			systemIdleMode = NativeApplication.nativeApplication.systemIdleMode;
+			NativeApplication.nativeApplication.systemIdleMode = SystemIdleMode.KEEP_AWAKE;
 		}
 		
 		/**
@@ -224,6 +232,9 @@ package org.glomaker.mobileplayer.mvcs.views
 			targetAzimuth = 0;
 			journeyDetails.distance = null;
 			journeyDetails.direction = 0;
+			
+			// reset idle mode
+			NativeApplication.nativeApplication.systemIdleMode = systemIdleMode;
 		}
 		
 		/**
