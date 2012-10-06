@@ -453,6 +453,7 @@ package org.glomaker.mobileplayer.mvcs.views
 				if (distance <= event.horizontalAccuracy && !launchButton.visible)
 				{
 					launchButton.visible = true;
+					dispatchEvent(new JourneyManagerEvent(JourneyManagerEvent.STEP_REACHED, glo.journeySettings.index));
 				}
 			}
 		}

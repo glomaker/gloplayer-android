@@ -27,12 +27,15 @@ package org.glomaker.mobileplayer.mvcs.views
 {
 	import flash.display.Stage;
 	import flash.display.StageOrientation;
+	import flash.events.Event;
 	
 	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
 	import org.glomaker.mobileplayer.mvcs.events.JourneyManagerEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
+	import org.glomaker.mobileplayer.mvcs.events.NotificationEvent;
 	import org.glomaker.mobileplayer.mvcs.models.GloModel;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
+	import org.glomaker.mobileplayer.mvcs.views.components.ConfirmationDialog;
 	import org.robotlegs.mvcs.Mediator;
 	
 	public class JourneyManagerMediator extends Mediator
@@ -77,6 +80,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			
 			eventMap.mapListener(view, LoadProjectEvent.SHOW, dispatch, LoadProjectEvent);
 			eventMap.mapListener(view, JourneyManagerEvent.STEP_CLICKED, handleStepClicked, JourneyManagerEvent);
+			eventMap.mapListener(view, JourneyManagerEvent.STEP_REACHED, handleStepReached, JourneyManagerEvent);
 			
 			eventMap.mapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, handleGloChanged, GloModelEvent);
 			
@@ -99,6 +103,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			
 			eventMap.unmapListener(view, LoadProjectEvent.SHOW, dispatch, LoadProjectEvent);
 			eventMap.unmapListener(view, JourneyManagerEvent.STEP_CLICKED, handleStepClicked, JourneyManagerEvent);
+			eventMap.unmapListener(view, JourneyManagerEvent.STEP_REACHED, handleStepReached, JourneyManagerEvent);
 			
 			eventMap.unmapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, handleGloChanged, GloModelEvent);
 			
@@ -128,6 +133,36 @@ package org.glomaker.mobileplayer.mvcs.views
 			var glo:Glo = model.glo.journey.get(event.stepIndex);
 			if (glo)
 				model.glo = glo;
+		}
+		
+		/**
+		 * Handle step reached event.
+		 */
+		protected function handleStepReached(event:JourneyManagerEvent):void
+		{
+			var message:String = "Open the following GLO?\n";
+			if (model.glo.journeySettings.location)
+				message += "Name: " + model.glo.journeySettings.location + "\n";
+			message += "Journey: " + model.glo.journeySettings.name + "\n";
+			message += "Step: " + model.glo.journeySettings.index + "\n";
+			
+			var dialog:ConfirmationDialog = new ConfirmationDialog();
+			dialog.text = message;
+			dialog.addEventListener(Event.CLOSE, dialog_closeHandler);
+			
+			dispatch(new NotificationEvent(NotificationEvent.NOTIFICATION, null, dialog, true));
+			dispatch(new NotificationEvent(NotificationEvent.NATIVE_NOTIFICATION, "Journey step location reached."));
+		}
+		
+		protected function dialog_closeHandler(event:Event):void
+		{
+			var dialog:ConfirmationDialog = event.target as ConfirmationDialog;
+			dialog.removeEventListener(Event.CLOSE, dialog_closeHandler);
+			
+			if (dialog.response)
+				dispatch(new LoadProjectEvent(LoadProjectEvent.SHOW, model.glo));
+			
+			dispatch(new NotificationEvent(NotificationEvent.CANCEL_NATIVE_NOTIFICATION));
 		}
 	}
 }

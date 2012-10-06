@@ -36,6 +36,7 @@ package org.glomaker.mobileplayer.mvcs.events
 		//--------------------------------------------------------------------------
 		
 		public static const STEP_CLICKED:String = "stepClicked";
+		public static const STEP_REACHED:String = "stepReached";
 
 		//--------------------------------------------------------------------------
 		//
