@@ -1,17 +1,11 @@
 package org.glomaker.mobileplayer.mvcs.views.components
 {
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	import net.dndigital.components.IGUIComponent;
 	
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 
-	/**
-	 * Dispatched when the popup is closed.
-	 */
-	[Event(name="close", type="flash.events.Event")]
-	
 	/**
 	 * A dialog that displays a message, a 'Yes' button and a 'No' button for asking the
 	 * user to confirm an action.
@@ -116,13 +110,6 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			yesButton.y = textField.y + textField.height + 15;
 			noButton.x = yesButton.x + BUTTON_WIDTH + 15;
 			noButton.y = yesButton.y;
-		}
-		
-		override protected function completed():void
-		{
-			super.completed();
-			
-			dispatchEvent(new Event(Event.CLOSE));
 		}
 		
 		//--------------------------------------------------

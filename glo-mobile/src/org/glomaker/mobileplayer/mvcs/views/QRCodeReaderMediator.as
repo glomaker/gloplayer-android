@@ -31,7 +31,6 @@ package org.glomaker.mobileplayer.mvcs.views
 	import flash.display.StageOrientation;
 	import flash.events.DataEvent;
 	import flash.events.Event;
-	import flash.filters.BlurFilter;
 	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
@@ -182,14 +181,11 @@ package org.glomaker.mobileplayer.mvcs.views
 				message += "Journey: " + glo.journeySettings.name + "\n";
 				message += "Step: " + glo.journeySettings.index + "\n";
 				
-				view.mouseEnabled = false;
-				view.mouseChildren = false;
-				view.filters = [ new BlurFilter(3, 3) ];
-				
 				var dialog:ConfirmationDialog = new ConfirmationDialog();
 				dialog.text = message;
 				dialog.addEventListener(Event.CLOSE, dialog_closeHandler);
-				view.stage.addChild(dialog);
+				
+				dispatch(new NotificationEvent(NotificationEvent.NOTIFICATION, null, dialog, true));
 			}
 			else
 			{
@@ -203,10 +199,6 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			var dialog:ConfirmationDialog = event.target as ConfirmationDialog;
 			dialog.removeEventListener(Event.CLOSE, dialog_closeHandler);
-			
-			view.mouseEnabled = true;
-			view.mouseChildren = true;
-			view.filters = null;
 			
 			if (dialog.response)
 			{

@@ -166,6 +166,7 @@
 				<uses-permission android:name="android.permission.CAMERA" /> 
 				<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> 
 				<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> 
+				<uses-permission android:name="android.permission.VIBRATE"/>
                 
 			    <!-- Make all camera features optional to allow installation of the app on devices without these features. -->
 			    <!-- Related functionality will be disabled in the app for these devices. -->
@@ -181,6 +182,8 @@
 							<category android:name="android.intent.category.LAUNCHER"/>
 						</intent-filter>
 					</activity>
+					<service android:name="com.juankpro.ane.localnotif.LocalNotificationIntentService"/>
+			    	<receiver android:name="com.juankpro.ane.localnotif.AlarmIntentService" />
 				</application>
 			</manifest>
 		]]>
@@ -204,5 +207,6 @@
 
 <extensions>
         <extensionID>com.christiancantrell.compass</extensionID>
+    <extensionID>com.juankpro.ane.LocalNotification</extensionID>
     </extensions>
 </application>

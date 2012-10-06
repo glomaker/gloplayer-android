@@ -46,6 +46,11 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	
 	/**
+	 * Dispatched when the popup is closed.
+	 */
+	[Event(name="close", type="flash.events.Event")]
+	
+	/**
 	 * Notifications are used by Application to notify user.
 	 * 
 	 * @see		net.dndigital.glo.mvcs.views.glocomponents.GloComponent
@@ -131,26 +136,6 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			invalidateData();
 		}
 		
-		//--------------------------------------------------------------------------
-		//
-		//  Methods
-		//
-		//--------------------------------------------------------------------------
-		
-		/**
-		 * Method runs an animation and disables notification.
-		 * 
-		 * @param	completed	<code>Function</code> closure that will be called once animation is finished.
-		 * 
-		 * @langversion 3.0
-		 * @playerversion Flash 10
-		 * @playerversion AIR 2.5
-		 * @productversion Flex 4.5
-		 */
-		public function remove(completed:Function):void
-		{
-			TweenLite.to(this, 0.5, {alpha: 0, onComplete: completed});
-		}
 		//--------------------------------------------------------------------------
 		//
 		//  Overriden API
@@ -264,6 +249,8 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		{
 			if (parent)
 				parent.removeChild(this);
+			
+			dispatchEvent(new Event(Event.CLOSE));
 		}
 	}
 }

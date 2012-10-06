@@ -26,6 +26,8 @@
 package org.glomaker.mobileplayer.mvcs.events
 {
 	import flash.events.Event;
+	
+	import org.glomaker.mobileplayer.mvcs.views.components.Notification;
 
 	public class NotificationEvent extends Event
 	{
@@ -36,17 +38,21 @@ package org.glomaker.mobileplayer.mvcs.events
 		//--------------------------------------------------------------------------
 		
 		public static const NOTIFICATION:String = "notification";
+		public static const NATIVE_NOTIFICATION:String = "nativeNotification";
+		public static const CANCEL_NATIVE_NOTIFICATION:String = "cancelNativeNotification";
 
 		//--------------------------------------------------------------------------
 		//
 		//  Constructor
 		//
 		//--------------------------------------------------------------------------
-		public function NotificationEvent(type:String, message:String)
+		public function NotificationEvent(type:String, message:String=null, dialog:Notification=null, modal:Boolean=false)
 		{
 			super(type);
 
 			_message = message;
+			_dialog = dialog;
+			_modal = modal;
 		}
 
 		//--------------------------------------------------------------------------
@@ -68,6 +74,25 @@ package org.glomaker.mobileplayer.mvcs.events
 		 * @productversion Flex 4.5
 		 */
 		public function get message():String { return _message; }
+		
+		/**
+		 * @private
+		 */
+		protected var _dialog:Notification;
+		/**
+		 * Notification dialog to display. If not defined and message is defined, a Notification dialog
+		 * with the specified message is created and displayed.
+		 */
+		public function get dialog():Notification { return _dialog; }
+		
+		/**
+		 * @private
+		 */
+		protected var _modal:Boolean;
+		/**
+		 * Whether the notification dialog should be modal or not.
+		 */
+		public function get modal():Boolean { return _modal; }
 		
 		//--------------------------------------------------------------------------
 		//

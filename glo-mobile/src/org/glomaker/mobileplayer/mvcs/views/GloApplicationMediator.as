@@ -25,7 +25,12 @@
 */
 package org.glomaker.mobileplayer.mvcs.views
 {
+	import com.juankpro.ane.localnotif.Notification;
+	import com.juankpro.ane.localnotif.NotificationIconType;
+	import com.juankpro.ane.localnotif.NotificationManager;
+	
 	import flash.events.Event;
+	import flash.filters.BlurFilter;
 	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
@@ -48,6 +53,12 @@ package org.glomaker.mobileplayer.mvcs.views
 		 * Timeout identifier used for notifications.
 		 */
 		protected var notificationTimeout:uint;
+		
+		/**
+		 * @private
+		 * Manages native notifications.
+		 */
+		protected var nativeNotificationManager:NotificationManager;
 		
 		//--------------------------------------------------------------------------
 		//
@@ -73,6 +84,14 @@ package org.glomaker.mobileplayer.mvcs.views
 		//
 		//--------------------------------------------------------------------------
 		
+		public function GloApplicationMediator()
+		{
+			super();
+			
+			if (NotificationManager.isSupported)
+				nativeNotificationManager = new NotificationManager();
+		}
+		
 		//--------------------------------------------------------------------------
 		//
 		//  Overridden API
@@ -93,6 +112,8 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.ENTER_FULL_SCREEN, fullScreen);
 			eventMap.mapListener(eventDispatcher, ApplicationEvent.LEAVE_FULL_SCREEN, fullScreen);
 			eventMap.mapListener(eventDispatcher, NotificationEvent.NOTIFICATION, notify);
+			eventMap.mapListener(eventDispatcher, NotificationEvent.NATIVE_NOTIFICATION, nativeNotify);
+			eventMap.mapListener(eventDispatcher, NotificationEvent.CANCEL_NATIVE_NOTIFICATION, cancelNativeNotification);
 			eventMap.mapListener(eventDispatcher, LoadProjectEvent.SHOW, clear);
 			
 			eventMap.mapListener(view, ApplicationEvent.INITIALIZED, showMenu);
@@ -203,12 +224,81 @@ package org.glomaker.mobileplayer.mvcs.views
 		/**
 		 * @private
 		 * Method handles notification received from various parts of Application. This notifications will be presented to user.
+		 * 
+		 * NOTE: the current implementation only supports one modal dialog at a time!!
 		 */
 		protected function notify(event:NotificationEvent):void
 		{
-			const notification:Notification = new Notification;
-				  notification.text = event.message;  
-			contextView.addChild(notification);
+			if (!event.message && !event.dialog)
+				return;
+			
+			var notification:org.glomaker.mobileplayer.mvcs.views.components.Notification;
+			if (event.dialog)
+				notification = event.dialog;
+			else
+			{
+				notification = new org.glomaker.mobileplayer.mvcs.views.components.Notification();
+				notification.text = event.message; 
+			}
+			
+			if (event.modal)
+			{
+				view.mouseEnabled = false;
+				view.mouseChildren = false;
+				view.filters = [ new BlurFilter(3, 3) ];
+				
+				notification.addEventListener(Event.CLOSE, notification_closeHandler);
+			}
+			
+			view.stage.addChild(notification);
+		}
+		
+		/**
+		 * @private
+		 * Handles dialog close for modal dialogs.
+		 */
+		protected function notification_closeHandler(event:Event):void
+		{
+			var notification:org.glomaker.mobileplayer.mvcs.views.components.Notification = event.target as org.glomaker.mobileplayer.mvcs.views.components.Notification;
+			notification.removeEventListener(Event.CLOSE, notification_closeHandler);
+			
+			view.mouseEnabled = true;
+			view.mouseChildren = true;
+			view.filters = null;
+		}
+		
+		/**
+		 * @private
+		 * Method handles notification received from various parts of Application. These notifications will use the device native
+		 * notification system if supported.
+		 */
+		protected function nativeNotify(event:NotificationEvent):void
+		{
+			if (nativeNotificationManager && event.message)
+			{
+				var notification:com.juankpro.ane.localnotif.Notification = new com.juankpro.ane.localnotif.Notification();
+				//notification.actionLabel = "OK";
+				notification.iconType = NotificationIconType.FLAG;
+				notification.body = event.message;
+				notification.title = "GLO Player";
+				notification.playSound = true;
+				notification.vibrate = true;
+				notification.cancelOnSelect = true;
+				notification.hasAction = true;
+				//notification.actionData = {sampleData:"Hello World!"}
+				
+				nativeNotificationManager.notifyUser("GLO_MAKER_NOTIFICATION", notification);
+			}
+		}
+		
+		/**
+		 * @private
+		 * Handle request for canceling any native notifications (removed from notification list of device).
+		 */
+		protected function cancelNativeNotification(event:NotificationEvent):void
+		{
+			if (nativeNotificationManager)
+				nativeNotificationManager.cancel("GLO_MAKER_NOTIFICATION");
 		}
 	}
 }
