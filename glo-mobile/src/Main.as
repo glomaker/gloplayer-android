@@ -22,6 +22,8 @@
  * A number of utility classes Copyright (c) DN Digital Ltd, published under the MIT license
  *
  * The ScaleBitmap class, released open-source under the RPL license (http://www.opensource.org/licenses/rpl.php)
+ *
+ * The LocalNotificationLib native extension, by Juan Carlos Pazmino (https://bitbucket.org/juankpro/jklocalnotifications-ane)
 */
 package
 {
