@@ -29,6 +29,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import flash.display.StageOrientation;
 	import flash.events.Event;
 	
+	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
 	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
 	import org.glomaker.mobileplayer.mvcs.events.JourneyManagerEvent;
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
@@ -83,6 +84,8 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.mapListener(view, JourneyManagerEvent.STEP_REACHED, handleStepReached, JourneyManagerEvent);
 			
 			eventMap.mapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, handleGloChanged, GloModelEvent);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.ACTIVATE, handleActivate, ApplicationEvent);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.DEACTIVATE, handleDeactivate, ApplicationEvent);
 			
 			stage = view.stage;
 			autoOrients = stage.autoOrients;
@@ -106,6 +109,8 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.unmapListener(view, JourneyManagerEvent.STEP_REACHED, handleStepReached, JourneyManagerEvent);
 			
 			eventMap.unmapListener(eventDispatcher, GloModelEvent.GLO_CHANGED, handleGloChanged, GloModelEvent);
+			eventMap.unmapListener(eventDispatcher, ApplicationEvent.ACTIVATE, handleActivate, ApplicationEvent);
+			eventMap.unmapListener(eventDispatcher, ApplicationEvent.DEACTIVATE, handleDeactivate, ApplicationEvent);
 			
 			view.trackGPS = false;
 			
@@ -125,6 +130,22 @@ package org.glomaker.mobileplayer.mvcs.views
 			view.glo = model.glo;
 		}
 		
+		/**
+		 * Handle application activated.
+		 */
+		protected function handleActivate(event:ApplicationEvent):void
+		{
+			view.trackGPS = true;
+		}
+		
+		/**
+		 * Handle application deactivated.
+		 */
+		protected function handleDeactivate(event:ApplicationEvent):void
+		{
+			view.trackGPS = false;
+		}
+
 		/**
 		 * Handle step click event.
 		 */
