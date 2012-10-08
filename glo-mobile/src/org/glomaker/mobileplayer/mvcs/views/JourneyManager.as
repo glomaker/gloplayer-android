@@ -431,19 +431,11 @@ package org.glomaker.mobileplayer.mvcs.views
 				var distance:Number = currentPosition.distance(targetPosition);
 				var formatted:String;
 				if (distance >= 100000)
-				{
-					distance = Math.ceil(distance / 1000);
-					formatted = distance.toString() + "km";
-				}
+					formatted = Math.ceil(distance / 1000).toString() + "km";
 				else if (distance >= 1000)
-				{
-					distance = Math.ceil(distance / 100) / 10;
-					formatted = distance.toString() + "km";
-				}
+					formatted = (Math.ceil(distance / 100) / 10).toString() + "km";
 				else
-				{
 					formatted = distance.toString() + "m";
-				}
 				
 				journeyDetails.distance = formatted;
 				
