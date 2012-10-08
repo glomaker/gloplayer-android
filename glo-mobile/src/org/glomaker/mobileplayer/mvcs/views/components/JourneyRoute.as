@@ -29,6 +29,8 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	import flash.events.Event;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	
 	import net.dndigital.components.Container;
 	import net.dndigital.components.GUIComponent;
@@ -38,6 +40,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Glo;
 	import org.glomaker.mobileplayer.mvcs.models.vo.Journey;
+	import org.glomaker.mobileplayer.mvcs.utils.FontUtil;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	
 	/**
@@ -60,12 +63,14 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		protected static const H_PADDING:uint = ScreenMaths.mmToPixels(3);
 		protected static const V_PADDING:uint = ScreenMaths.mmToPixels(1);
 		
+		protected static const TITLE_PADDING:uint = ScreenMaths.mmToPixels(1);
+		
 		//--------------------------------------------------
 		// Instance variables
 		//--------------------------------------------------
 		
 		protected var container:Container = new Container();
-		protected var title:TextField = new TextField();
+		protected var titleDisplay:TextField = new TextField();
 		
 		protected var steps:Vector.<JourneyStep> = new Vector.<JourneyStep>();
 		protected var containerScrollRect:Rectangle = new Rectangle();
@@ -233,6 +238,15 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			
 			addChild(container);
 			
+			titleDisplay.defaultTextFormat = new TextFormat(FontUtil.FONT_REGULAR, 10, ColourPalette.JOURNEY_LIGHT_BLUE);
+			titleDisplay.text = "ROUTE";
+			titleDisplay.embedFonts = true;
+			titleDisplay.multiline = false;
+			titleDisplay.wordWrap = false;
+			titleDisplay.selectable = false;
+			titleDisplay.autoSize = TextFieldAutoSize.LEFT;
+			addChild(titleDisplay);
+			
 			createSteps();
 		}
 		
@@ -246,6 +260,9 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			containerScrollRect.width = width;
 			containerScrollRect.height = height;
 			container.scrollRect = containerScrollRect;
+			
+			titleDisplay.x = TITLE_PADDING;
+			titleDisplay.y = TITLE_PADDING;
 			
 			graphics.clear();
 			graphics.beginFill(ColourPalette.JOURNEY_DARK_BLUE);
