@@ -57,7 +57,7 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		/**
 		 * Indices of visited journeys.
 		 */
-		protected var visited:Vector.<uint> = new Vector.<uint>();
+		protected var visited:Array = [];
 		
 		//--------------------------------------------------
 		// Initialization
@@ -85,7 +85,7 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		 */
 		public function get currentIndex():uint
 		{
-			return _currentIndex;
+			return indices.indexOf(_currentIndex) >= 0 ? _currentIndex : 0;
 		}
 
 		/**
@@ -93,13 +93,12 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		 */
 		public function set currentIndex(value:uint):void
 		{
-			value = indices.indexOf(value) >= 0 ? value : 0;
+			if (value == _currentIndex)
+				return;
 			
-			if (value != _currentIndex)
-			{
-				_currentIndex = value;
-				dispatchEvent(new JourneyEvent(JourneyEvent.CURRENT_CHANGED));
-			}
+			_currentIndex = value;
+			
+			dispatchEvent(new JourneyEvent(JourneyEvent.CURRENT_CHANGED));
 		}
 		
 		//--------------------------------------------------
@@ -107,7 +106,7 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		//--------------------------------------------------
 		
 		/**
-		 * Clears the list of Glos.
+		 * Clears the list of Glos. Other state information (currentIndex and visited) is preserved.
 		 */
 		public function clear():void
 		{
@@ -122,24 +121,12 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 			glos = [];
 			indices.length = 0;
 			dispatchEvent(new JourneyEvent(JourneyEvent.LIST_CHANGED));
-			
-			if (_currentIndex != 0)
-			{
-				_currentIndex = 0;
-				dispatchEvent(new JourneyEvent(JourneyEvent.CURRENT_CHANGED));
-			}
-			
-			if (visited.length != 0)
-			{
-				visited.length = 0;
-				dispatchEvent(new JourneyEvent(JourneyEvent.VISITED_CHANGED));
-			}
 		}
 		
 		/**
 		 * Adds the specified Glo with the specified journey index.
 		 */
-		public function add(glo:Glo, index:uint, visited:Boolean=false):void
+		public function add(glo:Glo, index:uint):void
 		{
 			if (glo && index > 0)
 			{
@@ -164,8 +151,6 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 					
 					dispatchEvent(new JourneyEvent(JourneyEvent.LIST_CHANGED));
 				}
-				
-				setVisited(index, visited);
 			}
 		}
 		
@@ -237,7 +222,26 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		{
 			return visited.indexOf(index) >= 0;
 		}
-
+		
+		/**
+		 * Serializes the data that should be saved on persistent storage.
+		 */
+		public function serialize():Object
+		{
+			return {"name": displayName, "current": currentIndex, "visited": visited};
+		}
+		
+		/**
+		 * Applies data from persistent storage.
+		 */
+		public function unserialize(data:Object):void
+		{
+			displayName = data["name"];
+			currentIndex = data["current"];
+			visited = data["visited"];
+			dispatchEvent(new JourneyEvent(JourneyEvent.VISITED_CHANGED));
+		}
+		
 		//--------------------------------------------------
 		// Overrides
 		//--------------------------------------------------

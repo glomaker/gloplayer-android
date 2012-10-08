@@ -26,8 +26,6 @@
 
 package org.glomaker.mobileplayer.mvcs.services
 {
-	import flash.utils.Dictionary;
-	
 	import mx.utils.StringUtil;
 	
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
@@ -37,6 +35,7 @@ package org.glomaker.mobileplayer.mvcs.services
 	import org.glomaker.mobileplayer.mvcs.models.vo.Journey;
 	import org.glomaker.mobileplayer.mvcs.models.vo.MenuItem;
 	import org.glomaker.mobileplayer.mvcs.models.vo.QRCodeList;
+	import org.glomaker.mobileplayer.mvcs.utils.PersistenceManager;
 	import org.robotlegs.mvcs.Actor;
 	
 	/**
@@ -55,8 +54,10 @@ package org.glomaker.mobileplayer.mvcs.services
 		[Inject]
 		public var model:GloModel;
 		
+		[Inject]
+		public var persistenceManager:PersistenceManager;
+		
 		protected var currentIndex:int = -1;
-		protected var journeys:Dictionary;
 		protected var qrCodes:QRCodeList;
 		
 		//--------------------------------------------------
@@ -80,6 +81,8 @@ package org.glomaker.mobileplayer.mvcs.services
 		{
 			if (value == glos)
 				return;
+			
+			persistenceManager.resetJourneys();
 			
 			_glos = value;
 			
@@ -111,7 +114,6 @@ package org.glomaker.mobileplayer.mvcs.services
 		{
 			_result = new Vector.<MenuItem>();
 			currentIndex = -1;
-			journeys = new Dictionary();
 			qrCodes = new QRCodeList();
 			
 			eventMap.mapListener(eventDispatcher, LoadProjectEvent.COMPLETE, completeHandler, LoadProjectEvent);
@@ -132,9 +134,10 @@ package org.glomaker.mobileplayer.mvcs.services
 				
 				// pass on to application
 				dispatch(new GloMenuEvent(GloMenuEvent.ITEMS_LISTED, _result));
+				
+				model.glo = null;
 				model.qrCodes = qrCodes;
 				
-				journeys = null;
 				qrCodes = null;
 				
 				return;
@@ -191,22 +194,22 @@ package org.glomaker.mobileplayer.mvcs.services
 			
 			if (journeyName && journeyIndex > 0)
 			{
-				var journey:Journey = journeys[journeyName];
+				var journey:Journey = persistenceManager.getJourney(journeyName);
 				if (!journey)
 				{
 					journey = new Journey(journeyName);
-					journeys[journeyName] = journey;
-					menuItem = journey;
+					persistenceManager.addJourney(journey);
 				}
 				
 				journey.add(event.glo, journeyIndex);
+				menuItem = journey;
 			}
 			else
 			{
 				menuItem = event.glo;
 			}
 			
-			if (menuItem)
+			if (menuItem && _result.indexOf(menuItem) < 0)
 				_result.push(menuItem);
 			
 			loadNext();

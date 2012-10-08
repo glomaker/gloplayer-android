@@ -31,6 +31,7 @@ package org.glomaker.mobileplayer.mvcs
 	import org.glomaker.mobileplayer.mvcs.events.*;
 	import org.glomaker.mobileplayer.mvcs.models.GloModel;
 	import org.glomaker.mobileplayer.mvcs.services.*;
+	import org.glomaker.mobileplayer.mvcs.utils.PersistenceManager;
 	import org.glomaker.mobileplayer.mvcs.views.*;
 	import org.glomaker.mobileplayer.mvcs.views.components.BusyIndicator;
 	import org.glomaker.mobileplayer.mvcs.views.components.PageNumberDisplay;
@@ -61,12 +62,17 @@ package org.glomaker.mobileplayer.mvcs
 		 */
 		override public function startup():void
 		{
+			// Initialize persistence manager
+			var persistenceManager:PersistenceManager = new PersistenceManager();
+			persistenceManager.load();
+			
 			// Singletons
 			injector.mapSingletonOf(IProjectService, ProjectService);
 			injector.mapSingletonOf(IFileService, AppDirFileService, "appFileService");
 			injector.mapSingletonOf(IFileService, DocumentsDirFileService, "docFileService");
 			injector.mapSingletonOf(PrepareGLOsService, PrepareGLOsService);
 			injector.mapSingletonOf(GloModel, GloModel);
+			injector.mapValue(PersistenceManager, persistenceManager);
 			
 			// Controllers and Commands
 			// startup sequence:
