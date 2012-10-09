@@ -25,8 +25,12 @@
 */
 package org.glomaker.mobileplayer.mvcs.views.components
 {
+	import com.greensock.TweenLite;
+	import com.greensock.easing.Expo;
+	
 	import flash.display.GraphicsPathCommand;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
@@ -65,6 +69,11 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		
 		protected static const TITLE_PADDING:uint = ScreenMaths.mmToPixels(1);
 		
+		/**
+		 * Maximum number of pixels of mouse movement before a tap becomes a drag. 
+		 */		
+		protected static const MOVE_THRESHOLD:Number = 3;
+		
 		//--------------------------------------------------
 		// Instance variables
 		//--------------------------------------------------
@@ -74,6 +83,11 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		
 		protected var steps:Vector.<JourneyStep> = new Vector.<JourneyStep>();
 		protected var containerScrollRect:Rectangle = new Rectangle();
+		protected var containerWidth:uint;
+		
+		protected var mouseDownX:Number;
+		protected var lastMouseX:Number;
+		protected var cancelClick:Boolean;
 		
 		//--------------------------------------------------
 		// journey
@@ -130,6 +144,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			steps.length = 0;
 			container.removeAll();
 			
+			containerWidth = 0;
 			containerScrollRect.x = 0;
 			containerScrollRect.y = 0;
 			container.scrollRect = containerScrollRect;
@@ -156,6 +171,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 					step.visited = journey.isVisited(step.index);
 					step.selected = (journey.currentIndex == step.index);
 					
+					containerWidth = step.x + step.width;
 					container.add(step);
 					steps.push(step);
 					
@@ -171,6 +187,8 @@ package org.glomaker.mobileplayer.mvcs.views.components
 					i++;
 					x += STEP_STEP;
 				}
+				
+				containerWidth += H_PADDING;
 				
 				container.graphics.clear();
 				container.graphics.lineStyle(3, ColourPalette.JOURNEY_LIGHT_BLUE);
@@ -202,6 +220,30 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		}
 		
 		//--------------------------------------------------
+		// scrollerX
+		//--------------------------------------------------
+		
+		/**
+		 * @private
+		 * The x position of the container scroll rect. Required only for
+		 * TweenLite as setting the 'x' position of the scroll rect is not
+		 * enough, we need to reassign the rectangle every time.
+		 */
+		public function get scrollerX():Number
+		{
+			return containerScrollRect.x;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set scrollerX(value:Number):void
+		{
+			containerScrollRect.x = value;
+			container.scrollRect = containerScrollRect;
+		}
+
+		//--------------------------------------------------
 		// Overrides
 		//--------------------------------------------------
 		
@@ -210,6 +252,9 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		 */
 		override public function initialize():IGUIComponent
 		{
+			addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+			addEventListener(MouseEvent.CLICK, mouseClickHandler, true);
+			
 			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
 			
 			return super.initialize();
@@ -289,6 +334,76 @@ package org.glomaker.mobileplayer.mvcs.views.components
 				case JourneyEvent.VISITED_CHANGED:
 					updateSteps();
 					break;
+			}
+		}
+		
+		/**
+		 * Handle mouse down. Initializes scroll processing if required.
+		 */
+		protected function mouseDownHandler(event:MouseEvent):void
+		{
+			// do not scroll if not required
+			if (containerWidth <= containerScrollRect.width)
+				return;
+			
+			stage.addEventListener(MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler);
+			stage.addEventListener(MouseEvent.MOUSE_UP, stage_mouseUpHandler);
+			
+			TweenLite.killTweensOf(this);
+			mouseDownX = event.stageX;
+			lastMouseX = event.stageX;
+			cancelClick = false;
+		}
+		
+		/**
+		 * Handle mouse click. Stop event propagation if user scrolled the view.
+		 */
+		protected function mouseClickHandler(event:MouseEvent):void
+		{
+			if (cancelClick)
+			{
+				cancelClick = false;
+				event.stopImmediatePropagation();
+			}
+		}
+		
+		/**
+		 * Handle stage mouse move. Scroll view and check if next mouse click should be canceled.
+		 */
+		protected function stage_mouseMoveHandler(event:MouseEvent):void
+		{
+			var dx:Number = event.stageX - lastMouseX;
+			lastMouseX = event.stageX;
+			
+			if (Math.abs(event.stageX - mouseDownX) > MOVE_THRESHOLD)
+				cancelClick = true;
+			
+			if (containerScrollRect.x - dx >= 0 && containerScrollRect.right - dx <= containerWidth) 
+				containerScrollRect.offset(-dx, 0);
+			else
+				containerScrollRect.offset(-dx / 2, 0);
+			
+			container.scrollRect = containerScrollRect;
+		}
+		
+		/**
+		 * Handle stage mouse up. Remove stage mouse listeners and animate view back
+		 * if it has been scrolled over the limits.
+		 */
+		protected function stage_mouseUpHandler(event:MouseEvent):void
+		{
+			stage.removeEventListener(MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler);
+			stage.removeEventListener(MouseEvent.MOUSE_UP, stage_mouseUpHandler);
+			
+			var dx:Number = 0;
+			if (containerScrollRect.x < 0)
+				dx = -containerScrollRect.x;
+			else if (containerScrollRect.right > containerWidth)
+				dx = containerWidth - containerScrollRect.right;
+			
+			if (dx != 0)
+			{
+				TweenLite.to(this, 0.5, {"scrollerX": containerScrollRect.x + dx, "ease": Expo.easeOut});
 			}
 		}
 
