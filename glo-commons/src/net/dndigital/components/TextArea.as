@@ -25,14 +25,20 @@
 */
 package net.dndigital.components
 {
+	import com.greensock.TweenLite;
+	import com.greensock.easing.Cubic;
+	import com.greensock.easing.Expo;
+	
 	import eu.kiichigo.utils.log;
 	
-	import flash.display.Graphics;
 	import flash.display.LineScaleMode;
 	import flash.display.Shape;
-	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
 	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
+	import flash.utils.getTimer;
 
 	/**
 	 * TextArea component renders formatted and not formatted text.
@@ -71,6 +77,7 @@ package net.dndigital.components
 		 * @private
 		 */
 		protected const textField:TextField = new TextField;
+		protected const textFieldScrollRect:Rectangle = new Rectangle();
 		
 		/**
 		 * @private
@@ -82,6 +89,12 @@ package net.dndigital.components
 		 * @private 
 		 */		
 		protected var scrollIndicator:Shape = new Shape;
+		protected var scrollIndicatorMask:Shape = new Shape;
+		
+		// scroll management
+		protected var lastMouseY:Number;
+		protected var lastMouseY2:Number;
+		protected var lastMouseTime:int;
 		
 		
 		//--------------------------------------------------------------------------
@@ -102,7 +115,7 @@ package net.dndigital.components
 		/**
 		 * @private
 		 */
-		public function set htmlText(value:String):void { 
+		public function set htmlText(value:String):void {
 			textField.htmlText = value;
 			invalidateDisplay();
 		}
@@ -149,6 +162,23 @@ package net.dndigital.components
 			}
 		}
 		
+		/**
+		 * @private
+		 * Vertical text scroll position.
+		 */
+		public function get scrollerY():Number
+		{
+			return textFieldScrollRect.y;
+		}
+		/**
+		 * @private
+		 */
+		public function set scrollerY(value:Number):void
+		{
+			textFieldScrollRect.y = value;
+			textField.scrollRect = textFieldScrollRect;
+			updateScrollbarPosition();
+		}
 		
 		//--------------------------------------------------------------------------
 		//
@@ -163,14 +193,20 @@ package net.dndigital.components
 		{
 			super.createChildren();
 			
-			textField.multiline = true;
 			textField.defaultTextFormat = new TextFormat("Verdana", 14, 0x0B333C);
+			textField.selectable = false;
+			textField.multiline = true;
 			textField.wordWrap = true;
 			textField.border = false;
+			textField.autoSize = TextFieldAutoSize.LEFT;
+			textField.addEventListener(MouseEvent.MOUSE_DOWN, textField_mouseDownHandler);
 			addChild(textField);
+			
+			addChild(scrollIndicatorMask);
 			
 			scrollIndicator.visible = false;
 			scrollIndicator.cacheAsBitmap = true;
+			scrollIndicator.mask = scrollIndicatorMask;
 			addChild( scrollIndicator );
 		}
 		
@@ -181,38 +217,42 @@ package net.dndigital.components
 		{
 			super.resized(width, height);
 			
-			textField.width = width;
-			textField.height = height;
+			textFieldScrollRect.width = width;
+			textFieldScrollRect.height = height;
 			
-			//
-			scrollIndicator.x = width + 2;
+			textField.width = width;
+			textField.scrollRect = textFieldScrollRect;
 			
 			// scrollbar needs redrawing to reflect available scroll area
-			if( textField.maxScrollV > 1 )
+			scrollIndicatorMask.x = width + 2;
+			scrollIndicatorMask.graphics.clear();
+			scrollIndicatorMask.graphics.beginFill(0xFF0000);
+			scrollIndicatorMask.graphics.drawRect(0, 0, 5, height);
+			scrollIndicatorMask.graphics.endFill();
+			
+			scrollIndicator.x = scrollIndicatorMask.x;
+			if (textField.height > height && textField.textHeight > 0)
 			{
+				var scrollH:Number = height * height / textField.textHeight;
+				
+				scrollIndicator.graphics.clear();
+				scrollIndicator.graphics.beginFill( 0x5a6678, 0.8 );
+				scrollIndicator.graphics.drawRoundRectComplex( 0, 0, 5, scrollH, 3, 3, 3, 3  );
+				scrollIndicator.graphics.endFill();
+				
 				scrollIndicator.visible = true;
-				textField.addEventListener( Event.SCROLL, updateScrollbarPosition, false, 0, true );
-				
-				var visibleLines:uint = textField.bottomScrollV - ( textField.scrollV - 1 );
-				var scrollH:Number = height * visibleLines / textField.numLines;
-				
-				var g:Graphics = scrollIndicator.graphics;
-				g.clear();
-				g.beginFill( 0x5a6678, 0.3 );
-				g.drawRoundRectComplex( 0, 0, 5, scrollH, 3, 3, 3, 3  );
-				
 				updateScrollbarPosition();
-				
-			}else{
-				
+			}
+			else
+			{
 				scrollIndicator.visible = false;
-				textField.removeEventListener( Event.SCROLL, updateScrollbarPosition );
-				
 			}
 			
 			// draw border
 			graphics.clear();
-			if (_border) {
+			
+			if (_border)
+			{
 				graphics.lineStyle(1, 0xb7babc, 1, true, LineScaleMode.NONE);
 				graphics.drawRect(0, 0, width, height);
 			}
@@ -225,14 +265,95 @@ package net.dndigital.components
 		//--------------------------------------------------------------------------
 		
 		/**
-		 * Event handler - text field has been scrolled.
-		 * Can also be called as a normal function. 
-		 * @param e
+		 * Update scrollbar position.
 		 */		
-		protected function updateScrollbarPosition( e:Event = null ):void
+		protected function updateScrollbarPosition():void
 		{
-			// NB: scrollV and maxScrollV are 1-based indices
-			scrollIndicator.y = ( ( textField.scrollV - 1 ) / ( textField.maxScrollV - 1 ) ) * ( textField.height - scrollIndicator.height );
+			scrollIndicator.y = (textField.textHeight > 0 ? textFieldScrollRect.y * height / textField.textHeight : 0);
+		}
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Event Handlers
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * Handle mouse down on text field. Initialize scrolling if required.
+		 */
+		protected function textField_mouseDownHandler(event:MouseEvent):void
+		{
+			// do not scroll if not required
+			if (textField.textHeight <= textFieldScrollRect.height)
+				return;
+			
+			TweenLite.killTweensOf(this);
+			lastMouseY = event.stageY;
+			lastMouseY2 = lastMouseY;
+			lastMouseTime = getTimer();
+			
+			stage.addEventListener(MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler);
+			stage.addEventListener(MouseEvent.MOUSE_UP, stage_mouseUpHandler);
+		}
+		
+		/**
+		 * Handle stage mouse move when scrolling.
+		 */
+		protected function stage_mouseMoveHandler(event:MouseEvent):void
+		{
+			var dy:Number = event.stageY - lastMouseY;
+			lastMouseY2 = lastMouseY;
+			lastMouseY = event.stageY;
+			lastMouseTime = getTimer();
+			
+			if (textFieldScrollRect.y - dy >= 0 && textFieldScrollRect.bottom - dy <= textField.textHeight) 
+				scrollerY -= dy;
+			else
+				scrollerY -= (dy / 2);
+			
+			event.updateAfterEvent();
+		}
+		
+		/**
+		 * Handle stage mouse up. Finish scrolling and play any throw/rebound animations.
+		 */
+		protected function stage_mouseUpHandler(event:MouseEvent):void
+		{
+			stage.removeEventListener(MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler);
+			stage.removeEventListener(MouseEvent.MOUSE_UP, stage_mouseUpHandler);
+			
+			var dy:Number = 0;
+			var duration:Number = 0.5;
+			var ease:Function = Expo.easeOut;
+			
+			if (textFieldScrollRect.y < 0)
+			{
+				// rebound on top
+				dy = -textFieldScrollRect.y;
+			}
+			else if (textFieldScrollRect.bottom > textField.textHeight)
+			{
+				// rebound on botton
+				dy = textField.textHeight - textFieldScrollRect.bottom;
+			}
+			else
+			{
+				// throw
+				var time:Number = (getTimer() - lastMouseTime) / 1000;
+				var velocity:Number = (event.stageY - lastMouseY2) / time;
+				var distance:Number = 0.5 * velocity;
+				
+				if (distance < 0)
+					dy = Math.min(-distance, textField.textHeight - textFieldScrollRect.bottom);
+				else if (distance > 0)
+					dy = Math.max(-distance, -textFieldScrollRect.y);
+				
+				duration = dy / -distance;
+				ease = Cubic.easeOut;
+			}
+			
+			if (dy != 0)
+				TweenLite.to(this, duration, {"scrollerY": textFieldScrollRect.y + dy, "ease": ease});
 		}
 	}
 }
