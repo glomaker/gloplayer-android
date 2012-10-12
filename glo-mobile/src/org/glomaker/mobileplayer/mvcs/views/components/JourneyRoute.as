@@ -29,7 +29,6 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	import com.greensock.easing.Expo;
 	
 	import flash.display.GraphicsPathCommand;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
@@ -37,7 +36,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	import flash.text.TextFormat;
 	
 	import net.dndigital.components.Container;
-	import net.dndigital.components.GUIComponent;
+	import net.dndigital.components.EnhancedGUIComponent;
 	import net.dndigital.components.IGUIComponent;
 	
 	import org.glomaker.mobileplayer.mvcs.events.JourneyEvent;
@@ -53,7 +52,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	 * @author haykel
 	 * 
 	 */
-	public class JourneyRoute extends GUIComponent
+	public class JourneyRoute extends EnhancedGUIComponent
 	{
 		//--------------------------------------------------
 		// Constants
@@ -255,8 +254,6 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 			addEventListener(MouseEvent.CLICK, mouseClickHandler, true);
 			
-			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
-			
 			return super.initialize();
 		}
 		
@@ -405,30 +402,6 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			{
 				TweenLite.to(this, 0.5, {"scrollerX": containerScrollRect.x + dx, "ease": Expo.easeOut});
 			}
-		}
-
-		/**
-		 * Handles 'removed from stage' event to monitor when the component is added back
-		 * on stage to trigger validation which only works when the component is on stage.
-		 */
-		protected function removedFromStageHandler(event:Event):void
-		{
-			removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
-			addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
-		}
-		
-		/**
-		 * Handles 'added to stage' event to trigger validation of items invalidated while
-		 * the component was not on stage.
-		 */
-		protected function addedToStageHandler(event:Event):void
-		{
-			removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
-			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
-			
-			validateData();
-			validateDisplay();
-			validateState();
 		}
 	}
 }

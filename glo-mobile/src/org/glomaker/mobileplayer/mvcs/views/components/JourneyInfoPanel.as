@@ -29,7 +29,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	
-	import net.dndigital.components.GUIComponent;
+	import net.dndigital.components.EnhancedGUIComponent;
 	
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
 	import org.glomaker.mobileplayer.mvcs.utils.FontUtil;
@@ -41,7 +41,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	 * @author haykel
 	 * 
 	 */
-	public class JourneyInfoPanel extends GUIComponent
+	public class JourneyInfoPanel extends EnhancedGUIComponent
 	{
 		//--------------------------------------------------
 		// Constants

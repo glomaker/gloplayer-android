@@ -31,7 +31,6 @@ package org.glomaker.mobileplayer.mvcs.views
 	import flash.desktop.NativeApplication;
 	import flash.desktop.SystemIdleMode;
 	import flash.display.GradientType;
-	import flash.events.Event;
 	import flash.events.GeolocationEvent;
 	import flash.events.MouseEvent;
 	import flash.events.StatusEvent;
@@ -39,8 +38,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import flash.geom.Rectangle;
 	import flash.sensors.Geolocation;
 	
-	import net.dndigital.components.GUIComponent;
-	import net.dndigital.components.IGUIComponent;
+	import net.dndigital.components.EnhancedGUIComponent;
 	
 	import org.glomaker.mobileplayer.assets.JourneyDetails;
 	import org.glomaker.mobileplayer.assets.LaunchButton;
@@ -63,7 +61,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	 * @author haykel
 	 * 
 	 */
-	public class JourneyManager extends GUIComponent implements IGloView
+	public class JourneyManager extends EnhancedGUIComponent implements IGloView
 	{
 		//--------------------------------------------------
 		// Constants
@@ -274,16 +272,6 @@ package org.glomaker.mobileplayer.mvcs.views
 		/**
 		 * @inheritDoc
 		 */
-		override public function initialize():IGUIComponent
-		{
-			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
-			
-			return super.initialize();
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
 		override protected function commited():void
 		{
 			super.commited();
@@ -468,30 +456,6 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			azimuth = Math.round(event.azimuth);
 			updateDirection();
-		}
-		
-		/**
-		 * Handles 'removed from stage' event to monitor when the component is added back
-		 * on stage to trigger validation which only works when the component is on stage.
-		 */
-		protected function removedFromStageHandler(event:Event):void
-		{
-			removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
-			addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
-		}
-		
-		/**
-		 * Handles 'added to stage' event to trigger validation of items invalidated while
-		 * the component was not on stage.
-		 */
-		protected function addedToStageHandler(event:Event):void
-		{
-			removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
-			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
-			
-			validateData();
-			validateDisplay();
-			validateState();
 		}
 	}
 }

@@ -25,13 +25,11 @@
 */
 package org.glomaker.mobileplayer.mvcs.views.components
 {
-	import flash.events.Event;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	
-	import net.dndigital.components.GUIComponent;
-	import net.dndigital.components.IGUIComponent;
+	import net.dndigital.components.EnhancedGUIComponent;
 	
 	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
 	import org.glomaker.mobileplayer.mvcs.utils.FontUtil;
@@ -42,7 +40,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	 * @author haykel
 	 * 
 	 */
-	public class JourneyStep extends GUIComponent
+	public class JourneyStep extends EnhancedGUIComponent
 	{
 		//--------------------------------------------------
 		// Instance variables
@@ -137,13 +135,6 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		// Overrides
 		//--------------------------------------------------
 		
-		override public function initialize():IGUIComponent
-		{
-			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
-			
-			return super.initialize();
-		}
-		
 		override protected function commited():void
 		{
 			super.commited();
@@ -207,22 +198,6 @@ package org.glomaker.mobileplayer.mvcs.views.components
 				graphics.endFill();
 				graphics.lineStyle();
 			}
-		}
-		
-		protected function removedFromStageHandler(event:Event):void
-		{
-			removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
-			addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
-		}
-		
-		protected function addedToStageHandler(event:Event):void
-		{
-			removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
-			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
-			
-			validateData();
-			validateDisplay();
-			validateState();
 		}
 	}
 }
