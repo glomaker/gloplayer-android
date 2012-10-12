@@ -84,8 +84,8 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected var targetPosition:GeoPosition;
 
 		protected var compass:Compass;
-		protected var azimuth:Number = 0;
-		protected var targetAzimuth:Number = 0;
+		protected var azimuth:Number;
+		protected var targetAzimuth:Number;
 
 		protected var systemIdleMode:String;
 		
@@ -221,6 +221,8 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function addUpdateListeners():void
 		{
+			resetCompass();
+			
 			geo.addEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
 			
 			if (compass)
@@ -239,6 +241,8 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function removeUpdateListeners():void
 		{
+			resetCompass();
+			
 			geo.removeEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
 			
 			if (compass)
@@ -247,22 +251,28 @@ package org.glomaker.mobileplayer.mvcs.views
 				compass.removeEventListener(CompassChangedEvent.MAGNETIC_FIELD_CHANGED, compass_magneticFieldChangedHandler);
 			}
 			
-			azimuth = 0;
-			targetAzimuth = 0;
-			journeyDetails.distance = null;
-			journeyDetails.direction = 0;
-			
 			// reset idle mode
 			NativeApplication.nativeApplication.systemIdleMode = systemIdleMode;
 		}
 		
+		/**
+		 * Resets compass data and display.
+		 */
+		protected function resetCompass():void
+		{
+			azimuth = NaN;
+			targetAzimuth = NaN;
+			journeyDetails.distance = null;
+			journeyDetails.direction = 0;
+			
+		}
 		/**
 		 * Updates the compass direction based on current device and target azimuth values.
 		 * 
 		 */
 		protected function updateDirection():void
 		{
-			journeyDetails.direction = targetAzimuth - azimuth;
+			journeyDetails.direction = (isNaN(azimuth) || isNaN(targetAzimuth)) ? 0 : targetAzimuth - azimuth;
 		}
 
 		//--------------------------------------------------
@@ -293,9 +303,8 @@ package org.glomaker.mobileplayer.mvcs.views
 					locationInfo.text = settings ? settings.location : "";
 					journeyDetails.index = settings ? settings.index : 0;
 					journeyDetails.compassVisible = targetPosition != null;
-					journeyDetails.direction = 0;
-					journeyDetails.distance = null;
 					
+					resetCompass();
 					updateGPS();
 				}
 				
