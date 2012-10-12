@@ -104,19 +104,19 @@ package org.glomaker.mobileplayer.mvcs.views
 		override public function onRegister():void
 		{
 			super.onRegister();			
-			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_MENU, showMenu);
-			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, showPlayer);
-			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_JOURNEY_MANAGER, showJourneyManager);
-			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_QR_CODE_READER, showQRCodeReader);
-			eventMap.mapListener(eventDispatcher, ApplicationEvent.HIDE_QR_CODE_READER, hideQRCodeReader);
-			eventMap.mapListener(eventDispatcher, ApplicationEvent.ENTER_FULL_SCREEN, fullScreen);
-			eventMap.mapListener(eventDispatcher, ApplicationEvent.LEAVE_FULL_SCREEN, fullScreen);
-			eventMap.mapListener(eventDispatcher, NotificationEvent.NOTIFICATION, notify);
-			eventMap.mapListener(eventDispatcher, NotificationEvent.NATIVE_NOTIFICATION, nativeNotify);
-			eventMap.mapListener(eventDispatcher, NotificationEvent.CANCEL_NATIVE_NOTIFICATION, cancelNativeNotification);
-			eventMap.mapListener(eventDispatcher, LoadProjectEvent.SHOW, clear);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_MENU, showMenu, ApplicationEvent);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_PLAYER, showPlayer, ApplicationEvent);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_JOURNEY_MANAGER, showJourneyManager, ApplicationEvent);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.SHOW_QR_CODE_READER, showQRCodeReader, ApplicationEvent);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.HIDE_QR_CODE_READER, hideQRCodeReader, ApplicationEvent);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.ENTER_FULL_SCREEN, fullScreen, ApplicationEvent);
+			eventMap.mapListener(eventDispatcher, ApplicationEvent.LEAVE_FULL_SCREEN, fullScreen, ApplicationEvent);
+			eventMap.mapListener(eventDispatcher, NotificationEvent.NOTIFICATION, notify, NotificationEvent);
+			eventMap.mapListener(eventDispatcher, NotificationEvent.NATIVE_NOTIFICATION, nativeNotify, NotificationEvent);
+			eventMap.mapListener(eventDispatcher, NotificationEvent.CANCEL_NATIVE_NOTIFICATION, cancelNativeNotification, NotificationEvent);
+			eventMap.mapListener(eventDispatcher, LoadProjectEvent.SHOW, clear, LoadProjectEvent);
 			
-			eventMap.mapListener(view, ApplicationEvent.INITIALIZED, showMenu);
+			eventMap.mapListener(view, ApplicationEvent.INITIALIZED, showMenu, ApplicationEvent);
 			
 			view.stage.addEventListener(Event.RESIZE, stageResized);
 		}

@@ -30,6 +30,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import flash.events.Event;
 	
 	import org.glomaker.mobileplayer.mvcs.events.ApplicationEvent;
+	import org.glomaker.mobileplayer.mvcs.events.BusyIndicatorEvent;
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
 	import org.glomaker.mobileplayer.mvcs.events.GloModelEvent;
 	import org.glomaker.mobileplayer.mvcs.events.ProjectEvent;
@@ -84,7 +85,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.mapListener(view, ApplicationEvent.SHOW_QR_CODE_READER, dispatch);
 			eventMap.mapListener(view, ApplicationEvent.SHOW_JOURNEY_MANAGER, handleShowJourneyManager);
 			
-			eventMap.mapListener(view, GloMenuEvent.LIST_ITEMS, dispatch);
+			eventMap.mapListener(view, GloMenuEvent.LIST_ITEMS, handleListItems);
 			
 			updateView();
 		}
@@ -105,7 +106,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			eventMap.unmapListener(view, ApplicationEvent.SHOW_QR_CODE_READER, dispatch);
 			eventMap.unmapListener(view, ApplicationEvent.SHOW_JOURNEY_MANAGER, handleShowJourneyManager);
 			
-			eventMap.unmapListener(view, GloMenuEvent.LIST_ITEMS, dispatch);
+			eventMap.unmapListener(view, GloMenuEvent.LIST_ITEMS, handleListItems);
 		}
 		
 		/**
@@ -125,6 +126,12 @@ package org.glomaker.mobileplayer.mvcs.views
 			if (next)
 				model.glo = next;
 			
+			dispatch(event);
+		}
+		
+		protected function handleListItems(event:GloMenuEvent):void
+		{
+			dispatch(new BusyIndicatorEvent(BusyIndicatorEvent.SHOW));
 			dispatch(event);
 		}
 	}

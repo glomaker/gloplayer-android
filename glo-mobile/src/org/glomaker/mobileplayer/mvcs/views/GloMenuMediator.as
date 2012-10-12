@@ -25,6 +25,7 @@
 */
 package org.glomaker.mobileplayer.mvcs.views
 {
+	import org.glomaker.mobileplayer.mvcs.events.BusyIndicatorEvent;
 	import org.glomaker.mobileplayer.mvcs.events.GloMenuEvent;
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -97,6 +98,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected function itemsListed(event:GloMenuEvent):void
 		{
 			view.items = event.items;
+			dispatch(new BusyIndicatorEvent(BusyIndicatorEvent.HIDE));
 		}
 	}
 }
