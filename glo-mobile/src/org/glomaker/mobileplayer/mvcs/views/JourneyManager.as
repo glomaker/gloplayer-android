@@ -264,6 +264,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			targetAzimuth = NaN;
 			journeyDetails.distance = null;
 			journeyDetails.direction = 0;
+			journeyDetails.pps = 0;
 			
 		}
 		/**
@@ -328,6 +329,9 @@ package org.glomaker.mobileplayer.mvcs.views
 			locationInfo.title = "LOCATION";
 			addChild(locationInfo);
 			
+			var compass:Compass = new Compass();
+			journeyDetails.pointerVisible = compass.isSupported();
+			compass = null;
 			addChild(journeyDetails);
 			
 			launchButton.addEventListener(MouseEvent.CLICK, launchButton_clickHandler);
@@ -427,14 +431,27 @@ package org.glomaker.mobileplayer.mvcs.views
 			{
 				var distance:Number = currentPosition.distance(targetPosition);
 				var formatted:String;
-				if (distance >= 100000)
+				var pps:Number = 1 / 2;
+				
+				if (distance >= 1000000)
+					formatted = ">999km";
+				else if (distance >= 100000)
 					formatted = Math.ceil(distance / 1000).toString() + "km";
 				else if (distance >= 1000)
 					formatted = (Math.ceil(distance / 100) / 10).toString() + "km";
 				else
+				{
 					formatted = distance.toString() + "m";
+					if (distance > 50)
+						pps = 1;
+					else if (distance > 20)
+						pps = 2;
+					else
+						pps = 3;
+				}
 				
 				journeyDetails.distance = formatted;
+				journeyDetails.pps = pps;
 				
 				targetAzimuth = currentPosition.azimuth(targetPosition);
 				updateDirection();
