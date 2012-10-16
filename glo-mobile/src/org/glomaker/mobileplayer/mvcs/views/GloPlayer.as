@@ -52,6 +52,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import org.glomaker.mobileplayer.mvcs.views.glocomponents.IFullscreenable;
 	import org.glomaker.mobileplayer.mvcs.views.glocomponents.IGloComponent;
 	import org.glomaker.mobileplayer.mvcs.views.glocomponents.Image;
+	import org.glomaker.mobileplayer.mvcs.views.glocomponents.Panorama;
 	import org.glomaker.mobileplayer.mvcs.views.glocomponents.Rectangle;
 	import org.glomaker.mobileplayer.mvcs.views.glocomponents.TextArea;
 	import org.glomaker.mobileplayer.mvcs.views.glocomponents.VideoPlayer;
@@ -561,6 +562,9 @@ package org.glomaker.mobileplayer.mvcs.views
 						break;
 					case "accessviews":
 						container.addChild(component(new AccessViews, page.components[i]));
+						break;
+					case "panorama":
+						container.addChild(component(new Panorama, page.components[i]));
 						break;
 					
 					/* DISABLED in this release
