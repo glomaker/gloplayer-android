@@ -40,6 +40,10 @@ package org.glomaker.mobileplayer.mvcs.views
 	
 	import net.dndigital.components.EnhancedGUIComponent;
 	
+	import org.glomaker.mobileplayer.assets.IconCompass;
+	import org.glomaker.mobileplayer.assets.IconCompassDisabled;
+	import org.glomaker.mobileplayer.assets.IconGPS;
+	import org.glomaker.mobileplayer.assets.IconGPSDisabled;
 	import org.glomaker.mobileplayer.assets.JourneyDetails;
 	import org.glomaker.mobileplayer.assets.LaunchButton;
 	import org.glomaker.mobileplayer.mvcs.events.JourneyEvent;
@@ -94,6 +98,10 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected var locationInfo:JourneyInfoPanel = new JourneyInfoPanel();
 		protected var journeyDetails:JourneyDetails = new JourneyDetails();
 		protected var launchButton:LaunchButton = new LaunchButton();
+		protected var iconCompass:IconCompass = new IconCompass();
+		protected var iconCompassDisabled:IconCompassDisabled = new IconCompassDisabled();
+		protected var iconGPS:IconGPS = new IconGPS();
+		protected var iconGPSDisabled:IconGPSDisabled = new IconGPSDisabled();
 		
 		//--------------------------------------------------
 		// glo
@@ -224,11 +232,15 @@ package org.glomaker.mobileplayer.mvcs.views
 			resetCompass();
 			
 			geo.addEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+			iconGPS.visible = true;
+			iconGPSDisabled.visible = false;
 			
 			if (compass)
 			{
 				compass.register();
 				compass.addEventListener(CompassChangedEvent.MAGNETIC_FIELD_CHANGED, compass_magneticFieldChangedHandler);
+				iconCompass.visible = true;
+				iconCompassDisabled.visible = false;
 			}
 			
 			// keep awake while tracking
@@ -244,11 +256,15 @@ package org.glomaker.mobileplayer.mvcs.views
 			resetCompass();
 			
 			geo.removeEventListener(GeolocationEvent.UPDATE, geo_updateHandler);
+			iconGPS.visible = false;
+			iconGPSDisabled.visible = true;
 			
 			if (compass)
 			{
 				compass.deregister();
 				compass.removeEventListener(CompassChangedEvent.MAGNETIC_FIELD_CHANGED, compass_magneticFieldChangedHandler);
+				iconCompass.visible = false;
+				iconCompassDisabled.visible = true;
 			}
 			
 			// reset idle mode
@@ -329,6 +345,16 @@ package org.glomaker.mobileplayer.mvcs.views
 			locationInfo.title = "LOCATION";
 			addChild(locationInfo);
 			
+			iconCompass.visible = false;
+			addChild(iconCompass);
+			
+			addChild(iconCompassDisabled);
+			
+			iconGPS.visible = false;
+			addChild(iconGPS);
+			
+			addChild(iconGPSDisabled);
+			
 			var compass:Compass = new Compass();
 			journeyDetails.pointerVisible = compass.isSupported();
 			compass = null;
@@ -355,6 +381,17 @@ package org.glomaker.mobileplayer.mvcs.views
 			locationInfo.y = route.y + route.height;
 			locationInfo.width = width;
 			locationInfo.height = JourneyInfoPanel.HEIGHT;
+			
+			iconCompass.width = iconCompass.height =
+				iconCompassDisabled.width = iconCompassDisabled.height =
+				iconGPS.width = iconGPS.height =
+				iconGPSDisabled.width = iconGPSDisabled.height = JourneyInfoPanel.HEIGHT - 2*JourneyInfoPanel.PADDING;
+			
+			iconCompass.x = iconCompassDisabled.x = width - JourneyInfoPanel.PADDING - iconCompass.width;
+			iconGPS.x = iconGPSDisabled.x = iconCompass.x - JourneyInfoPanel.PADDING - iconGPS.width;
+			
+			iconCompass.y = iconCompassDisabled.y =
+				iconGPS.y = iconGPSDisabled.y = locationInfo.y + JourneyInfoPanel.PADDING;
 			
 			// main area
 			
