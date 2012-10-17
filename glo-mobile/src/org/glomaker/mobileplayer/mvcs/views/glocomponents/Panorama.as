@@ -162,14 +162,12 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		{
 			mapProperty("images");
 			
-			compass = new Compass();
-			if (compass.isSupported())
+			if (Compass.isSupported())
 			{
+				compass = new Compass();
 				compass.register();
 				compass.addEventListener(CompassChangedEvent.MAGNETIC_FIELD_CHANGED, handleCompassUpdate);
 			}
-			else
-				compass = null;
 			
 			return super.initialize();
 		}
@@ -307,14 +305,12 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		 */
 		protected function handleCompassUpdate(event:CompassChangedEvent):void
 		{
-			trace(Math.round(event.azimuth), Math.round(event.pitch), Math.round(event.roll));
-			
 			if (initialized && images && images.length > 0)
 			{
 				var arc:Number = 360 / images.length;
 				var arc2:Number = arc / 2;
 				
-				var h:Number = event.azimuth;
+				var h:Number = (360 + Math.round(event.azimuthVert)) % 360;
 				var picIndex:int = -1;
 				
 				if (h >= 360-arc2 || h < arc2)

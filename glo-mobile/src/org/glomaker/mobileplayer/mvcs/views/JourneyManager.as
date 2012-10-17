@@ -205,9 +205,8 @@ package org.glomaker.mobileplayer.mvcs.views
 				geo = new Geolocation();
 				geo.setRequestedUpdateInterval(1000);
 				
-				compass = new Compass();
-				if (!compass.isSupported())
-					compass = null;
+				if (Compass.isSupported())
+					compass = new Compass();
 
 				geo.addEventListener(StatusEvent.STATUS, geo_statusHandler);
 				if (!geo.muted)
@@ -355,9 +354,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			
 			addChild(iconGPSDisabled);
 			
-			var compass:Compass = new Compass();
-			journeyDetails.pointerVisible = compass.isSupported();
-			compass = null;
+			journeyDetails.pointerVisible = Compass.isSupported();
 			addChild(journeyDetails);
 			
 			launchButton.addEventListener(MouseEvent.CLICK, launchButton_clickHandler);
@@ -517,7 +514,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function compass_magneticFieldChangedHandler(event:CompassChangedEvent):void
 		{
-			azimuth = Math.round(event.azimuth);
+			azimuth = (360 + Math.round(event.azimuthFlat)) % 360;
 			updateDirection();
 		}
 	}
