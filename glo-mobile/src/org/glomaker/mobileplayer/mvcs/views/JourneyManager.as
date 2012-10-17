@@ -31,6 +31,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import flash.desktop.NativeApplication;
 	import flash.desktop.SystemIdleMode;
 	import flash.display.GradientType;
+	import flash.display.Sprite;
 	import flash.events.GeolocationEvent;
 	import flash.events.MouseEvent;
 	import flash.events.StatusEvent;
@@ -98,8 +99,12 @@ package org.glomaker.mobileplayer.mvcs.views
 		protected var locationInfo:JourneyInfoPanel = new JourneyInfoPanel();
 		protected var journeyDetails:JourneyDetails = new JourneyDetails();
 		protected var launchButton:LaunchButton = new LaunchButton();
+		
+		protected var iconCompassContainer:Sprite = new Sprite();
 		protected var iconCompass:IconCompass = new IconCompass();
 		protected var iconCompassDisabled:IconCompassDisabled = new IconCompassDisabled();
+		
+		protected var iconGPSContainer:Sprite = new Sprite();
 		protected var iconGPS:IconGPS = new IconGPS();
 		protected var iconGPSDisabled:IconGPSDisabled = new IconGPSDisabled();
 		
@@ -316,6 +321,8 @@ package org.glomaker.mobileplayer.mvcs.views
 					gloChanged = false;
 					var settings:JourneySettings = glo ? glo.journeySettings : null;
 					targetPosition = settings && settings.hasGPS ? settings.gpsPosition : null;
+					iconCompassContainer.visible = (targetPosition != null);
+					iconGPSContainer.visible = (targetPosition != null);
 					locationInfo.text = settings ? settings.location : "";
 					journeyDetails.index = settings ? settings.index : 0;
 					journeyDetails.compassVisible = targetPosition != null;
@@ -345,14 +352,18 @@ package org.glomaker.mobileplayer.mvcs.views
 			addChild(locationInfo);
 			
 			iconCompass.visible = false;
-			addChild(iconCompass);
+			iconCompassContainer.addChild(iconCompass);
+			iconCompassContainer.addChild(iconCompassDisabled);
 			
-			addChild(iconCompassDisabled);
+			iconCompassContainer.visible = false;
+			addChild(iconCompassContainer);
 			
 			iconGPS.visible = false;
-			addChild(iconGPS);
+			iconGPSContainer.addChild(iconGPS);
+			iconGPSContainer.addChild(iconGPSDisabled);
 			
-			addChild(iconGPSDisabled);
+			iconGPSContainer.visible = false;
+			addChild(iconGPSContainer);
 			
 			journeyDetails.pointerVisible = Compass.isSupported();
 			addChild(journeyDetails);
@@ -384,11 +395,10 @@ package org.glomaker.mobileplayer.mvcs.views
 				iconGPS.width = iconGPS.height =
 				iconGPSDisabled.width = iconGPSDisabled.height = JourneyInfoPanel.HEIGHT - 2*JourneyInfoPanel.PADDING;
 			
-			iconCompass.x = iconCompassDisabled.x = width - JourneyInfoPanel.PADDING - iconCompass.width;
-			iconGPS.x = iconGPSDisabled.x = iconCompass.x - JourneyInfoPanel.PADDING - iconGPS.width;
+			iconCompassContainer.x = width - JourneyInfoPanel.PADDING - iconCompass.width;
+			iconGPSContainer.x = iconCompassContainer.x - JourneyInfoPanel.PADDING - iconGPS.width;
 			
-			iconCompass.y = iconCompassDisabled.y =
-				iconGPS.y = iconGPSDisabled.y = locationInfo.y + JourneyInfoPanel.PADDING;
+			iconCompassContainer.y = iconGPSContainer.y = locationInfo.y + JourneyInfoPanel.PADDING;
 			
 			// main area
 			
