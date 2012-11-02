@@ -36,6 +36,7 @@ package org.glomaker.mobileplayer.mvcs.views
 	import org.glomaker.mobileplayer.mvcs.events.LoadProjectEvent;
 	import org.glomaker.mobileplayer.mvcs.events.NotificationEvent;
 	import org.glomaker.mobileplayer.mvcs.models.GloModel;
+	import org.glomaker.mobileplayer.mvcs.services.QRReaderService;
 	import org.glomaker.mobileplayer.mvcs.views.components.Notification;
 	import org.robotlegs.mvcs.Mediator;
 	
@@ -71,6 +72,12 @@ package org.glomaker.mobileplayer.mvcs.views
 		 * @private
 		 */
 		public var model:GloModel;
+		
+		[Inject]
+		/**
+		 * @private
+		 */
+		public var qrReaderService:QRReaderService;
 		
 		[Inject]
 		/**
@@ -152,6 +159,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function showPlayer(event:Event = null):void
 		{
+			hideQRCodeReader();
 			view.showPlayer();
 		}
 		
@@ -170,7 +178,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function showQRCodeReader(event:Event = null):void
 		{
-			view.showQRCodeReader();
+			qrReaderService.show();
 		}
 		
 		/**
@@ -179,7 +187,7 @@ package org.glomaker.mobileplayer.mvcs.views
 		 */
 		protected function hideQRCodeReader(event:Event = null):void
 		{
-			view.hideQRCodeReader();
+			qrReaderService.hide();
 		}
 		
 		/**

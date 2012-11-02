@@ -184,6 +184,7 @@
 							<category android:name="android.intent.category.LAUNCHER"/>
 						</intent-filter>
 					</activity>
+					<activity android:name="net.dndigital.ane.gloqrreader.QRScanActivity"/>
 					<service android:name="com.juankpro.ane.localnotif.LocalNotificationIntentService"/>
 			    	<receiver android:name="com.juankpro.ane.localnotif.AlarmIntentService" />
 				</application>
@@ -210,5 +211,6 @@
 	<extensions>
 		<extensionID>com.juankpro.ane.LocalNotification</extensionID>
 		<extensionID>com.christiancantrell.compass</extensionID>
-	</extensions>
+	<extensionID>net.dndigital.ane.gloqrreader</extensionID>
+    </extensions>
 </application>

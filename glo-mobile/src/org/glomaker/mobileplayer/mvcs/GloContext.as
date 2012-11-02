@@ -67,11 +67,12 @@ package org.glomaker.mobileplayer.mvcs
 			persistenceManager.load();
 			
 			// Singletons
+			injector.mapSingletonOf(GloModel, GloModel);
 			injector.mapSingletonOf(IProjectService, ProjectService);
 			injector.mapSingletonOf(IFileService, AppDirFileService, "appFileService");
 			injector.mapSingletonOf(IFileService, DocumentsDirFileService, "docFileService");
 			injector.mapSingletonOf(PrepareGLOsService, PrepareGLOsService);
-			injector.mapSingletonOf(GloModel, GloModel);
+			injector.mapSingletonOf(QRReaderService, QRReaderService);
 			injector.mapValue(PersistenceManager, persistenceManager);
 			
 			// Controllers and Commands
@@ -97,7 +98,6 @@ package org.glomaker.mobileplayer.mvcs
 			mediatorMap.mapView(GloMenu, GloMenuMediator);
 			mediatorMap.mapView(GloPlayer, GloPlayerMediator);
 			mediatorMap.mapView(JourneyManager, JourneyManagerMediator);
-			mediatorMap.mapView(QRCodeReader, QRCodeReaderMediator);
 			mediatorMap.mapView(GloControls, GloControlsMediator);
 			mediatorMap.mapView(PageNumberDisplay, PageNumberDisplayMediator);
 			mediatorMap.mapView(ProgressBar, ProgressBarMediator);

@@ -28,8 +28,9 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 {
 	import flash.sensors.Geolocation;
 	
+	import net.dndigital.ane.gloqrreader.GLOQRReader;
+	
 	import org.glomaker.mobileplayer.mvcs.utils.GeoPosition;
-	import org.glomaker.mobileplayer.mvcs.views.QRCodeReader;
 
 	/**
 	 * Stores a GLO's journey settings. 
@@ -50,7 +51,7 @@ package org.glomaker.mobileplayer.mvcs.models.vo
 		
 		public function get hasQRCode():Boolean
 		{
-			return (QRCodeReader.isSupported && qrEnabled && qrCode);
+			return (GLOQRReader.isSupported() && qrEnabled && qrCode);
 		}
 		
 		public function get hasGPS():Boolean
