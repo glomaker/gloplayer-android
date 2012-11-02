@@ -280,7 +280,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 			
 			addChild(container);
 			
-			titleDisplay.defaultTextFormat = new TextFormat(FontUtil.FONT_REGULAR, 10, ColourPalette.JOURNEY_LIGHT_BLUE);
+			titleDisplay.defaultTextFormat = new TextFormat(FontUtil.FONT_REGULAR, 10, 0xffffff);
 			titleDisplay.text = "ROUTE";
 			titleDisplay.embedFonts = true;
 			titleDisplay.multiline = false;

@@ -348,7 +348,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			route.addEventListener(MouseEvent.CLICK, route_clickHandler);
 			addChild(route);
 			
-			locationInfo.title = "LOCATION";
+			locationInfo.title = "GO TO";
 			addChild(locationInfo);
 			
 			iconCompass.visible = false;

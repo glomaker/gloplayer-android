@@ -152,7 +152,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		{
 			super.createChildren();
 			
-			titleDisplay.defaultTextFormat = new TextFormat(FontUtil.FONT_REGULAR, 10, ColourPalette.JOURNEY_LIGHT_BLUE);
+			titleDisplay.defaultTextFormat = new TextFormat(FontUtil.FONT_REGULAR, 10, 0xffffff);
 			titleDisplay.embedFonts = true;
 			titleDisplay.multiline = false;
 			titleDisplay.wordWrap = false;
