@@ -32,6 +32,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 	
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
+	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.net.URLRequest;
 	import flash.text.TextFormat;
@@ -54,6 +55,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		// Instance variables
 		//--------------------------------------------------
 		
+		protected var myMask:Shape;
 		protected var headingLabel:Label;
 		protected var image1:Loader;
 		protected var image2:Loader;
@@ -63,6 +65,8 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		protected var compass:Compass;
 		protected var imageLoadQueue:Array;
 		protected var lastIndex:int = -1;
+		protected var lastHeading:Number;
+		protected var direction:int = 1;
 		
 		//--------------------------------------------------
 		// images
@@ -180,6 +184,13 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		{
 			super.createChildren();
 			
+			if (!myMask)
+			{
+				myMask = new Shape();
+				addChild(myMask);
+				this.mask = myMask;
+			}
+			
 			if( !headingLabel )
 			{
 				headingLabel = new Label();
@@ -247,6 +258,11 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		{
 			super.resized(width, height);
 			
+			myMask.graphics.clear();
+			myMask.graphics.beginFill(0xff0000);
+			myMask.graphics.drawRect( 0, 0, width, height);
+			myMask.graphics.endFill();
+			
 			graphics.clear();
 			graphics.beginFill(0xcecece);
 			graphics.drawRect( 0, 0, width, height);
@@ -311,6 +327,9 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 				var arc2:Number = arc / 2;
 				
 				var h:Number = (360 + Math.round(event.azimuthVert)) % 360;
+				direction = ((!isNaN(lastHeading) && (h < lastHeading || (lastHeading < 5 && h > 355))) ? -1 : 1);
+				lastHeading = h;
+				
 				var picIndex:int = -1;
 				
 				if (h >= 360-arc2 || h < arc2)
@@ -353,7 +372,10 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 			image.alpha = 0;
 			image.visible = true;
 			layoutImage(image);
-			TweenLite.to( image, 0.5, { alpha: 1 } );
+			
+			var targetX:Number = image.x;
+			image.x += (direction * image.scaleX * image.width / images.length);
+			TweenLite.to( image, 0.5, { alpha: 1, x: targetX } );
 		}
 	}
 }
