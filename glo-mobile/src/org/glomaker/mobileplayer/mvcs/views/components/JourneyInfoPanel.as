@@ -31,7 +31,6 @@ package org.glomaker.mobileplayer.mvcs.views.components
 	
 	import net.dndigital.components.EnhancedGUIComponent;
 	
-	import org.glomaker.mobileplayer.mvcs.models.enum.ColourPalette;
 	import org.glomaker.mobileplayer.mvcs.utils.FontUtil;
 	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 	
@@ -54,39 +53,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		// Instance variables
 		//--------------------------------------------------
 		
-		protected var titleDisplay:TextField = new TextField();
 		protected var textDisplay:TextField = new TextField();
-		
-		//--------------------------------------------------
-		// title
-		//--------------------------------------------------
-		
-		private var _title:String = "";
-		private var titleChanged:Boolean;
-
-		/**
-		 * Title.
-		 */
-		public function get title():String
-		{
-			return _title;
-		}
-
-		/**
-		 * @private
-		 */
-		public function set title(value:String):void
-		{
-			value = value ? value : "";
-			
-			if (value == _title)
-				return;
-			
-			_title = value;
-			
-			titleChanged = true;
-			invalidateData();
-		}
 		
 		//--------------------------------------------------
 		// text
@@ -130,13 +97,6 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		{
 			super.commited();
 			
-			if (titleChanged)
-			{
-				titleChanged = false;
-				titleDisplay.text = _title;
-				invalidateDisplay();
-			}
-			
 			if (textChanged)
 			{
 				textChanged = false;
@@ -152,15 +112,7 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		{
 			super.createChildren();
 			
-			titleDisplay.defaultTextFormat = new TextFormat(FontUtil.FONT_REGULAR, 10, 0xffffff);
-			titleDisplay.embedFonts = true;
-			titleDisplay.multiline = false;
-			titleDisplay.wordWrap = false;
-			titleDisplay.selectable = false;
-			titleDisplay.autoSize = TextFieldAutoSize.LEFT;
-			addChild(titleDisplay);
-			
-			textDisplay.defaultTextFormat = new TextFormat(FontUtil.FONT_BOLD, 20, 0xffffff);
+			textDisplay.defaultTextFormat = new TextFormat(FontUtil.FONT_BOLD, 28, 0xffffff);
 			textDisplay.embedFonts = true;
 			textDisplay.multiline = false;
 			textDisplay.wordWrap = false;
@@ -176,11 +128,8 @@ package org.glomaker.mobileplayer.mvcs.views.components
 		{
 			super.resized(width, height);
 			
-			titleDisplay.x = PADDING;
-			titleDisplay.y = (height - titleDisplay.textHeight - textDisplay.textHeight) / 2;
-			
 			textDisplay.x = PADDING;
-			textDisplay.y = titleDisplay.y + titleDisplay.textHeight;
+			textDisplay.y = (height - textDisplay.textHeight) / 2;
 			
 			graphics.clear();
 			graphics.beginFill(0x000000);
