@@ -243,11 +243,15 @@ package org.glomaker.mobileplayer.mvcs.views
 		{
 			super.resized(width, height);
 
+			// On non-journey GLOs remove the QR and Journey buttons
+			var playerWithoutJourney:Boolean = (state == PLAYER && !hasJourney);
+			
 			// sizes
 			var gap:Number = ScreenMaths.mmToPixels(0.5);
 			var minButtons:Number = 3 * height + 4 * gap;
 			var navWidth:Number = Math.min(height, (width - minButtons) / 2);
 			var buttonWidth:Number = (width - 2 * navWidth - 4 * gap) / 3;
+			var menuWidth:Number = playerWithoutJourney ? (width - 2 * navWidth - 2 * gap) : buttonWidth;
 
 			prev.height = height;
 			next.height = height;
@@ -258,7 +262,7 @@ package org.glomaker.mobileplayer.mvcs.views
 			
 			prev.width = navWidth;
 			next.width = navWidth;
-			menuLink.width = buttonWidth;
+			menuLink.width = menuWidth;
 			refresh.width = buttonWidth;
 			qrCode.width = buttonWidth;
 			journeyManager.width = buttonWidth;
@@ -273,6 +277,21 @@ package org.glomaker.mobileplayer.mvcs.views
 			switch (state)
 			{
 				case PLAYER:
+					prev.visible = true;
+					next.visible = true;
+					qrCode.visible = !playerWithoutJourney;
+					menuLink.visible = true;
+					journeyManager.visible = !playerWithoutJourney;
+					refresh.visible = false;
+					
+					qrCode.x = navWidth + gap;
+					menuLink.x = playerWithoutJourney ? (navWidth + gap) : (qrCode.x + buttonWidth + gap);
+					journeyManager.x = menuLink.x + buttonWidth + gap;
+					
+					firstButton = playerWithoutJourney ? menuLink : qrCode;
+					lastButton = playerWithoutJourney ? menuLink : journeyManager;
+					break;
+				
 				case JOURNEY:
 					prev.visible = true;
 					next.visible = true;
