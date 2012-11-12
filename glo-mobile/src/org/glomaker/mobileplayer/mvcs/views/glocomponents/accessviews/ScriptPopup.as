@@ -122,7 +122,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents.accessviews
 					}
 				}
 				
-				scriptDisplay.htmlText = text;
+				scriptDisplay.htmlText = text ? ("<font size='20'>" + text + "</font>") : text;
 			}
 		}
 		
