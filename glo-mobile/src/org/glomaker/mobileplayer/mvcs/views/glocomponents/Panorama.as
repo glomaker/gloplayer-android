@@ -28,11 +28,9 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 	import com.christiancantrell.extensions.Compass;
 	import com.christiancantrell.extensions.CompassChangedEvent;
 	import com.google.zxing.aztec.Point;
-	import com.greensock.TweenLite;
 	
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
-	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.net.URLRequest;
 	import flash.text.TextFormat;
@@ -55,7 +53,6 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		// Instance variables
 		//--------------------------------------------------
 		
-		protected var myMask:Shape;
 		protected var headingLabel:Label;
 		protected var image1:Loader;
 		protected var image2:Loader;
@@ -66,7 +63,6 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		protected var imageLoadQueue:Array;
 		protected var lastIndex:int = -1;
 		protected var lastHeading:Number;
-		protected var direction:int = 1;
 		
 		//--------------------------------------------------
 		// images
@@ -184,20 +180,12 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		{
 			super.createChildren();
 			
-			if (!myMask)
-			{
-				myMask = new Shape();
-				addChild(myMask);
-				this.mask = myMask;
-			}
-			
-			if( !headingLabel )
+			if (!compass && !headingLabel)
 			{
 				headingLabel = new Label();
 				addChild( headingLabel );
 				
-				if (!compass)
-					headingLabel.text = "No compass support";
+				headingLabel.text = "No compass support";
 				
 				var tf2:TextFormat = new TextFormat();
 				tf2.align = TextFormatAlign.LEFT;
@@ -258,23 +246,20 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		{
 			super.resized(width, height);
 			
-			myMask.graphics.clear();
-			myMask.graphics.beginFill(0xff0000);
-			myMask.graphics.drawRect( 0, 0, width, height);
-			myMask.graphics.endFill();
-			
+			// background
 			graphics.clear();
 			graphics.beginFill(0xcecece);
 			graphics.drawRect( 0, 0, width, height);
 			graphics.endFill();
 			
+			// 'No compass' label
 			if( headingLabel )
 			{
 				headingLabel.x = 0;
 				headingLabel.y = height - headingLabel.height - ScreenMaths.mmToPixels(5);
 			}
 			
-			// all images
+			// images
 			for each( var loader:Loader in imageLoadQueue )
 			{
 				if( loader )
@@ -327,7 +312,6 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 				var arc2:Number = arc / 2;
 				
 				var h:Number = (360 + Math.round(event.azimuthVert)) % 360;
-				direction = ((!isNaN(lastHeading) && (h < lastHeading || (lastHeading < 5 && h > 355))) ? -1 : 1);
 				lastHeading = h;
 				
 				var picIndex:int = -1;
@@ -369,13 +353,9 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 			else
 				image2Size = new Point(image.contentLoaderInfo.width, image.contentLoaderInfo.height);
 			
-			image.alpha = 0;
-			image.visible = true;
 			layoutImage(image);
-			
-			var targetX:Number = image.x;
-			image.x += (direction * image.scaleX * image.width / images.length);
-			TweenLite.to( image, 0.5, { alpha: 1, x: targetX } );
+			image.alpha = 1;
+			image.visible = true;
 		}
 	}
 }
