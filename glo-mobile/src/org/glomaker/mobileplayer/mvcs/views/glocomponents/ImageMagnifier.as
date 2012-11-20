@@ -41,6 +41,8 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 	import flash.net.URLRequest;
 	
 	import net.dndigital.components.IGUIComponent;
+	
+	import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 
 	/**
 	 * Viewer for the ImageMagnifier component.
@@ -48,7 +50,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 	 * @author haykel
 	 * 
 	 */
-	public class ImageMagnifier extends GloComponent
+	public class ImageMagnifier extends GloComponent implements IFullscreenable
 	{
 		//--------------------------------------------------
 		// Constants
@@ -63,6 +65,16 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		 * Maximum allowed scale for the image.
 		 */
 		protected static const MAX_SCALE:Number = 5;
+		
+		/**
+		 * Fullscreen button size.
+		 */
+		protected static const FS_SIZE:Number = ScreenMaths.mmToPixels(6);
+		
+		/**
+		 * Space between fullscreen button and component edges.
+		 */
+		protected static const FS_PADDING:Number = ScreenMaths.mmToPixels(1);
 		
 		//--------------------------------------------------
 		// Instance variables
@@ -85,6 +97,11 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		 * when the image is bigger and smaller than the component.
 		 */
 		protected var imageMask:Shape = new Shape();
+		
+		/**
+		 * Button for switching fullscreen mode.
+		 */
+		protected var fullscreenButton:VideoFullscreenButton = new VideoFullscreenButton();
 		
 		/**
 		 * Info overlay (pinch gesture symbol).
@@ -135,6 +152,33 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 			imageContainer.visible = false;
 			if (source)
 				image.load(new URLRequest(component.directory.resolvePath(source).url));
+		}
+		
+		//--------------------------------------------------
+		// isFullScreened (IFullscreenable)
+		//--------------------------------------------------
+		
+		private var _isFullScreened:Boolean;
+		
+		/**
+		 * @private
+		 */
+		public function get isFullScreened():Boolean
+		{
+			return _isFullScreened;
+		}
+		
+		/**
+		 * @see IFullscreenable
+		 */		
+		public function set isFullScreened(value:Boolean):void
+		{
+			if (value == isFullScreened)
+				return;
+			
+			_isFullScreened = value;
+			
+			invalidateDisplay();
 		}
 
 		//--------------------------------------------------
@@ -192,9 +236,11 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		{
 			addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 			
-			addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-			addEventListener(TransformGestureEvent.GESTURE_ZOOM, gestureZoomHandler);
-			addEventListener(TransformGestureEvent.GESTURE_SWIPE, gestureSwipeHandler);
+			imageContainer.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+			imageContainer.addEventListener(TransformGestureEvent.GESTURE_ZOOM, gestureZoomHandler);
+			imageContainer.addEventListener(TransformGestureEvent.GESTURE_SWIPE, gestureSwipeHandler);
+			
+			fullscreenButton.addEventListener(MouseEvent.CLICK, fullscreenButton_clickHandler);
 			
 			image.contentLoaderInfo.addEventListener(Event.COMPLETE, image_completeHandler);
 			
@@ -213,10 +259,15 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 			imageContainer.addChild(image);
 			imageContainer.addChild(imageMask);
 			imageContainer.mask = imageMask;
-			imageContainer.mouseEnabled = false;
 			imageContainer.mouseChildren = false;
 			imageContainer.visible = imageLoaded;
 			addChild(imageContainer);
+			
+			fullscreenButton.width = FS_SIZE;
+			fullscreenButton.height = FS_SIZE;
+			fullscreenButton.visible = false;
+			fullscreenButton.alpha = 0;
+			addChild(fullscreenButton);
 			
 			infoOverlay.mouseEnabled = false;
 			infoOverlay.mouseChildren = false;
@@ -230,12 +281,14 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		{
 			super.destroy();
 			
-			// cleanup
-			if (image)
-			{
-				image.contentLoaderInfo.removeEventListener(Event.COMPLETE, image_completeHandler);
-				image.unload();
-			}
+			imageContainer.removeEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+			imageContainer.removeEventListener(TransformGestureEvent.GESTURE_ZOOM, gestureZoomHandler);
+			imageContainer.removeEventListener(TransformGestureEvent.GESTURE_SWIPE, gestureSwipeHandler);
+			
+			fullscreenButton.removeEventListener(MouseEvent.CLICK, fullscreenButton_clickHandler);
+			
+			image.contentLoaderInfo.removeEventListener(Event.COMPLETE, image_completeHandler);
+			image.unload();
 		}
 		
 		/**
@@ -274,6 +327,10 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 			image.x = position.x;
 			image.y = position.y;
 			
+			// fullscreen button
+			fullscreenButton.x = width - fullscreenButton.width - FS_PADDING;
+			fullscreenButton.y = height - fullscreenButton.height - FS_PADDING;
+
 			// overlay
 			infoOverlay.redraw(width, height);
 		}
@@ -287,6 +344,9 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		 */
 		protected function addedToStageHandler(event:Event):void
 		{
+			fullscreenButton.visible = false;
+			fullscreenButton.alpha = 0;
+			
 			infoOverlay.show();
 		}
 		
@@ -300,6 +360,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 			
 			lastMouse = new Point(event.stageX, event.stageY);
 			infoOverlay.hide();
+			fullscreenButton.visible = true;
 			
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler);
 			stage.addEventListener(MouseEvent.MOUSE_UP, stage_mouseUpHandler);
@@ -364,6 +425,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 				{
 					zooming = true;
 					infoOverlay.hide();
+					fullscreenButton.visible = true;
 				}
 			}
 			else if (event.phase == GesturePhase.UPDATE)
@@ -416,6 +478,14 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 			imageContainer.visible = true;
 			
 			invalidateDisplay();
+		}
+		
+		/**
+		 * Handles click events on fullscreen button.
+		 */
+		protected function fullscreenButton_clickHandler(event:MouseEvent):void
+		{
+			player.fullscreen(this);
 		}
 	}
 }
