@@ -355,7 +355,6 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		 */
 		protected function mouseDownHandler(event:MouseEvent):void
 		{
-			trace("Down");
 			event.stopImmediatePropagation();
 			
 			lastMouse = new Point(event.stageX, event.stageY);
@@ -371,8 +370,6 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		 */
 		protected function stage_mouseMoveHandler(event:MouseEvent):void
 		{
-			trace("Move");
-			
 			var dx:Number = event.stageX - lastMouse.x;
 			var dy:Number = event.stageY - lastMouse.y
 			lastMouse = new Point(event.stageX, event.stageY);
@@ -495,7 +492,10 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 import com.greensock.TweenLite;
 
 import flash.display.Bitmap;
+import flash.display.Shape;
 import flash.display.Sprite;
+
+import org.glomaker.mobileplayer.mvcs.utils.ScreenMaths;
 
 /**
  * Pinch gesture image with a white background to be displayed on top
@@ -508,36 +508,50 @@ class InfoOverlay extends Sprite
 {
 	[Embed(source="files/pinch.png")]
 	protected var PinchIcon:Class;
-	
 	protected var pinchIcon:Bitmap;
+	protected var bg:Shape;
 	
 	public function InfoOverlay()
 	{
+		bg = new Shape();
+		bg.alpha = 0.8;
+		addChild( bg );
+		
 		pinchIcon = new PinchIcon();
 		addChild(pinchIcon);
-		
+
 		show();
 	}
 	
 	public function redraw(width:Number, height:Number):void
 	{
-		// background
-		graphics.clear();
-		graphics.beginFill(0xffffff);
-		graphics.drawRect(0, 0, width, height);
-		graphics.endFill();
+		// reset scale for correct maths
+		pinchIcon.scaleX = pinchIcon.scaleY = 1;
 		
 		// icon
-		var scale:Number = Math.min((width - 20) / pinchIcon.width, (height - 20) / pinchIcon.height);
+		var iconMargin:Number = ScreenMaths.mmToPixels( 4 );
+		var scale:Number = Math.min((width - iconMargin) / pinchIcon.width, (height - iconMargin) / pinchIcon.height);
 		pinchIcon.scaleX = Math.min(1, scale);
 		pinchIcon.scaleY = pinchIcon.scaleX;
 		pinchIcon.x = (width - pinchIcon.width) / 2;
 		pinchIcon.y = (height - pinchIcon.height) / 2;
+
+		// background
+		var margin:Number = ScreenMaths.mmToPixels( 2 );
+		var bgWidth:Number = pinchIcon.width + margin;
+		var bgHeight:Number = pinchIcon.height + margin;
+		var left:Number = (width - bgWidth)/2;
+		var top:Number = (height - bgHeight)/2;
+		
+		bg.graphics.clear();
+		bg.graphics.beginFill(0xffffff);
+		bg.graphics.drawRect( left, top, bgWidth, bgHeight);
+		bg.graphics.endFill();
 	}
 	
 	public function show():void
 	{
-		alpha = 0.8;
+		alpha = 1;
 	}
 	
 	public function hide():void
