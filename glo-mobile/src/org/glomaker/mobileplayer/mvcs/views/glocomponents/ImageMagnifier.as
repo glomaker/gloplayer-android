@@ -28,6 +28,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 	import com.greensock.TweenLite;
 	import com.greensock.easing.Expo;
 	
+	import flash.display.Bitmap;
 	import flash.display.Graphics;
 	import flash.display.Loader;
 	import flash.display.Shape;
@@ -124,6 +125,11 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		 */
 		protected var zooming:Boolean;
 		
+		/**
+		 * Holds the value of source on 'removed from stage' to reset it on next 'added to stage'.
+		 */
+		protected var sourceSavedWhenRemoved:String;
+		
 		//--------------------------------------------------
 		// source
 		//--------------------------------------------------
@@ -147,9 +153,12 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 				return;
 			
 			_source = value;
+			sourceSavedWhenRemoved = null;
 			
 			imageLoaded = false;
 			imageContainer.visible = false;
+			disposeImage();
+			
 			if (source)
 				image.load(new URLRequest(component.directory.resolvePath(source).url));
 		}
@@ -225,6 +234,18 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 			return position;
 		}
 		
+		protected function disposeImage():void
+		{
+			if (image)
+			{
+				var bmp:Bitmap = image.content as Bitmap;
+				image.unload();
+				
+				if (bmp && bmp.bitmapData)
+					bmp.bitmapData.dispose();
+			}
+		}
+		
 		//--------------------------------------------------
 		// Overrides
 		//--------------------------------------------------
@@ -235,6 +256,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		override public function initialize():IGUIComponent
 		{
 			addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			addEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
 			
 			imageContainer.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 			imageContainer.addEventListener(TransformGestureEvent.GESTURE_ZOOM, gestureZoomHandler);
@@ -281,6 +303,9 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		{
 			super.destroy();
 			
+			removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			removeEventListener(Event.REMOVED_FROM_STAGE, removedFromStageHandler);
+			
 			imageContainer.removeEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 			imageContainer.removeEventListener(TransformGestureEvent.GESTURE_ZOOM, gestureZoomHandler);
 			imageContainer.removeEventListener(TransformGestureEvent.GESTURE_SWIPE, gestureSwipeHandler);
@@ -288,7 +313,7 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 			fullscreenButton.removeEventListener(MouseEvent.CLICK, fullscreenButton_clickHandler);
 			
 			image.contentLoaderInfo.removeEventListener(Event.COMPLETE, image_completeHandler);
-			image.unload();
+			disposeImage();
 		}
 		
 		/**
@@ -344,10 +369,23 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		 */
 		protected function addedToStageHandler(event:Event):void
 		{
+			if (sourceSavedWhenRemoved)
+				source = sourceSavedWhenRemoved;
+			
 			fullscreenButton.visible = false;
 			fullscreenButton.alpha = 0;
 			
 			infoOverlay.show();
+		}
+		
+		/**
+		 * Handles removed from stage events.
+		 */
+		protected function removedFromStageHandler(event:Event):void
+		{
+			var tmp:String = source; //sourceSavedWhenRemoved will be set to 'null' in next line
+			source = null;
+			sourceSavedWhenRemoved = tmp;
 		}
 		
 		/**
