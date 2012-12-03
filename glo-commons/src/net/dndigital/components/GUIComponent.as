@@ -549,8 +549,9 @@ package net.dndigital.components
 		/**
 		 * @private
 		 * Handles added to stage. This handler should be invoked only if parent is not IContainer.
+		 * Override intialize() to implement specific functionality.
 		 */
-		protected function addedToStage(event:Event):void
+		private function addedToStage(event:Event):void
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, addedToStage);
 			

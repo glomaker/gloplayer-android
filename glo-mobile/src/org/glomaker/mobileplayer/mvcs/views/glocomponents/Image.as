@@ -25,6 +25,8 @@
 */
 package org.glomaker.mobileplayer.mvcs.views.glocomponents
 {
+	import com.greensock.TweenLite;
+	
 	import eu.kiichigo.utils.log;
 	
 	import flash.display.Bitmap;
@@ -159,6 +161,9 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 			mapProperty("source");
 			mapProperty("maintainRatio");
 			
+			addEventListener( Event.ADDED_TO_STAGE, onAddedToStage );
+			addEventListener( Event.REMOVED_FROM_STAGE, onRemovedFromStage );
+			
 			return super.initialize();
 		}
 		
@@ -213,6 +218,11 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 				bitmap.bitmapData.dispose();
 				bitmap.bitmapData = null;
 			}
+			
+			_source = null;
+			
+			removeEventListener( Event.ADDED_TO_STAGE, onAddedToStage );
+			removeEventListener( Event.REMOVED_FROM_STAGE, onRemovedFromStage );
 		}
 		
 		//--------------------------------------------------------------------------
@@ -251,14 +261,46 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 		 */
 		protected function imageLoaded(event:Event):void
 		{
+			// if the component is no longer being displayed, don't show the image
+			if( parent == null )
+			{
+				return;
+			}
+			
 			// Assign bitmap.
 			bitmap.bitmapData = event.target.content.bitmapData;
+			
 			// Store original dimensions.
 			original.x = bitmap.bitmapData.width;
 			original.y = bitmap.bitmapData.height;
+			
 			// Invalidate
 			redraw = true;
 			invalidateDisplay();
+		}
+		
+		/**
+		 * Called when the component has been added to the stage AGAIN.
+		 * The first time the component is added, initialize() is called.
+		 * Not to be confused with GUIComponent::addedToStage.
+		 * @param e
+		 * 
+		 */		
+		protected function onAddedToStage( e:Event ):void
+		{
+			if( _source )
+			{
+				load( _source );
+			}
+		}
+		
+		protected function onRemovedFromStage( e:Event ):void
+		{
+			if( bitmap && bitmap.bitmapData )
+			{
+				bitmap.bitmapData.dispose();
+				bitmap.bitmapData = null;
+			}
 		}
 	}
 }
