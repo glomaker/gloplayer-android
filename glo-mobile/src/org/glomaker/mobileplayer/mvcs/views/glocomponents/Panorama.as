@@ -229,11 +229,15 @@ package org.glomaker.mobileplayer.mvcs.views.glocomponents
 			if( image1 )
 			{
 				image1.contentLoaderInfo.removeEventListener( Event.COMPLETE, onImageComplete );
+				image1.close();
+				image1.unload();
 				image1 = null;
 			}
 			if( image2 )
 			{
 				image2.contentLoaderInfo.removeEventListener( Event.COMPLETE, onImageComplete );
+				image2.close();
+				image2.unload();
 				image2 = null;
 			}
 			imageLoadQueue = null;
