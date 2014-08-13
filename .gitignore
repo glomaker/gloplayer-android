@@ -1,9 +1,7 @@
 .DS_Store
-.actionScriptProperties
-.flexLibProperties
-.project
-.settings
 bin
 bin-debug
 bin-release
 glo-mobile/libs/assets.swf
+glo-mobile/bin-release-temp/
+*.apk
